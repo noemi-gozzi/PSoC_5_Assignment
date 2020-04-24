@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccAo7cxN.s 			page 1
+ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccP1UIbA.s 			page 1
 
 
    1              		.syntax unified
@@ -58,7 +58,7 @@ ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccAo7cxN.s 			page 1
   33              		.cfi_def_cfa_offset 8
   34              		.cfi_offset 3, -8
   35              		.cfi_offset 14, -4
-ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccAo7cxN.s 			page 2
+ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccP1UIbA.s 			page 2
 
 
   23:InterruptRoutines.c ****     
@@ -78,7 +78,7 @@ ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccAo7cxN.s 			page 1
   26:InterruptRoutines.c ****                                         LIS3DH_STATUS_REG,
   27:InterruptRoutines.c ****                                         &status_register_newdata);
   28:InterruptRoutines.c ****         
-  29:InterruptRoutines.c ****         if ((error==NO_ERROR)&&(status_register_newdata & STATUS_REGISTER_NEW_DATA)){
+  29:InterruptRoutines.c ****      if ((error==NO_ERROR)&&((status_register_newdata) & (STATUS_REGISTER_NEW_DATA))){
   47              		.loc 1 29 0
   48 0014 80B9     		cbnz	r0, .L1
   49              		.loc 1 29 0 is_stmt 0 discriminator 1
@@ -118,7 +118,7 @@ ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccAo7cxN.s 			page 1
   78              		.cfi_endproc
   79              	.LFE63:
   80              		.size	Custom_ISR_Timer_XYZ, .-Custom_ISR_Timer_XYZ
-ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccAo7cxN.s 			page 3
+ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccP1UIbA.s 			page 3
 
 
   81              		.comm	error,1,1
@@ -178,7 +178,7 @@ ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccAo7cxN.s 			page 1
  135 0058 04       		.byte	0x4
  136 0059 05       		.byte	0x5
  137 005a 13010000 		.4byte	.LASF6
-ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccAo7cxN.s 			page 4
+ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccP1UIbA.s 			page 4
 
 
  138 005e 02       		.uleb128 0x2
@@ -238,7 +238,7 @@ ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccAo7cxN.s 			page 1
  192 00c1 37000000 		.4byte	0x37
  193 00c5 04       		.byte	0x4
  194 00c6 15       		.byte	0x15
-ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccAo7cxN.s 			page 5
+ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccP1UIbA.s 			page 5
 
 
  195 00c7 D8000000 		.4byte	0xd8
@@ -298,7 +298,7 @@ ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccAo7cxN.s 			page 1
  249 0130 48       		.byte	0x48
  250 0131 0B       		.uleb128 0xb
  251 0132 01       		.uleb128 0x1
-ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccAo7cxN.s 			page 6
+ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccP1UIbA.s 			page 6
 
 
  252 0133 51       		.byte	0x51
@@ -358,7 +358,7 @@ ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccAo7cxN.s 			page 1
  306 0197 00000000 		.4byte	status_register_newdata
  307 019b 10       		.uleb128 0x10
  308 019c 00020000 		.4byte	.LASF25
-ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccAo7cxN.s 			page 7
+ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccP1UIbA.s 			page 7
 
 
  309 01a0 01       		.byte	0x1
@@ -418,7 +418,7 @@ ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccAo7cxN.s 			page 1
  363 001e 03       		.uleb128 0x3
  364 001f 16       		.uleb128 0x16
  365 0020 00       		.byte	0
-ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccAo7cxN.s 			page 8
+ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccP1UIbA.s 			page 8
 
 
  366 0021 03       		.uleb128 0x3
@@ -478,7 +478,7 @@ ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccAo7cxN.s 			page 1
  420 0057 01       		.byte	0x1
  421 0058 3F       		.uleb128 0x3f
  422 0059 19       		.uleb128 0x19
-ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccAo7cxN.s 			page 9
+ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccP1UIbA.s 			page 9
 
 
  423 005a 03       		.uleb128 0x3
@@ -538,7 +538,7 @@ ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccAo7cxN.s 			page 1
  477 009a 31       		.uleb128 0x31
  478 009b 13       		.uleb128 0x13
  479 009c 00       		.byte	0
-ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccAo7cxN.s 			page 10
+ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccP1UIbA.s 			page 10
 
 
  480 009d 00       		.byte	0
@@ -598,7 +598,7 @@ ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccAo7cxN.s 			page 1
  534 00d3 2E       		.uleb128 0x2e
  535 00d4 00       		.byte	0
  536 00d5 3F       		.uleb128 0x3f
-ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccAo7cxN.s 			page 11
+ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccP1UIbA.s 			page 11
 
 
  537 00d6 19       		.uleb128 0x19
@@ -658,7 +658,7 @@ ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccAo7cxN.s 			page 1
  579 002d 4572726F 		.ascii	"ErrorCode\000"
  579      72436F64 
  579      6500
-ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccAo7cxN.s 			page 12
+ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccP1UIbA.s 			page 12
 
 
  580              	.LASF32:
@@ -718,7 +718,7 @@ ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccAo7cxN.s 			page 1
  600              	.LASF28:
  601 0130 4932435F 		.ascii	"I2C_Peripheral_ReadRegisterMulti\000"
  601      50657269 
-ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccAo7cxN.s 			page 13
+ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccP1UIbA.s 			page 13
 
 
  601      70686572 
@@ -778,7 +778,7 @@ ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccAo7cxN.s 			page 1
  623              	.LASF15:
  624 0214 63686172 		.ascii	"char\000"
  624      00
-ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccAo7cxN.s 			page 14
+ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccP1UIbA.s 			page 14
 
 
  625              	.LASF27:
