@@ -293,6 +293,14 @@ int main(void)
                 OutY = ((int16)((Acceleration[2]) | (Acceleration[3])<<8)>>6)*4;
                 OutZ = ((int16)((Acceleration[4]) | (Acceleration[5])<<8)>>6)*4;
                 
+                OutArray[1] = (uint8_t)(OutX & 0xFF);
+                OutArray[2] = (uint8_t)(OutX >> 8);
+                OutArray[3] = (uint8_t)(OutY & 0xFF);
+                OutArray[4] = (uint8_t)(OutY >> 8);
+                OutArray[5] = (uint8_t)(OutZ & 0xFF);
+                OutArray[6] = (uint8_t)(OutZ >> 8);
+                
+                UART_Debug_PutArray(OutArray, packet_dimension);
                 }
     }
 }
