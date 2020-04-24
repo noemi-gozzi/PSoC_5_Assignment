@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\noemi\AppData\Local\Temp\cc2A3lrg.s 			page 1
+ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccKhy93y.s 			page 1
 
 
    1              		.syntax unified
@@ -43,2170 +43,2671 @@ ARM GAS  C:\Users\noemi\AppData\Local\Temp\cc2A3lrg.s 			page 1
   13:main.c        **** #include "I2C_Interface.h"
   14:main.c        **** #include "project.h"
   15:main.c        **** #include "stdio.h"
-  16:main.c        **** 
-  17:main.c        **** /**
-  18:main.c        **** *   \brief 7-bit I2C address of the slave device.
-  19:main.c        **** */
-  20:main.c        **** #define LIS3DH_DEVICE_ADDRESS 0x18
-  21:main.c        **** 
-  22:main.c        **** /**
-  23:main.c        **** *   \brief Address of the WHO AM I register
-  24:main.c        **** */
-  25:main.c        **** #define LIS3DH_WHO_AM_I_REG_ADDR 0x0F
-  26:main.c        **** 
-  27:main.c        **** /**
-  28:main.c        **** *   \brief Address of the Status register
-  29:main.c        **** */
-  30:main.c        **** #define LIS3DH_STATUS_REG 0x27
-ARM GAS  C:\Users\noemi\AppData\Local\Temp\cc2A3lrg.s 			page 2
+  16:main.c        **** #include "InterruptRoutines.h"
+  17:main.c        **** 
+  18:main.c        **** /**
+  19:main.c        **** *   \brief 7-bit I2C address of the slave device.
+  20:main.c        **** */
+  21:main.c        **** #define LIS3DH_DEVICE_ADDRESS 0x18
+  22:main.c        **** 
+  23:main.c        **** /**
+  24:main.c        **** *   \brief Address of the WHO AM I register
+  25:main.c        **** */
+  26:main.c        **** #define LIS3DH_WHO_AM_I_REG_ADDR 0x0F
+  27:main.c        **** 
+  28:main.c        **** /**
+  29:main.c        **** *   \brief Address of the Status register
+  30:main.c        **** */
+ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccKhy93y.s 			page 2
 
 
-  31:main.c        **** 
-  32:main.c        **** /**
-  33:main.c        **** *   \brief Address of the Control register 1
-  34:main.c        **** */
-  35:main.c        **** #define LIS3DH_CTRL_REG1 0x20
-  36:main.c        **** 
-  37:main.c        **** /**
-  38:main.c        **** *   \brief Hex value to set normal mode to the accelerator
-  39:main.c        **** */
-  40:main.c        **** #define LIS3DH_NORMAL_MODE_CTRL_REG1 0x47
-  41:main.c        **** 
-  42:main.c        **** /**
-  43:main.c        **** *   \brief  Address of the Temperature Sensor Configuration register
-  44:main.c        **** */
-  45:main.c        **** #define LIS3DH_TEMP_CFG_REG 0x1F
-  46:main.c        **** 
-  47:main.c        **** #define LIS3DH_TEMP_CFG_REG_ACTIVE 0xC0
-  48:main.c        **** 
-  49:main.c        **** /**
-  50:main.c        **** *   \brief Address of the Control register 4
-  51:main.c        **** */
-  52:main.c        **** #define LIS3DH_CTRL_REG4 0x23
-  53:main.c        **** 
-  54:main.c        **** #define LIS3DH_CTRL_REG4_BDU_ACTIVE 0x80
-  55:main.c        **** 
-  56:main.c        **** /**
-  57:main.c        **** *   \brief Address of the ADC output LSB register
-  58:main.c        **** */
-  59:main.c        **** #define LIS3DH_OUT_ADC_3L 0x0C
-  60:main.c        **** 
-  61:main.c        **** /**
-  62:main.c        **** *   \brief Address of the ADC output MSB register
-  63:main.c        **** */
-  64:main.c        **** #define LIS3DH_OUT_ADC_3H 0x0D
-  65:main.c        **** 
-  66:main.c        **** #define LIS3DH_OUT_X_L 0x28 //register for acceleration in X (LSB)
-  67:main.c        **** 
-  68:main.c        **** /**
-  69:main.c        **** *   Hex value to set the accelerator in normal mode acceleration and 100 Hz,
-  70:main.c        ****     correspondent to 0101 1000, enabling XYZ 
-  71:main.c        **** */
-  72:main.c        **** #define LIS3DH_NORMAL_MODE_CTRL_REG1_XYZ 0x57
-  73:main.c        **** 
-  74:main.c        **** /*
-  75:main.c        **** ctrl register 4 in normal mode, +- 2g (bit FS[1:0] set to 0 --> FSR +-2g
-  76:main.c        **** */
-  77:main.c        **** #define LIS3DH_CTRL_REG4_NORMAL_MODE 0x00
-  78:main.c        **** 
-  79:main.c        **** int main(void)
-  80:main.c        **** {
-  28              		.loc 1 80 0
+  31:main.c        **** #define LIS3DH_STATUS_REG 0x27
+  32:main.c        **** 
+  33:main.c        **** /**
+  34:main.c        **** *   \brief Address of the Control register 1
+  35:main.c        **** */
+  36:main.c        **** #define LIS3DH_CTRL_REG1 0x20
+  37:main.c        **** 
+  38:main.c        **** /**
+  39:main.c        **** *   \brief Hex value to set normal mode to the accelerator
+  40:main.c        **** */
+  41:main.c        **** #define LIS3DH_NORMAL_MODE_CTRL_REG1 0x47
+  42:main.c        **** 
+  43:main.c        **** /**
+  44:main.c        **** *   \brief  Address of the Temperature Sensor Configuration register
+  45:main.c        **** */
+  46:main.c        **** #define LIS3DH_TEMP_CFG_REG 0x1F
+  47:main.c        **** 
+  48:main.c        **** #define LIS3DH_TEMP_CFG_REG_ACTIVE 0xC0
+  49:main.c        **** 
+  50:main.c        **** /**
+  51:main.c        **** *   \brief Address of the Control register 4
+  52:main.c        **** */
+  53:main.c        **** #define LIS3DH_CTRL_REG4 0x23
+  54:main.c        **** 
+  55:main.c        **** #define LIS3DH_CTRL_REG4_BDU_ACTIVE 0x80
+  56:main.c        **** 
+  57:main.c        **** /**
+  58:main.c        **** *   \brief Address of the ADC output LSB register
+  59:main.c        **** */
+  60:main.c        **** #define LIS3DH_OUT_ADC_3L 0x0C
+  61:main.c        **** 
+  62:main.c        **** /**
+  63:main.c        **** *   \brief Address of the ADC output MSB register
+  64:main.c        **** */
+  65:main.c        **** #define LIS3DH_OUT_ADC_3H 0x0D
+  66:main.c        **** 
+  67:main.c        **** #define LIS3DH_OUT_X_L 0x28 //register for acceleration in X (LSB)
+  68:main.c        **** 
+  69:main.c        **** /**
+  70:main.c        **** *   Hex value to set the accelerator in normal mode acceleration and 100 Hz,
+  71:main.c        ****     correspondent to 0101 1000, enabling XYZ 
+  72:main.c        **** */
+  73:main.c        **** #define LIS3DH_NORMAL_MODE_CTRL_REG1_XYZ 0x57
+  74:main.c        **** 
+  75:main.c        **** /*
+  76:main.c        **** ctrl register 4 in normal mode, +- 2g (bit FS[1:0] set to 0 --> FSR +-2g
+  77:main.c        **** */
+  78:main.c        **** #define LIS3DH_CTRL_REG4_NORMAL_MODE 0x00
+  79:main.c        **** 
+  80:main.c        **** #define packet_dimension 8
+  81:main.c        **** 
+  82:main.c        **** int main(void)
+  83:main.c        **** {
+  28              		.loc 1 83 0
   29              		.cfi_startproc
-  30              		@ args = 0, pretend = 0, frame = 56
+  30              		@ args = 0, pretend = 0, frame = 64
   31              		@ frame_needed = 0, uses_anonymous_args = 0
+ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccKhy93y.s 			page 3
+
+
   32 0000 10B5     		push	{r4, lr}
   33              		.cfi_def_cfa_offset 8
   34              		.cfi_offset 4, -8
-ARM GAS  C:\Users\noemi\AppData\Local\Temp\cc2A3lrg.s 			page 3
-
-
   35              		.cfi_offset 14, -4
-  36 0002 8EB0     		sub	sp, sp, #56
-  37              		.cfi_def_cfa_offset 64
-  81:main.c        ****     CyGlobalIntEnable; /* Enable global interrupts. */
-  38              		.loc 1 81 0
+  36 0002 90B0     		sub	sp, sp, #64
+  37              		.cfi_def_cfa_offset 72
+  84:main.c        ****     CyGlobalIntEnable; /* Enable global interrupts. */
+  38              		.loc 1 84 0
   39              		.syntax unified
-  40              	@ 81 "main.c" 1
+  40              	@ 84 "main.c" 1
   41 0004 62B6     		CPSIE   i
   42              	@ 0 "" 2
-  82:main.c        **** 
-  83:main.c        ****     /* Place your initialization/startup code here (e.g. MyInst_Start()) */
-  84:main.c        ****     I2C_Peripheral_Start();
-  43              		.loc 1 84 0
+  85:main.c        **** 
+  86:main.c        ****     /* Place your initialization/startup code here (e.g. MyInst_Start()) */
+  87:main.c        ****     I2C_Peripheral_Start();
+  43              		.loc 1 87 0
   44              		.thumb
   45              		.syntax unified
   46 0006 FFF7FEFF 		bl	I2C_Peripheral_Start
   47              	.LVL0:
-  85:main.c        ****     UART_Debug_Start();
-  48              		.loc 1 85 0
+  88:main.c        ****     UART_Debug_Start();
+  48              		.loc 1 88 0
   49 000a FFF7FEFF 		bl	UART_Debug_Start
   50              	.LVL1:
-  86:main.c        ****     
-  87:main.c        ****     CyDelay(5); //"The boot procedure is complete about 5 milliseconds after device power-up."
-  51              		.loc 1 87 0
-  52 000e 0520     		movs	r0, #5
-  53 0010 FFF7FEFF 		bl	CyDelay
-  54              	.LVL2:
-  55              	.LBB2:
-  88:main.c        ****     
-  89:main.c        ****     // String to print out messages on the UART
-  90:main.c        ****     char message[50];
-  91:main.c        **** 
-  92:main.c        ****     // Check which devices are present on the I2C bus
-  93:main.c        ****     for (int i = 0 ; i < 128; i++)
-  56              		.loc 1 93 0
-  57 0014 0024     		movs	r4, #0
-  58 0016 0CE0     		b	.L2
-  59              	.LVL3:
-  60              	.L4:
-  94:main.c        ****     {
-  95:main.c        ****         if (I2C_Peripheral_IsDeviceConnected(i))
-  61              		.loc 1 95 0
-  62 0018 E0B2     		uxtb	r0, r4
-  63 001a FFF7FEFF 		bl	I2C_Peripheral_IsDeviceConnected
-  64              	.LVL4:
-  65 001e 38B1     		cbz	r0, .L3
-  96:main.c        ****         {
-  97:main.c        ****             // print out the address is hex format
-  98:main.c        ****             sprintf(message, "Device 0x%02X is connected\r\n", i);
-  66              		.loc 1 98 0
-  67 0020 2246     		mov	r2, r4
-  68 0022 5C49     		ldr	r1, .L22
-  69 0024 01A8     		add	r0, sp, #4
-  70 0026 FFF7FEFF 		bl	sprintf
-  71              	.LVL5:
-  99:main.c        ****             UART_Debug_PutString(message); 
-  72              		.loc 1 99 0
-ARM GAS  C:\Users\noemi\AppData\Local\Temp\cc2A3lrg.s 			page 4
+  89:main.c        ****     Timer_Start();
+  51              		.loc 1 89 0
+  52 000e FFF7FEFF 		bl	Timer_Start
+  53              	.LVL2:
+  90:main.c        ****     isr_timer_StartEx(Custom_ISR_Timer_XYZ);
+  54              		.loc 1 90 0
+  55 0012 7E48     		ldr	r0, .L24
+  56 0014 FFF7FEFF 		bl	isr_timer_StartEx
+  57              	.LVL3:
+  91:main.c        ****     
+  92:main.c        ****     CyDelay(5); //"The boot procedure is complete about 5 milliseconds after device power-up."
+  58              		.loc 1 92 0
+  59 0018 0520     		movs	r0, #5
+  60 001a FFF7FEFF 		bl	CyDelay
+  61              	.LVL4:
+  62              	.LBB2:
+  93:main.c        ****     
+  94:main.c        ****     // String to print out messages on the UART
+  95:main.c        ****     char message[50];
+  96:main.c        **** 
+  97:main.c        ****     // Check which devices are present on the I2C bus
+  98:main.c        ****     for (int i = 0 ; i < 128; i++)
+  63              		.loc 1 98 0
+  64 001e 0024     		movs	r4, #0
+  65 0020 0CE0     		b	.L2
+  66              	.LVL5:
+  67              	.L4:
+  99:main.c        ****     {
+ 100:main.c        ****         if (I2C_Peripheral_IsDeviceConnected(i))
+  68              		.loc 1 100 0
+  69 0022 E0B2     		uxtb	r0, r4
+  70 0024 FFF7FEFF 		bl	I2C_Peripheral_IsDeviceConnected
+  71              	.LVL6:
+ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccKhy93y.s 			page 4
 
 
-  73 002a 01A8     		add	r0, sp, #4
-  74 002c FFF7FEFF 		bl	UART_Debug_PutString
-  75              	.LVL6:
-  76              	.L3:
-  93:main.c        ****     {
-  77              		.loc 1 93 0 discriminator 2
-  78 0030 0134     		adds	r4, r4, #1
-  79              	.LVL7:
-  80              	.L2:
-  93:main.c        ****     {
-  81              		.loc 1 93 0 is_stmt 0 discriminator 1
-  82 0032 7F2C     		cmp	r4, #127
-  83 0034 F0DD     		ble	.L4
-  84              	.LBE2:
- 100:main.c        ****         }
- 101:main.c        ****         
- 102:main.c        ****     }
- 103:main.c        ****     
- 104:main.c        ****     /******************************************/
- 105:main.c        ****     /*            I2C Reading                 */
- 106:main.c        ****     /******************************************/
- 107:main.c        ****     
- 108:main.c        ****     /* Read WHO AM I REGISTER register */
- 109:main.c        ****     uint8_t who_am_i_reg;
- 110:main.c        ****     ErrorCode error = I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
-  85              		.loc 1 110 0 is_stmt 1
-  86 0036 0DF10302 		add	r2, sp, #3
-  87 003a 0F21     		movs	r1, #15
-  88 003c 1820     		movs	r0, #24
-  89 003e FFF7FEFF 		bl	I2C_Peripheral_ReadRegister
-  90              	.LVL8:
- 111:main.c        ****                                                   LIS3DH_WHO_AM_I_REG_ADDR, 
- 112:main.c        ****                                                   &who_am_i_reg);
- 113:main.c        ****     if (error == NO_ERROR)
-  91              		.loc 1 113 0
-  92 0042 48B9     		cbnz	r0, .L5
- 114:main.c        ****     {
- 115:main.c        ****         sprintf(message, "WHO AM I REG: 0x%02X [Expected: 0x33]\r\n", who_am_i_reg);
-  93              		.loc 1 115 0
-  94 0044 9DF80320 		ldrb	r2, [sp, #3]	@ zero_extendqisi2
-  95 0048 5349     		ldr	r1, .L22+4
-  96 004a 01A8     		add	r0, sp, #4
-  97              	.LVL9:
-  98 004c FFF7FEFF 		bl	sprintf
-  99              	.LVL10:
- 116:main.c        ****         UART_Debug_PutString(message); 
- 100              		.loc 1 116 0
- 101 0050 01A8     		add	r0, sp, #4
- 102 0052 FFF7FEFF 		bl	UART_Debug_PutString
- 103              	.LVL11:
- 104 0056 02E0     		b	.L6
- 105              	.LVL12:
- 106              	.L5:
- 117:main.c        ****     }
- 118:main.c        ****     else
+  72 0028 38B1     		cbz	r0, .L3
+ 101:main.c        ****         {
+ 102:main.c        ****             // print out the address is hex format
+ 103:main.c        ****             sprintf(message, "Device 0x%02X is connected\r\n", i);
+  73              		.loc 1 103 0
+  74 002a 2246     		mov	r2, r4
+  75 002c 7849     		ldr	r1, .L24+4
+  76 002e 03A8     		add	r0, sp, #12
+  77 0030 FFF7FEFF 		bl	sprintf
+  78              	.LVL7:
+ 104:main.c        ****             UART_Debug_PutString(message); 
+  79              		.loc 1 104 0
+  80 0034 03A8     		add	r0, sp, #12
+  81 0036 FFF7FEFF 		bl	UART_Debug_PutString
+  82              	.LVL8:
+  83              	.L3:
+  98:main.c        ****     {
+  84              		.loc 1 98 0 discriminator 2
+  85 003a 0134     		adds	r4, r4, #1
+  86              	.LVL9:
+  87              	.L2:
+  98:main.c        ****     {
+  88              		.loc 1 98 0 is_stmt 0 discriminator 1
+  89 003c 7F2C     		cmp	r4, #127
+  90 003e F0DD     		ble	.L4
+  91              	.LBE2:
+ 105:main.c        ****         }
+ 106:main.c        ****         
+ 107:main.c        ****     }
+ 108:main.c        ****     
+ 109:main.c        ****     /******************************************/
+ 110:main.c        ****     /*            I2C Reading                 */
+ 111:main.c        ****     /******************************************/
+ 112:main.c        ****     
+ 113:main.c        ****     /* Read WHO AM I REGISTER register */
+ 114:main.c        ****     uint8_t who_am_i_reg;
+ 115:main.c        ****     ErrorCode error = I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
+  92              		.loc 1 115 0 is_stmt 1
+  93 0040 0DF10B02 		add	r2, sp, #11
+  94 0044 0F21     		movs	r1, #15
+  95 0046 1820     		movs	r0, #24
+  96 0048 FFF7FEFF 		bl	I2C_Peripheral_ReadRegister
+  97              	.LVL10:
+ 116:main.c        ****                                                   LIS3DH_WHO_AM_I_REG_ADDR, 
+ 117:main.c        ****                                                   &who_am_i_reg);
+ 118:main.c        ****     if (error == NO_ERROR)
+  98              		.loc 1 118 0
+  99 004c 48B9     		cbnz	r0, .L5
  119:main.c        ****     {
- 120:main.c        ****         UART_Debug_PutString("Error occurred during I2C comm\r\n");   
-ARM GAS  C:\Users\noemi\AppData\Local\Temp\cc2A3lrg.s 			page 5
+ 120:main.c        ****         sprintf(message, "WHO AM I REG: 0x%02X [Expected: 0x33]\r\n", who_am_i_reg);
+ 100              		.loc 1 120 0
+ 101 004e 9DF80B20 		ldrb	r2, [sp, #11]	@ zero_extendqisi2
+ 102 0052 7049     		ldr	r1, .L24+8
+ 103 0054 03A8     		add	r0, sp, #12
+ 104              	.LVL11:
+ 105 0056 FFF7FEFF 		bl	sprintf
+ 106              	.LVL12:
+ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccKhy93y.s 			page 5
 
 
- 107              		.loc 1 120 0
- 108 0058 5048     		ldr	r0, .L22+8
- 109              	.LVL13:
- 110 005a FFF7FEFF 		bl	UART_Debug_PutString
- 111              	.LVL14:
- 112              	.L6:
- 121:main.c        ****     }
- 122:main.c        ****     
- 123:main.c        ****     /*      I2C Reading Status Register       */
- 124:main.c        ****     
- 125:main.c        ****     uint8_t status_register; 
- 126:main.c        ****     error = I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
- 113              		.loc 1 126 0
- 114 005e 0DF10202 		add	r2, sp, #2
- 115 0062 2721     		movs	r1, #39
- 116 0064 1820     		movs	r0, #24
- 117 0066 FFF7FEFF 		bl	I2C_Peripheral_ReadRegister
- 118              	.LVL15:
- 127:main.c        ****                                         LIS3DH_STATUS_REG,
- 128:main.c        ****                                         &status_register);
+ 121:main.c        ****         UART_Debug_PutString(message); 
+ 107              		.loc 1 121 0
+ 108 005a 03A8     		add	r0, sp, #12
+ 109 005c FFF7FEFF 		bl	UART_Debug_PutString
+ 110              	.LVL13:
+ 111 0060 02E0     		b	.L6
+ 112              	.LVL14:
+ 113              	.L5:
+ 122:main.c        ****     }
+ 123:main.c        ****     else
+ 124:main.c        ****     {
+ 125:main.c        ****         UART_Debug_PutString("Error occurred during I2C comm\r\n");   
+ 114              		.loc 1 125 0
+ 115 0062 6D48     		ldr	r0, .L24+12
+ 116              	.LVL15:
+ 117 0064 FFF7FEFF 		bl	UART_Debug_PutString
+ 118              	.LVL16:
+ 119              	.L6:
+ 126:main.c        ****     }
+ 127:main.c        ****     
+ 128:main.c        ****     /*      I2C Reading Status Register       */
  129:main.c        ****     
- 130:main.c        ****     if (error == NO_ERROR)
- 119              		.loc 1 130 0
- 120 006a 48B9     		cbnz	r0, .L7
- 131:main.c        ****     {
- 132:main.c        ****         sprintf(message, "STATUS REGISTER: 0x%02X\r\n", status_register);
- 121              		.loc 1 132 0
- 122 006c 9DF80220 		ldrb	r2, [sp, #2]	@ zero_extendqisi2
- 123 0070 4B49     		ldr	r1, .L22+12
- 124 0072 01A8     		add	r0, sp, #4
- 125              	.LVL16:
- 126 0074 FFF7FEFF 		bl	sprintf
- 127              	.LVL17:
- 133:main.c        ****         UART_Debug_PutString(message); 
- 128              		.loc 1 133 0
- 129 0078 01A8     		add	r0, sp, #4
- 130 007a FFF7FEFF 		bl	UART_Debug_PutString
- 131              	.LVL18:
- 132 007e 02E0     		b	.L8
- 133              	.LVL19:
- 134              	.L7:
- 134:main.c        ****     }
- 135:main.c        ****     else
+ 130:main.c        ****     uint8_t status_register; 
+ 131:main.c        ****     error = I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
+ 120              		.loc 1 131 0
+ 121 0068 0DF10A02 		add	r2, sp, #10
+ 122 006c 2721     		movs	r1, #39
+ 123 006e 1820     		movs	r0, #24
+ 124 0070 FFF7FEFF 		bl	I2C_Peripheral_ReadRegister
+ 125              	.LVL17:
+ 132:main.c        ****                                         LIS3DH_STATUS_REG,
+ 133:main.c        ****                                         &status_register);
+ 134:main.c        ****     
+ 135:main.c        ****     if (error == NO_ERROR)
+ 126              		.loc 1 135 0
+ 127 0074 48B9     		cbnz	r0, .L7
  136:main.c        ****     {
- 137:main.c        ****         UART_Debug_PutString("Error occurred during I2C comm to read status register\r\n");   
- 135              		.loc 1 137 0
- 136 0080 4848     		ldr	r0, .L22+16
- 137              	.LVL20:
- 138 0082 FFF7FEFF 		bl	UART_Debug_PutString
- 139              	.LVL21:
- 140              	.L8:
- 138:main.c        ****     }
- 139:main.c        ****     
- 140:main.c        ****     /******************************************/
- 141:main.c        ****     /*        Read Control Register 1         */
- 142:main.c        ****     /******************************************/
- 143:main.c        ****     uint8_t ctrl_reg1; 
-ARM GAS  C:\Users\noemi\AppData\Local\Temp\cc2A3lrg.s 			page 6
+ 137:main.c        ****         sprintf(message, "STATUS REGISTER: 0x%02X\r\n", status_register);
+ 128              		.loc 1 137 0
+ 129 0076 9DF80A20 		ldrb	r2, [sp, #10]	@ zero_extendqisi2
+ 130 007a 6849     		ldr	r1, .L24+16
+ 131 007c 03A8     		add	r0, sp, #12
+ 132              	.LVL18:
+ 133 007e FFF7FEFF 		bl	sprintf
+ 134              	.LVL19:
+ 138:main.c        ****         UART_Debug_PutString(message); 
+ 135              		.loc 1 138 0
+ 136 0082 03A8     		add	r0, sp, #12
+ 137 0084 FFF7FEFF 		bl	UART_Debug_PutString
+ 138              	.LVL20:
+ 139 0088 02E0     		b	.L8
+ 140              	.LVL21:
+ 141              	.L7:
+ 139:main.c        ****     }
+ 140:main.c        ****     else
+ 141:main.c        ****     {
+ 142:main.c        ****         UART_Debug_PutString("Error occurred during I2C comm to read status register\r\n");   
+ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccKhy93y.s 			page 6
 
 
- 144:main.c        ****     error = I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
- 141              		.loc 1 144 0
- 142 0086 0DF10102 		add	r2, sp, #1
- 143 008a 2021     		movs	r1, #32
- 144 008c 1820     		movs	r0, #24
- 145 008e FFF7FEFF 		bl	I2C_Peripheral_ReadRegister
- 146              	.LVL22:
- 145:main.c        ****                                         LIS3DH_CTRL_REG1,
- 146:main.c        ****                                         &ctrl_reg1);
- 147:main.c        ****     
- 148:main.c        ****     if (error == NO_ERROR)
- 147              		.loc 1 148 0
- 148 0092 48B9     		cbnz	r0, .L9
- 149:main.c        ****     {
- 150:main.c        ****         sprintf(message, "CONTROL REGISTER 1: 0x%02X\r\n", ctrl_reg1);
- 149              		.loc 1 150 0
- 150 0094 9DF80120 		ldrb	r2, [sp, #1]	@ zero_extendqisi2
- 151 0098 4349     		ldr	r1, .L22+20
- 152 009a 01A8     		add	r0, sp, #4
- 153              	.LVL23:
- 154 009c FFF7FEFF 		bl	sprintf
- 155              	.LVL24:
- 151:main.c        ****         UART_Debug_PutString(message); 
- 156              		.loc 1 151 0
- 157 00a0 01A8     		add	r0, sp, #4
- 158 00a2 FFF7FEFF 		bl	UART_Debug_PutString
- 159              	.LVL25:
- 160 00a6 02E0     		b	.L10
- 161              	.LVL26:
- 162              	.L9:
- 152:main.c        ****     }
- 153:main.c        ****     else
+ 142              		.loc 1 142 0
+ 143 008a 6548     		ldr	r0, .L24+20
+ 144              	.LVL22:
+ 145 008c FFF7FEFF 		bl	UART_Debug_PutString
+ 146              	.LVL23:
+ 147              	.L8:
+ 143:main.c        ****     }
+ 144:main.c        ****     
+ 145:main.c        ****     /******************************************/
+ 146:main.c        ****     /*        Read Control Register 1         */
+ 147:main.c        ****     /******************************************/
+ 148:main.c        ****     uint8_t ctrl_reg1; 
+ 149:main.c        ****     error = I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
+ 148              		.loc 1 149 0
+ 149 0090 0DF10902 		add	r2, sp, #9
+ 150 0094 2021     		movs	r1, #32
+ 151 0096 1820     		movs	r0, #24
+ 152 0098 FFF7FEFF 		bl	I2C_Peripheral_ReadRegister
+ 153              	.LVL24:
+ 150:main.c        ****                                         LIS3DH_CTRL_REG1,
+ 151:main.c        ****                                         &ctrl_reg1);
+ 152:main.c        ****     
+ 153:main.c        ****     if (error == NO_ERROR)
+ 154              		.loc 1 153 0
+ 155 009c 48B9     		cbnz	r0, .L9
  154:main.c        ****     {
- 155:main.c        ****         UART_Debug_PutString("Error occurred during I2C comm to read control register 1\r\n");   
- 163              		.loc 1 155 0
- 164 00a8 4048     		ldr	r0, .L22+24
- 165              	.LVL27:
- 166 00aa FFF7FEFF 		bl	UART_Debug_PutString
- 167              	.LVL28:
- 168              	.L10:
- 156:main.c        ****     }
- 157:main.c        ****     
- 158:main.c        ****     /******************************************/
- 159:main.c        ****     /*            I2C Writing                 */
- 160:main.c        ****     /******************************************/
- 161:main.c        ****     
- 162:main.c        ****         
- 163:main.c        ****     
- 164:main.c        ****     
- 165:main.c        ****     if (ctrl_reg1 != LIS3DH_NORMAL_MODE_CTRL_REG1_XYZ)
- 169              		.loc 1 165 0
- 170 00ae 9DF80130 		ldrb	r3, [sp, #1]	@ zero_extendqisi2
- 171 00b2 572B     		cmp	r3, #87
- 172 00b4 2BD0     		beq	.L11
- 166:main.c        ****     {
- 167:main.c        ****         UART_Debug_PutString("\r\nWriting new values..\r\n");
- 173              		.loc 1 167 0
-ARM GAS  C:\Users\noemi\AppData\Local\Temp\cc2A3lrg.s 			page 7
+ 155:main.c        ****         sprintf(message, "CONTROL REGISTER 1: 0x%02X\r\n", ctrl_reg1);
+ 156              		.loc 1 155 0
+ 157 009e 9DF80920 		ldrb	r2, [sp, #9]	@ zero_extendqisi2
+ 158 00a2 6049     		ldr	r1, .L24+24
+ 159 00a4 03A8     		add	r0, sp, #12
+ 160              	.LVL25:
+ 161 00a6 FFF7FEFF 		bl	sprintf
+ 162              	.LVL26:
+ 156:main.c        ****         UART_Debug_PutString(message); 
+ 163              		.loc 1 156 0
+ 164 00aa 03A8     		add	r0, sp, #12
+ 165 00ac FFF7FEFF 		bl	UART_Debug_PutString
+ 166              	.LVL27:
+ 167 00b0 02E0     		b	.L10
+ 168              	.LVL28:
+ 169              	.L9:
+ 157:main.c        ****     }
+ 158:main.c        ****     else
+ 159:main.c        ****     {
+ 160:main.c        ****         UART_Debug_PutString("Error occurred during I2C comm to read control register 1\r\n");   
+ 170              		.loc 1 160 0
+ 171 00b2 5D48     		ldr	r0, .L24+28
+ 172              	.LVL29:
+ 173 00b4 FFF7FEFF 		bl	UART_Debug_PutString
+ 174              	.LVL30:
+ 175              	.L10:
+ 161:main.c        ****     }
+ 162:main.c        ****     
+ 163:main.c        ****     /******************************************/
+ 164:main.c        ****     /*            I2C Writing                 */
+ 165:main.c        ****     /******************************************/
+ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccKhy93y.s 			page 7
 
 
- 174 00b6 3E48     		ldr	r0, .L22+28
- 175 00b8 FFF7FEFF 		bl	UART_Debug_PutString
- 176              	.LVL29:
- 168:main.c        ****         ctrl_reg1 = LIS3DH_NORMAL_MODE_CTRL_REG1_XYZ;
- 177              		.loc 1 168 0
- 178 00bc 5722     		movs	r2, #87
- 179 00be 8DF80120 		strb	r2, [sp, #1]
+ 166:main.c        ****     
+ 167:main.c        ****         
+ 168:main.c        ****     
  169:main.c        ****     
- 170:main.c        ****         error = I2C_Peripheral_WriteRegister(LIS3DH_DEVICE_ADDRESS,
- 180              		.loc 1 170 0
- 181 00c2 2021     		movs	r1, #32
- 182 00c4 1820     		movs	r0, #24
- 183 00c6 FFF7FEFF 		bl	I2C_Peripheral_WriteRegister
- 184              	.LVL30:
- 171:main.c        ****                                              LIS3DH_CTRL_REG1,
- 172:main.c        ****                                              ctrl_reg1);
- 173:main.c        ****     
- 174:main.c        ****         if (error == NO_ERROR)
- 185              		.loc 1 174 0
- 186 00ca 48B9     		cbnz	r0, .L12
- 175:main.c        ****         {
- 176:main.c        ****             sprintf(message, "CONTROL REGISTER 1 successfully written as: 0x%02X\r\n", ctrl_reg1);
- 187              		.loc 1 176 0
- 188 00cc 9DF80120 		ldrb	r2, [sp, #1]	@ zero_extendqisi2
- 189 00d0 3849     		ldr	r1, .L22+32
- 190 00d2 01A8     		add	r0, sp, #4
- 191              	.LVL31:
- 192 00d4 FFF7FEFF 		bl	sprintf
- 193              	.LVL32:
- 177:main.c        ****             UART_Debug_PutString(message); 
- 194              		.loc 1 177 0
- 195 00d8 01A8     		add	r0, sp, #4
- 196 00da FFF7FEFF 		bl	UART_Debug_PutString
- 197              	.LVL33:
- 198 00de 02E0     		b	.L13
- 199              	.LVL34:
- 200              	.L12:
- 178:main.c        ****         }
- 179:main.c        ****         else
+ 170:main.c        ****     if (ctrl_reg1 != LIS3DH_NORMAL_MODE_CTRL_REG1_XYZ)
+ 176              		.loc 1 170 0
+ 177 00b8 9DF80930 		ldrb	r3, [sp, #9]	@ zero_extendqisi2
+ 178 00bc 572B     		cmp	r3, #87
+ 179 00be 28D0     		beq	.L11
+ 171:main.c        ****     {
+ 172:main.c        **** 
+ 173:main.c        ****         ctrl_reg1 = LIS3DH_NORMAL_MODE_CTRL_REG1_XYZ;
+ 180              		.loc 1 173 0
+ 181 00c0 5722     		movs	r2, #87
+ 182 00c2 8DF80920 		strb	r2, [sp, #9]
+ 174:main.c        ****     
+ 175:main.c        ****         error = I2C_Peripheral_WriteRegister(LIS3DH_DEVICE_ADDRESS,
+ 183              		.loc 1 175 0
+ 184 00c6 2021     		movs	r1, #32
+ 185 00c8 1820     		movs	r0, #24
+ 186 00ca FFF7FEFF 		bl	I2C_Peripheral_WriteRegister
+ 187              	.LVL31:
+ 176:main.c        ****                                              LIS3DH_CTRL_REG1,
+ 177:main.c        ****                                              ctrl_reg1);
+ 178:main.c        ****     
+ 179:main.c        ****         if (error == NO_ERROR)
+ 188              		.loc 1 179 0
+ 189 00ce 48B9     		cbnz	r0, .L12
  180:main.c        ****         {
- 181:main.c        ****             UART_Debug_PutString("Error occurred during I2C comm to set control register 1\r\n");  
- 201              		.loc 1 181 0
- 202 00e0 3548     		ldr	r0, .L22+36
- 203              	.LVL35:
- 204 00e2 FFF7FEFF 		bl	UART_Debug_PutString
- 205              	.LVL36:
- 206              	.L13:
- 182:main.c        ****         }
- 183:main.c        ****         /******************************************/
- 184:main.c        ****         /*     Read Control Register 1 again      */
- 185:main.c        ****         /******************************************/
- 186:main.c        **** 
- 187:main.c        ****         error = I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
- 207              		.loc 1 187 0
- 208 00e6 0DF10102 		add	r2, sp, #1
- 209 00ea 2021     		movs	r1, #32
- 210 00ec 1820     		movs	r0, #24
-ARM GAS  C:\Users\noemi\AppData\Local\Temp\cc2A3lrg.s 			page 8
+ 181:main.c        ****             sprintf(message, "CONTROL REGISTER 1 successfully written as: 0x%02X\r\n", ctrl_reg1);
+ 190              		.loc 1 181 0
+ 191 00d0 9DF80920 		ldrb	r2, [sp, #9]	@ zero_extendqisi2
+ 192 00d4 5549     		ldr	r1, .L24+32
+ 193 00d6 03A8     		add	r0, sp, #12
+ 194              	.LVL32:
+ 195 00d8 FFF7FEFF 		bl	sprintf
+ 196              	.LVL33:
+ 182:main.c        ****             UART_Debug_PutString(message); 
+ 197              		.loc 1 182 0
+ 198 00dc 03A8     		add	r0, sp, #12
+ 199 00de FFF7FEFF 		bl	UART_Debug_PutString
+ 200              	.LVL34:
+ 201 00e2 02E0     		b	.L13
+ 202              	.LVL35:
+ 203              	.L12:
+ 183:main.c        ****         }
+ 184:main.c        ****         else
+ 185:main.c        ****         {
+ 186:main.c        ****             UART_Debug_PutString("Error occurred during I2C comm to set control register 1\r\n");  
+ 204              		.loc 1 186 0
+ 205 00e4 5248     		ldr	r0, .L24+36
+ 206              	.LVL36:
+ 207 00e6 FFF7FEFF 		bl	UART_Debug_PutString
+ 208              	.LVL37:
+ 209              	.L13:
+ 187:main.c        ****         }
+ 188:main.c        ****         /******************************************/
+ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccKhy93y.s 			page 8
 
 
- 211 00ee FFF7FEFF 		bl	I2C_Peripheral_ReadRegister
- 212              	.LVL37:
- 188:main.c        ****                                             LIS3DH_CTRL_REG1,
- 189:main.c        ****                                             &ctrl_reg1);
- 190:main.c        ****         
- 191:main.c        ****         if (error == NO_ERROR)
- 213              		.loc 1 191 0
- 214 00f2 48B9     		cbnz	r0, .L14
- 192:main.c        ****         {
- 193:main.c        ****             sprintf(message, "CONTROL REGISTER 1 after being updated: 0x%02X\r\n", ctrl_reg1);
- 215              		.loc 1 193 0
- 216 00f4 9DF80120 		ldrb	r2, [sp, #1]	@ zero_extendqisi2
- 217 00f8 3049     		ldr	r1, .L22+40
- 218 00fa 01A8     		add	r0, sp, #4
- 219              	.LVL38:
- 220 00fc FFF7FEFF 		bl	sprintf
- 221              	.LVL39:
- 194:main.c        ****             UART_Debug_PutString(message); 
- 222              		.loc 1 194 0
- 223 0100 01A8     		add	r0, sp, #4
- 224 0102 FFF7FEFF 		bl	UART_Debug_PutString
- 225              	.LVL40:
- 226 0106 02E0     		b	.L11
- 227              	.LVL41:
- 228              	.L14:
- 195:main.c        ****         }
- 196:main.c        ****         else
+ 189:main.c        ****         /*     Read Control Register 1 again      */
+ 190:main.c        ****         /******************************************/
+ 191:main.c        **** 
+ 192:main.c        ****         error = I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
+ 210              		.loc 1 192 0
+ 211 00ea 0DF10902 		add	r2, sp, #9
+ 212 00ee 2021     		movs	r1, #32
+ 213 00f0 1820     		movs	r0, #24
+ 214 00f2 FFF7FEFF 		bl	I2C_Peripheral_ReadRegister
+ 215              	.LVL38:
+ 193:main.c        ****                                             LIS3DH_CTRL_REG1,
+ 194:main.c        ****                                             &ctrl_reg1);
+ 195:main.c        ****         
+ 196:main.c        ****         if (error == NO_ERROR)
+ 216              		.loc 1 196 0
+ 217 00f6 48B9     		cbnz	r0, .L14
  197:main.c        ****         {
- 198:main.c        ****             UART_Debug_PutString("Error occurred during I2C comm to read control register 1\r\n"); 
- 229              		.loc 1 198 0
- 230 0108 2848     		ldr	r0, .L22+24
- 231              	.LVL42:
- 232 010a FFF7FEFF 		bl	UART_Debug_PutString
- 233              	.LVL43:
- 234              	.L11:
- 199:main.c        ****         }
- 200:main.c        ****     }
- 201:main.c        ****     
- 202:main.c        ****     
- 203:main.c        ****     
- 204:main.c        ****     
- 205:main.c        ****     
- 206:main.c        ****      /******************************************/
- 207:main.c        ****     /*     Read Control Register 4     */
- 208:main.c        ****     /******************************************/
- 209:main.c        ****     uint8_t ctrl_reg4;
- 210:main.c        **** 
- 211:main.c        ****     error = I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
- 235              		.loc 1 211 0
- 236 010e 6A46     		mov	r2, sp
- 237 0110 2321     		movs	r1, #35
- 238 0112 1820     		movs	r0, #24
- 239 0114 FFF7FEFF 		bl	I2C_Peripheral_ReadRegister
- 240              	.LVL44:
- 212:main.c        ****                                         LIS3DH_CTRL_REG4,
- 213:main.c        ****                                         &ctrl_reg4);
- 214:main.c        ****     
-ARM GAS  C:\Users\noemi\AppData\Local\Temp\cc2A3lrg.s 			page 9
+ 198:main.c        ****             sprintf(message, "CONTROL REGISTER 1 after being updated: 0x%02X\r\n", ctrl_reg1);
+ 218              		.loc 1 198 0
+ 219 00f8 9DF80920 		ldrb	r2, [sp, #9]	@ zero_extendqisi2
+ 220 00fc 4D49     		ldr	r1, .L24+40
+ 221 00fe 03A8     		add	r0, sp, #12
+ 222              	.LVL39:
+ 223 0100 FFF7FEFF 		bl	sprintf
+ 224              	.LVL40:
+ 199:main.c        ****             UART_Debug_PutString(message); 
+ 225              		.loc 1 199 0
+ 226 0104 03A8     		add	r0, sp, #12
+ 227 0106 FFF7FEFF 		bl	UART_Debug_PutString
+ 228              	.LVL41:
+ 229 010a 02E0     		b	.L11
+ 230              	.LVL42:
+ 231              	.L14:
+ 200:main.c        ****         }
+ 201:main.c        ****         else
+ 202:main.c        ****         {
+ 203:main.c        ****             UART_Debug_PutString("Error occurred during I2C comm to read control register 1\r\n"); 
+ 232              		.loc 1 203 0
+ 233 010c 4648     		ldr	r0, .L24+28
+ 234              	.LVL43:
+ 235 010e FFF7FEFF 		bl	UART_Debug_PutString
+ 236              	.LVL44:
+ 237              	.L11:
+ 204:main.c        ****         }
+ 205:main.c        ****     }
+ 206:main.c        ****     
+ 207:main.c        ****     
+ 208:main.c        ****     
+ 209:main.c        ****     
+ 210:main.c        ****     
+ 211:main.c        ****      /******************************************/
+ 212:main.c        ****     /*     Read Control Register 4     */
+ 213:main.c        ****     /******************************************/
+ 214:main.c        ****     uint8_t ctrl_reg4;
+ 215:main.c        **** 
+ 216:main.c        ****     error = I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
+ 238              		.loc 1 216 0
+ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccKhy93y.s 			page 9
 
 
- 215:main.c        ****     if (error == NO_ERROR)
- 241              		.loc 1 215 0
- 242 0118 48B9     		cbnz	r0, .L15
- 216:main.c        ****     {
- 217:main.c        ****         sprintf(message, "CONTROL REGISTER 4: 0x%02X\r\n", ctrl_reg4);
- 243              		.loc 1 217 0
- 244 011a 9DF80020 		ldrb	r2, [sp]	@ zero_extendqisi2
- 245 011e 2849     		ldr	r1, .L22+44
- 246 0120 01A8     		add	r0, sp, #4
- 247              	.LVL45:
- 248 0122 FFF7FEFF 		bl	sprintf
- 249              	.LVL46:
- 218:main.c        ****         UART_Debug_PutString(message); 
- 250              		.loc 1 218 0
- 251 0126 01A8     		add	r0, sp, #4
- 252 0128 FFF7FEFF 		bl	UART_Debug_PutString
- 253              	.LVL47:
- 254 012c 02E0     		b	.L16
- 255              	.LVL48:
- 256              	.L15:
- 219:main.c        ****     }
- 220:main.c        ****     else
+ 239 0112 02AA     		add	r2, sp, #8
+ 240 0114 2321     		movs	r1, #35
+ 241 0116 1820     		movs	r0, #24
+ 242 0118 FFF7FEFF 		bl	I2C_Peripheral_ReadRegister
+ 243              	.LVL45:
+ 217:main.c        ****                                         LIS3DH_CTRL_REG4,
+ 218:main.c        ****                                         &ctrl_reg4);
+ 219:main.c        ****     
+ 220:main.c        ****     if (error == NO_ERROR)
+ 244              		.loc 1 220 0
+ 245 011c 48B9     		cbnz	r0, .L15
  221:main.c        ****     {
- 222:main.c        ****         UART_Debug_PutString("Error occurred during I2C comm to read control register4\r\n");   
- 257              		.loc 1 222 0
- 258 012e 2548     		ldr	r0, .L22+48
- 259              	.LVL49:
- 260 0130 FFF7FEFF 		bl	UART_Debug_PutString
- 261              	.LVL50:
- 262              	.L16:
- 223:main.c        ****     }
- 224:main.c        ****     
- 225:main.c        ****     /******************************************/
- 226:main.c        ****     /*            I2C Writing   REGISTER 4              */
- 227:main.c        ****     /******************************************/
- 228:main.c        ****     
+ 222:main.c        ****         sprintf(message, "CONTROL REGISTER 4: 0x%02X\r\n", ctrl_reg4);
+ 246              		.loc 1 222 0
+ 247 011e 9DF80820 		ldrb	r2, [sp, #8]	@ zero_extendqisi2
+ 248 0122 4549     		ldr	r1, .L24+44
+ 249 0124 03A8     		add	r0, sp, #12
+ 250              	.LVL46:
+ 251 0126 FFF7FEFF 		bl	sprintf
+ 252              	.LVL47:
+ 223:main.c        ****         UART_Debug_PutString(message); 
+ 253              		.loc 1 223 0
+ 254 012a 03A8     		add	r0, sp, #12
+ 255 012c FFF7FEFF 		bl	UART_Debug_PutString
+ 256              	.LVL48:
+ 257 0130 02E0     		b	.L16
+ 258              	.LVL49:
+ 259              	.L15:
+ 224:main.c        ****     }
+ 225:main.c        ****     else
+ 226:main.c        ****     {
+ 227:main.c        ****         UART_Debug_PutString("Error occurred during I2C comm to read control register4\r\n");   
+ 260              		.loc 1 227 0
+ 261 0132 4248     		ldr	r0, .L24+48
+ 262              	.LVL50:
+ 263 0134 FFF7FEFF 		bl	UART_Debug_PutString
+ 264              	.LVL51:
+ 265              	.L16:
+ 228:main.c        ****     }
  229:main.c        ****     
- 230:main.c        ****     if (ctrl_reg4 != LIS3DH_CTRL_REG4_NORMAL_MODE)
- 263              		.loc 1 230 0
- 264 0134 9DF80030 		ldrb	r3, [sp]	@ zero_extendqisi2
- 265 0138 53B3     		cbz	r3, .L17
- 231:main.c        ****     {
- 232:main.c        ****         UART_Debug_PutString("\r\nWriting new values..\r\n");
- 266              		.loc 1 232 0
- 267 013a 1D48     		ldr	r0, .L22+28
- 268 013c FFF7FEFF 		bl	UART_Debug_PutString
- 269              	.LVL51:
- 233:main.c        ****         ctrl_reg4 = LIS3DH_CTRL_REG4_NORMAL_MODE;
- 270              		.loc 1 233 0
- 271 0140 0022     		movs	r2, #0
- 272 0142 8DF80020 		strb	r2, [sp]
+ 230:main.c        ****     /******************************************/
+ 231:main.c        ****     /*            I2C Writing   REGISTER 4              */
+ 232:main.c        ****     /******************************************/
+ 233:main.c        ****     
  234:main.c        ****     
- 235:main.c        ****         error = I2C_Peripheral_WriteRegister(LIS3DH_DEVICE_ADDRESS,
- 273              		.loc 1 235 0
- 274 0146 2321     		movs	r1, #35
- 275 0148 1820     		movs	r0, #24
- 276 014a FFF7FEFF 		bl	I2C_Peripheral_WriteRegister
-ARM GAS  C:\Users\noemi\AppData\Local\Temp\cc2A3lrg.s 			page 10
+ 235:main.c        ****     if (ctrl_reg4 != LIS3DH_CTRL_REG4_NORMAL_MODE)
+ 266              		.loc 1 235 0
+ 267 0138 9DF80830 		ldrb	r3, [sp, #8]	@ zero_extendqisi2
+ 268 013c 3BB3     		cbz	r3, .L17
+ 236:main.c        ****     {
+ 237:main.c        **** 
+ 238:main.c        ****         ctrl_reg4 = LIS3DH_CTRL_REG4_NORMAL_MODE;
+ 269              		.loc 1 238 0
+ 270 013e 0022     		movs	r2, #0
+ 271 0140 8DF80820 		strb	r2, [sp, #8]
+ 239:main.c        ****     
+ 240:main.c        ****         error = I2C_Peripheral_WriteRegister(LIS3DH_DEVICE_ADDRESS,
+ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccKhy93y.s 			page 10
 
 
- 277              	.LVL52:
- 236:main.c        ****                                              LIS3DH_CTRL_REG4,
- 237:main.c        ****                                              ctrl_reg4);
- 238:main.c        ****     
- 239:main.c        ****         if (error == NO_ERROR)
- 278              		.loc 1 239 0
- 279 014e 48B9     		cbnz	r0, .L18
- 240:main.c        ****         {
- 241:main.c        ****             sprintf(message, "CONTROL REGISTER 4 successfully written as: 0x%02X\r\n", ctrl_reg4);
- 280              		.loc 1 241 0
- 281 0150 9DF80020 		ldrb	r2, [sp]	@ zero_extendqisi2
- 282 0154 1C49     		ldr	r1, .L22+52
- 283 0156 01A8     		add	r0, sp, #4
- 284              	.LVL53:
- 285 0158 FFF7FEFF 		bl	sprintf
- 286              	.LVL54:
- 242:main.c        ****             UART_Debug_PutString(message); 
- 287              		.loc 1 242 0
- 288 015c 01A8     		add	r0, sp, #4
- 289 015e FFF7FEFF 		bl	UART_Debug_PutString
- 290              	.LVL55:
- 291 0162 02E0     		b	.L19
- 292              	.LVL56:
- 293              	.L18:
- 243:main.c        ****         }
- 244:main.c        ****         else
+ 272              		.loc 1 240 0
+ 273 0144 2321     		movs	r1, #35
+ 274 0146 1820     		movs	r0, #24
+ 275 0148 FFF7FEFF 		bl	I2C_Peripheral_WriteRegister
+ 276              	.LVL52:
+ 241:main.c        ****                                              LIS3DH_CTRL_REG4,
+ 242:main.c        ****                                              ctrl_reg4);
+ 243:main.c        ****     
+ 244:main.c        ****         if (error == NO_ERROR)
+ 277              		.loc 1 244 0
+ 278 014c 48B9     		cbnz	r0, .L18
  245:main.c        ****         {
- 246:main.c        ****             UART_Debug_PutString("Error occurred during I2C comm to set control register 1\r\n");  
- 294              		.loc 1 246 0
- 295 0164 1448     		ldr	r0, .L22+36
- 296              	.LVL57:
- 297 0166 FFF7FEFF 		bl	UART_Debug_PutString
- 298              	.LVL58:
- 299              	.L19:
- 247:main.c        ****         }
- 248:main.c        ****         error = I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
- 300              		.loc 1 248 0
- 301 016a 6A46     		mov	r2, sp
- 302 016c 2321     		movs	r1, #35
- 303 016e 1820     		movs	r0, #24
- 304 0170 FFF7FEFF 		bl	I2C_Peripheral_ReadRegister
- 305              	.LVL59:
- 249:main.c        ****                                         LIS3DH_CTRL_REG4,
- 250:main.c        ****                                         &ctrl_reg4);
- 251:main.c        ****     
- 252:main.c        ****         //if updated print the new value
- 253:main.c        ****         if (error == NO_ERROR)
- 306              		.loc 1 253 0
- 307 0174 48B9     		cbnz	r0, .L20
- 254:main.c        ****         {
- 255:main.c        ****             sprintf(message, "CONTROL REGISTER 4 after being updated: 0x%02X\r\n", ctrl_reg4);
- 308              		.loc 1 255 0
- 309 0176 9DF80020 		ldrb	r2, [sp]	@ zero_extendqisi2
- 310 017a 1449     		ldr	r1, .L22+56
- 311 017c 01A8     		add	r0, sp, #4
- 312              	.LVL60:
- 313 017e FFF7FEFF 		bl	sprintf
-ARM GAS  C:\Users\noemi\AppData\Local\Temp\cc2A3lrg.s 			page 11
-
-
- 314              	.LVL61:
- 256:main.c        ****             UART_Debug_PutString(message); 
- 315              		.loc 1 256 0
- 316 0182 01A8     		add	r0, sp, #4
- 317 0184 FFF7FEFF 		bl	UART_Debug_PutString
- 318              	.LVL62:
- 319 0188 02E0     		b	.L17
- 320              	.LVL63:
- 321              	.L20:
- 257:main.c        ****         }
- 258:main.c        ****         else
+ 246:main.c        ****             sprintf(message, "CONTROL REGISTER 4 successfully written as: 0x%02X\r\n", ctrl_reg4);
+ 279              		.loc 1 246 0
+ 280 014e 9DF80820 		ldrb	r2, [sp, #8]	@ zero_extendqisi2
+ 281 0152 3B49     		ldr	r1, .L24+52
+ 282 0154 03A8     		add	r0, sp, #12
+ 283              	.LVL53:
+ 284 0156 FFF7FEFF 		bl	sprintf
+ 285              	.LVL54:
+ 247:main.c        ****             UART_Debug_PutString(message); 
+ 286              		.loc 1 247 0
+ 287 015a 03A8     		add	r0, sp, #12
+ 288 015c FFF7FEFF 		bl	UART_Debug_PutString
+ 289              	.LVL55:
+ 290 0160 02E0     		b	.L19
+ 291              	.LVL56:
+ 292              	.L18:
+ 248:main.c        ****         }
+ 249:main.c        ****         else
+ 250:main.c        ****         {
+ 251:main.c        ****             UART_Debug_PutString("Error occurred during I2C comm to set control register 1\r\n");  
+ 293              		.loc 1 251 0
+ 294 0162 3348     		ldr	r0, .L24+36
+ 295              	.LVL57:
+ 296 0164 FFF7FEFF 		bl	UART_Debug_PutString
+ 297              	.LVL58:
+ 298              	.L19:
+ 252:main.c        ****         }
+ 253:main.c        ****         error = I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
+ 299              		.loc 1 253 0
+ 300 0168 02AA     		add	r2, sp, #8
+ 301 016a 2321     		movs	r1, #35
+ 302 016c 1820     		movs	r0, #24
+ 303 016e FFF7FEFF 		bl	I2C_Peripheral_ReadRegister
+ 304              	.LVL59:
+ 254:main.c        ****                                         LIS3DH_CTRL_REG4,
+ 255:main.c        ****                                         &ctrl_reg4);
+ 256:main.c        ****     
+ 257:main.c        ****         //if updated print the new value
+ 258:main.c        ****         if (error == NO_ERROR)
+ 305              		.loc 1 258 0
+ 306 0172 48B9     		cbnz	r0, .L20
  259:main.c        ****         {
- 260:main.c        ****             UART_Debug_PutString("Error occurred during I2C comm to read control register4\r\n");  
- 322              		.loc 1 260 0
- 323 018a 0E48     		ldr	r0, .L22+48
- 324              	.LVL64:
- 325 018c FFF7FEFF 		bl	UART_Debug_PutString
- 326              	.LVL65:
- 327              	.L17:
- 328 0190 FEE7     		b	.L17
- 329              	.L23:
- 330 0192 00BF     		.align	2
- 331              	.L22:
- 332 0194 00000000 		.word	.LC0
- 333 0198 20000000 		.word	.LC1
- 334 019c 48000000 		.word	.LC2
- 335 01a0 6C000000 		.word	.LC3
- 336 01a4 88000000 		.word	.LC4
- 337 01a8 C4000000 		.word	.LC5
- 338 01ac E4000000 		.word	.LC6
- 339 01b0 20010000 		.word	.LC7
- 340 01b4 3C010000 		.word	.LC8
- 341 01b8 74010000 		.word	.LC9
- 342 01bc B0010000 		.word	.LC10
- 343 01c0 E4010000 		.word	.LC11
- 344 01c4 04020000 		.word	.LC12
- 345 01c8 40020000 		.word	.LC13
- 346 01cc 78020000 		.word	.LC14
- 347              		.cfi_endproc
- 348              	.LFE64:
- 349              		.size	main, .-main
- 350              		.section	.rodata.str1.4,"aMS",%progbits,1
- 351              		.align	2
- 352              	.LC0:
- 353 0000 44657669 		.ascii	"Device 0x%02X is connected\015\012\000"
- 353      63652030 
- 353      78253032 
- 353      58206973 
- 353      20636F6E 
- 354 001d 000000   		.space	3
- 355              	.LC1:
- 356 0020 57484F20 		.ascii	"WHO AM I REG: 0x%02X [Expected: 0x33]\015\012\000"
- 356      414D2049 
- 356      20524547 
- 356      3A203078 
- 356      25303258 
- 357              	.LC2:
-ARM GAS  C:\Users\noemi\AppData\Local\Temp\cc2A3lrg.s 			page 12
+ 260:main.c        ****             sprintf(message, "CONTROL REGISTER 4 after being updated: 0x%02X\r\n", ctrl_reg4);
+ 307              		.loc 1 260 0
+ 308 0174 9DF80820 		ldrb	r2, [sp, #8]	@ zero_extendqisi2
+ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccKhy93y.s 			page 11
 
 
- 358 0048 4572726F 		.ascii	"Error occurred during I2C comm\015\012\000"
- 358      72206F63 
- 358      63757272 
- 358      65642064 
- 358      7572696E 
- 359 0069 000000   		.space	3
- 360              	.LC3:
- 361 006c 53544154 		.ascii	"STATUS REGISTER: 0x%02X\015\012\000"
- 361      55532052 
- 361      45474953 
- 361      5445523A 
- 361      20307825 
- 362 0086 0000     		.space	2
- 363              	.LC4:
- 364 0088 4572726F 		.ascii	"Error occurred during I2C comm to read status regis"
- 364      72206F63 
- 364      63757272 
- 364      65642064 
- 364      7572696E 
- 365 00bb 7465720D 		.ascii	"ter\015\012\000"
- 365      0A00
- 366 00c1 000000   		.space	3
- 367              	.LC5:
- 368 00c4 434F4E54 		.ascii	"CONTROL REGISTER 1: 0x%02X\015\012\000"
- 368      524F4C20 
- 368      52454749 
- 368      53544552 
- 368      20313A20 
- 369 00e1 000000   		.space	3
- 370              	.LC6:
- 371 00e4 4572726F 		.ascii	"Error occurred during I2C comm to read control regi"
- 371      72206F63 
- 371      63757272 
- 371      65642064 
- 371      7572696E 
- 372 0117 73746572 		.ascii	"ster 1\015\012\000"
- 372      20310D0A 
- 372      00
- 373              	.LC7:
- 374 0120 0D0A5772 		.ascii	"\015\012Writing new values..\015\012\000"
- 374      6974696E 
- 374      67206E65 
- 374      77207661 
- 374      6C756573 
- 375 0139 000000   		.space	3
- 376              	.LC8:
- 377 013c 434F4E54 		.ascii	"CONTROL REGISTER 1 successfully written as: 0x%02X\015"
- 377      524F4C20 
- 377      52454749 
- 377      53544552 
- 377      20312073 
- 378 016f 0A00     		.ascii	"\012\000"
- 379 0171 000000   		.space	3
- 380              	.LC9:
- 381 0174 4572726F 		.ascii	"Error occurred during I2C comm to set control regis"
- 381      72206F63 
- 381      63757272 
-ARM GAS  C:\Users\noemi\AppData\Local\Temp\cc2A3lrg.s 			page 13
+ 309 0178 3249     		ldr	r1, .L24+56
+ 310 017a 03A8     		add	r0, sp, #12
+ 311              	.LVL60:
+ 312 017c FFF7FEFF 		bl	sprintf
+ 313              	.LVL61:
+ 261:main.c        ****             UART_Debug_PutString(message); 
+ 314              		.loc 1 261 0
+ 315 0180 03A8     		add	r0, sp, #12
+ 316 0182 FFF7FEFF 		bl	UART_Debug_PutString
+ 317              	.LVL62:
+ 318 0186 02E0     		b	.L17
+ 319              	.LVL63:
+ 320              	.L20:
+ 262:main.c        ****         }
+ 263:main.c        ****         else
+ 264:main.c        ****         {
+ 265:main.c        ****             UART_Debug_PutString("Error occurred during I2C comm to read control register4\r\n");  
+ 321              		.loc 1 265 0
+ 322 0188 2C48     		ldr	r0, .L24+48
+ 323              	.LVL64:
+ 324 018a FFF7FEFF 		bl	UART_Debug_PutString
+ 325              	.LVL65:
+ 326              	.L17:
+ 266:main.c        ****         }
+ 267:main.c        ****         
+ 268:main.c        ****     }
+ 269:main.c        ****     
+ 270:main.c        ****     int16_t OutX;
+ 271:main.c        ****     int16_t OutY;
+ 272:main.c        ****     int16_t OutZ;
+ 273:main.c        ****     uint8_t header = 0xA0;
+ 274:main.c        ****     uint8_t footer = 0xC0;
+ 275:main.c        ****     uint8_t OutArray[packet_dimension]; 
+ 276:main.c        ****     
+ 277:main.c        ****     OutArray[0] = header;
+ 327              		.loc 1 277 0
+ 328 018e A023     		movs	r3, #160
+ 329 0190 8DF80030 		strb	r3, [sp]
+ 278:main.c        ****     OutArray[packet_dimension-1] = footer;
+ 330              		.loc 1 278 0
+ 331 0194 C023     		movs	r3, #192
+ 332 0196 8DF80730 		strb	r3, [sp, #7]
+ 279:main.c        ****     PacketReadyFlag=0;
+ 333              		.loc 1 279 0
+ 334 019a 0022     		movs	r2, #0
+ 335 019c 2A4B     		ldr	r3, .L24+60
+ 336 019e 1A70     		strb	r2, [r3]
+ 337              	.L21:
+ 280:main.c        ****     
+ 281:main.c        ****     for(;;)
+ 282:main.c        ****     {
+ 283:main.c        ****                 
+ 284:main.c        ****         if (PacketReadyFlag){
+ 338              		.loc 1 284 0
+ 339 01a0 294B     		ldr	r3, .L24+60
+ 340 01a2 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 341 01a4 13F0FF0F 		tst	r3, #255
+ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccKhy93y.s 			page 12
 
 
- 381      65642064 
- 381      7572696E 
- 382 01a7 74657220 		.ascii	"ter 1\015\012\000"
- 382      310D0A00 
- 383 01af 00       		.space	1
- 384              	.LC10:
- 385 01b0 434F4E54 		.ascii	"CONTROL REGISTER 1 after being updated: 0x%02X\015\012"
- 385      524F4C20 
- 385      52454749 
- 385      53544552 
- 385      20312061 
- 386 01e0 00       		.ascii	"\000"
- 387 01e1 000000   		.space	3
- 388              	.LC11:
- 389 01e4 434F4E54 		.ascii	"CONTROL REGISTER 4: 0x%02X\015\012\000"
- 389      524F4C20 
- 389      52454749 
- 389      53544552 
- 389      20343A20 
- 390 0201 000000   		.space	3
- 391              	.LC12:
- 392 0204 4572726F 		.ascii	"Error occurred during I2C comm to read control regi"
- 392      72206F63 
- 392      63757272 
- 392      65642064 
- 392      7572696E 
- 393 0237 73746572 		.ascii	"ster4\015\012\000"
- 393      340D0A00 
- 394 023f 00       		.space	1
- 395              	.LC13:
- 396 0240 434F4E54 		.ascii	"CONTROL REGISTER 4 successfully written as: 0x%02X\015"
- 396      524F4C20 
- 396      52454749 
- 396      53544552 
- 396      20342073 
- 397 0273 0A00     		.ascii	"\012\000"
- 398 0275 000000   		.space	3
- 399              	.LC14:
- 400 0278 434F4E54 		.ascii	"CONTROL REGISTER 4 after being updated: 0x%02X\015\012"
- 400      524F4C20 
- 400      52454749 
- 400      53544552 
- 400      20342061 
- 401 02a8 00       		.ascii	"\000"
- 402              		.text
- 403              	.Letext0:
- 404              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.3\\psoc creator\\import\\gnu\\arm\\5.4.
- 405              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.3\\psoc creator\\import\\gnu\\arm\\5.4.
- 406              		.file 4 "ErrorCodes.h"
- 407              		.file 5 "I2C_Interface.h"
- 408              		.file 6 "c:\\program files (x86)\\cypress\\psoc creator\\4.3\\psoc creator\\import\\gnu\\arm\\5.4.
- 409              		.file 7 "Generated_Source\\PSoC5/UART_Debug.h"
- 410              		.file 8 "Generated_Source\\PSoC5/CyLib.h"
- 411              		.file 9 "Generated_Source\\PSoC5/core_cm3.h"
- 412              		.section	.debug_info,"",%progbits
- 413              	.Ldebug_info0:
- 414 0000 AA050000 		.4byte	0x5aa
-ARM GAS  C:\Users\noemi\AppData\Local\Temp\cc2A3lrg.s 			page 14
+ 342 01a8 FAD0     		beq	.L21
+ 285:main.c        ****                 /*
+ 286:main.c        ****                 in section 3.2.1 of the datasheet is specified that in normal mode mg/digit is 4 
+ 287:main.c        ****                 that is an approximation that deals with FSR=+-2g, nbit=10bit; fsr/2 is around 512
+ 288:main.c        ****                 that equal 2000mg.
+ 289:main.c        ****                 each value is rescaled in mg
+ 290:main.c        ****                 */
+ 291:main.c        ****                 PacketReadyFlag=0;
+ 343              		.loc 1 291 0
+ 344 01aa 0022     		movs	r2, #0
+ 345 01ac 264B     		ldr	r3, .L24+60
+ 346 01ae 1A70     		strb	r2, [r3]
+ 292:main.c        ****                 OutX = ((int16)((Acceleration[0]) | (Acceleration[1])<<8)>>6)*4;
+ 347              		.loc 1 292 0
+ 348 01b0 2648     		ldr	r0, .L24+64
+ 349 01b2 0378     		ldrb	r3, [r0]	@ zero_extendqisi2
+ 350 01b4 4178     		ldrb	r1, [r0, #1]	@ zero_extendqisi2
+ 351 01b6 43EA0121 		orr	r1, r3, r1, lsl #8
+ 352 01ba 41F38911 		sbfx	r1, r1, #6, #10
+ 353 01be 8900     		lsls	r1, r1, #2
+ 354 01c0 89B2     		uxth	r1, r1
+ 355              	.LVL66:
+ 293:main.c        ****                 OutY = ((int16)((Acceleration[2]) | (Acceleration[3])<<8)>>6)*4;
+ 356              		.loc 1 293 0
+ 357 01c2 8378     		ldrb	r3, [r0, #2]	@ zero_extendqisi2
+ 358 01c4 C278     		ldrb	r2, [r0, #3]	@ zero_extendqisi2
+ 359 01c6 43EA0222 		orr	r2, r3, r2, lsl #8
+ 360 01ca 42F38912 		sbfx	r2, r2, #6, #10
+ 361 01ce 9200     		lsls	r2, r2, #2
+ 362 01d0 92B2     		uxth	r2, r2
+ 363              	.LVL67:
+ 294:main.c        ****                 OutZ = ((int16)((Acceleration[4]) | (Acceleration[5])<<8)>>6)*4;
+ 364              		.loc 1 294 0
+ 365 01d2 0379     		ldrb	r3, [r0, #4]	@ zero_extendqisi2
+ 366 01d4 4079     		ldrb	r0, [r0, #5]	@ zero_extendqisi2
+ 367 01d6 43EA0023 		orr	r3, r3, r0, lsl #8
+ 368 01da 43F38913 		sbfx	r3, r3, #6, #10
+ 369 01de 9B00     		lsls	r3, r3, #2
+ 370 01e0 9BB2     		uxth	r3, r3
+ 371              	.LVL68:
+ 295:main.c        ****                 
+ 296:main.c        ****                 OutArray[1] = (uint8_t)(OutX & 0xFF);
+ 372              		.loc 1 296 0
+ 373 01e2 8DF80110 		strb	r1, [sp, #1]
+ 297:main.c        ****                 OutArray[2] = (uint8_t)(OutX >> 8);
+ 374              		.loc 1 297 0
+ 375 01e6 090A     		lsrs	r1, r1, #8
+ 376              	.LVL69:
+ 377 01e8 8DF80210 		strb	r1, [sp, #2]
+ 298:main.c        ****                 OutArray[3] = (uint8_t)(OutY & 0xFF);
+ 378              		.loc 1 298 0
+ 379 01ec 8DF80320 		strb	r2, [sp, #3]
+ 299:main.c        ****                 OutArray[4] = (uint8_t)(OutY >> 8);
+ 380              		.loc 1 299 0
+ 381 01f0 120A     		lsrs	r2, r2, #8
+ 382              	.LVL70:
+ 383 01f2 8DF80420 		strb	r2, [sp, #4]
+ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccKhy93y.s 			page 13
 
 
- 415 0004 0400     		.2byte	0x4
- 416 0006 00000000 		.4byte	.Ldebug_abbrev0
- 417 000a 04       		.byte	0x4
- 418 000b 01       		.uleb128 0x1
- 419 000c 64000000 		.4byte	.LASF35
- 420 0010 0C       		.byte	0xc
- 421 0011 35020000 		.4byte	.LASF36
- 422 0015 A2010000 		.4byte	.LASF37
- 423 0019 00000000 		.4byte	.Ldebug_ranges0+0
- 424 001d 00000000 		.4byte	0
- 425 0021 00000000 		.4byte	.Ldebug_line0
- 426 0025 02       		.uleb128 0x2
- 427 0026 01       		.byte	0x1
- 428 0027 06       		.byte	0x6
- 429 0028 82020000 		.4byte	.LASF0
- 430 002c 03       		.uleb128 0x3
- 431 002d 08000000 		.4byte	.LASF4
- 432 0031 02       		.byte	0x2
- 433 0032 1D       		.byte	0x1d
- 434 0033 37000000 		.4byte	0x37
- 435 0037 02       		.uleb128 0x2
- 436 0038 01       		.byte	0x1
- 437 0039 08       		.byte	0x8
- 438 003a 56000000 		.4byte	.LASF1
- 439 003e 02       		.uleb128 0x2
- 440 003f 02       		.byte	0x2
- 441 0040 05       		.byte	0x5
- 442 0041 5D020000 		.4byte	.LASF2
- 443 0045 02       		.uleb128 0x2
- 444 0046 02       		.byte	0x2
- 445 0047 07       		.byte	0x7
- 446 0048 04010000 		.4byte	.LASF3
- 447 004c 03       		.uleb128 0x3
- 448 004d 33000000 		.4byte	.LASF5
- 449 0051 02       		.byte	0x2
- 450 0052 3F       		.byte	0x3f
- 451 0053 57000000 		.4byte	0x57
- 452 0057 02       		.uleb128 0x2
- 453 0058 04       		.byte	0x4
- 454 0059 05       		.byte	0x5
- 455 005a 3D000000 		.4byte	.LASF6
- 456 005e 02       		.uleb128 0x2
- 457 005f 04       		.byte	0x4
- 458 0060 07       		.byte	0x7
- 459 0061 F2000000 		.4byte	.LASF7
- 460 0065 02       		.uleb128 0x2
- 461 0066 08       		.byte	0x8
- 462 0067 05       		.byte	0x5
- 463 0068 16020000 		.4byte	.LASF8
- 464 006c 02       		.uleb128 0x2
- 465 006d 08       		.byte	0x8
- 466 006e 07       		.byte	0x7
- 467 006f 83010000 		.4byte	.LASF9
- 468 0073 04       		.uleb128 0x4
- 469 0074 04       		.byte	0x4
- 470 0075 05       		.byte	0x5
- 471 0076 696E7400 		.ascii	"int\000"
-ARM GAS  C:\Users\noemi\AppData\Local\Temp\cc2A3lrg.s 			page 15
+ 300:main.c        ****                 OutArray[5] = (uint8_t)(OutZ & 0xFF);
+ 384              		.loc 1 300 0
+ 385 01f6 8DF80530 		strb	r3, [sp, #5]
+ 301:main.c        ****                 OutArray[6] = (uint8_t)(OutZ >> 8);
+ 386              		.loc 1 301 0
+ 387 01fa 1B0A     		lsrs	r3, r3, #8
+ 388              	.LVL71:
+ 389 01fc 8DF80630 		strb	r3, [sp, #6]
+ 302:main.c        ****                 
+ 303:main.c        ****                 UART_Debug_PutArray(OutArray, packet_dimension);
+ 390              		.loc 1 303 0
+ 391 0200 0821     		movs	r1, #8
+ 392 0202 6846     		mov	r0, sp
+ 393              	.LVL72:
+ 394 0204 FFF7FEFF 		bl	UART_Debug_PutArray
+ 395              	.LVL73:
+ 396 0208 CAE7     		b	.L21
+ 397              	.L25:
+ 398 020a 00BF     		.align	2
+ 399              	.L24:
+ 400 020c 00000000 		.word	Custom_ISR_Timer_XYZ
+ 401 0210 00000000 		.word	.LC0
+ 402 0214 20000000 		.word	.LC1
+ 403 0218 48000000 		.word	.LC2
+ 404 021c 6C000000 		.word	.LC3
+ 405 0220 88000000 		.word	.LC4
+ 406 0224 C4000000 		.word	.LC5
+ 407 0228 E4000000 		.word	.LC6
+ 408 022c 20010000 		.word	.LC7
+ 409 0230 58010000 		.word	.LC8
+ 410 0234 94010000 		.word	.LC9
+ 411 0238 C8010000 		.word	.LC10
+ 412 023c E8010000 		.word	.LC11
+ 413 0240 24020000 		.word	.LC12
+ 414 0244 5C020000 		.word	.LC13
+ 415 0248 00000000 		.word	PacketReadyFlag
+ 416 024c 00000000 		.word	Acceleration
+ 417              		.cfi_endproc
+ 418              	.LFE64:
+ 419              		.size	main, .-main
+ 420              		.comm	PacketReadyFlag,1,1
+ 421              		.comm	Acceleration,6,4
+ 422              		.section	.rodata.str1.4,"aMS",%progbits,1
+ 423              		.align	2
+ 424              	.LC0:
+ 425 0000 44657669 		.ascii	"Device 0x%02X is connected\015\012\000"
+ 425      63652030 
+ 425      78253032 
+ 425      58206973 
+ 425      20636F6E 
+ 426 001d 000000   		.space	3
+ 427              	.LC1:
+ 428 0020 57484F20 		.ascii	"WHO AM I REG: 0x%02X [Expected: 0x33]\015\012\000"
+ 428      414D2049 
+ 428      20524547 
+ 428      3A203078 
+ 428      25303258 
+ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccKhy93y.s 			page 14
 
 
- 472 007a 02       		.uleb128 0x2
- 473 007b 04       		.byte	0x4
- 474 007c 07       		.byte	0x7
- 475 007d 76010000 		.4byte	.LASF10
- 476 0081 03       		.uleb128 0x3
- 477 0082 9A010000 		.4byte	.LASF11
- 478 0086 03       		.byte	0x3
- 479 0087 18       		.byte	0x18
- 480 0088 2C000000 		.4byte	0x2c
- 481 008c 03       		.uleb128 0x3
- 482 008d FF010000 		.4byte	.LASF12
- 483 0091 03       		.byte	0x3
- 484 0092 2C       		.byte	0x2c
- 485 0093 4C000000 		.4byte	0x4c
- 486 0097 02       		.uleb128 0x2
- 487 0098 04       		.byte	0x4
- 488 0099 04       		.byte	0x4
- 489 009a 50000000 		.4byte	.LASF13
- 490 009e 02       		.uleb128 0x2
- 491 009f 08       		.byte	0x8
- 492 00a0 04       		.byte	0x4
- 493 00a1 24010000 		.4byte	.LASF14
- 494 00a5 02       		.uleb128 0x2
- 495 00a6 01       		.byte	0x1
- 496 00a7 08       		.byte	0x8
- 497 00a8 3C020000 		.4byte	.LASF15
- 498 00ac 05       		.uleb128 0x5
- 499 00ad 01       		.byte	0x1
- 500 00ae 37000000 		.4byte	0x37
- 501 00b2 04       		.byte	0x4
- 502 00b3 15       		.byte	0x15
- 503 00b4 C5000000 		.4byte	0xc5
- 504 00b8 06       		.uleb128 0x6
- 505 00b9 67020000 		.4byte	.LASF16
- 506 00bd 00       		.byte	0
- 507 00be 06       		.uleb128 0x6
- 508 00bf 70020000 		.4byte	.LASF17
- 509 00c3 01       		.byte	0x1
- 510 00c4 00       		.byte	0
- 511 00c5 03       		.uleb128 0x3
- 512 00c6 46000000 		.4byte	.LASF18
- 513 00ca 04       		.byte	0x4
- 514 00cb 18       		.byte	0x18
- 515 00cc AC000000 		.4byte	0xac
- 516 00d0 02       		.uleb128 0x2
- 517 00d1 08       		.byte	0x8
- 518 00d2 04       		.byte	0x4
- 519 00d3 76020000 		.4byte	.LASF19
- 520 00d7 02       		.uleb128 0x2
- 521 00d8 04       		.byte	0x4
- 522 00d9 07       		.byte	0x7
- 523 00da 07020000 		.4byte	.LASF20
- 524 00de 07       		.uleb128 0x7
- 525 00df 5D010000 		.4byte	.LASF38
- 526 00e3 01       		.byte	0x1
- 527 00e4 4F       		.byte	0x4f
- 528 00e5 73000000 		.4byte	0x73
-ARM GAS  C:\Users\noemi\AppData\Local\Temp\cc2A3lrg.s 			page 16
+ 429              	.LC2:
+ 430 0048 4572726F 		.ascii	"Error occurred during I2C comm\015\012\000"
+ 430      72206F63 
+ 430      63757272 
+ 430      65642064 
+ 430      7572696E 
+ 431 0069 000000   		.space	3
+ 432              	.LC3:
+ 433 006c 53544154 		.ascii	"STATUS REGISTER: 0x%02X\015\012\000"
+ 433      55532052 
+ 433      45474953 
+ 433      5445523A 
+ 433      20307825 
+ 434 0086 0000     		.space	2
+ 435              	.LC4:
+ 436 0088 4572726F 		.ascii	"Error occurred during I2C comm to read status regis"
+ 436      72206F63 
+ 436      63757272 
+ 436      65642064 
+ 436      7572696E 
+ 437 00bb 7465720D 		.ascii	"ter\015\012\000"
+ 437      0A00
+ 438 00c1 000000   		.space	3
+ 439              	.LC5:
+ 440 00c4 434F4E54 		.ascii	"CONTROL REGISTER 1: 0x%02X\015\012\000"
+ 440      524F4C20 
+ 440      52454749 
+ 440      53544552 
+ 440      20313A20 
+ 441 00e1 000000   		.space	3
+ 442              	.LC6:
+ 443 00e4 4572726F 		.ascii	"Error occurred during I2C comm to read control regi"
+ 443      72206F63 
+ 443      63757272 
+ 443      65642064 
+ 443      7572696E 
+ 444 0117 73746572 		.ascii	"ster 1\015\012\000"
+ 444      20310D0A 
+ 444      00
+ 445              	.LC7:
+ 446 0120 434F4E54 		.ascii	"CONTROL REGISTER 1 successfully written as: 0x%02X\015"
+ 446      524F4C20 
+ 446      52454749 
+ 446      53544552 
+ 446      20312073 
+ 447 0153 0A00     		.ascii	"\012\000"
+ 448 0155 000000   		.space	3
+ 449              	.LC8:
+ 450 0158 4572726F 		.ascii	"Error occurred during I2C comm to set control regis"
+ 450      72206F63 
+ 450      63757272 
+ 450      65642064 
+ 450      7572696E 
+ 451 018b 74657220 		.ascii	"ter 1\015\012\000"
+ 451      310D0A00 
+ 452 0193 00       		.space	1
+ 453              	.LC9:
+ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccKhy93y.s 			page 15
 
 
- 529 00e9 00000000 		.4byte	.LFB64
- 530 00ed D0010000 		.4byte	.LFE64-.LFB64
- 531 00f1 01       		.uleb128 0x1
- 532 00f2 9C       		.byte	0x9c
- 533 00f3 34050000 		.4byte	0x534
- 534 00f7 08       		.uleb128 0x8
- 535 00f8 00000000 		.4byte	.LASF21
- 536 00fc 01       		.byte	0x1
- 537 00fd 5A       		.byte	0x5a
- 538 00fe 34050000 		.4byte	0x534
- 539 0102 02       		.uleb128 0x2
- 540 0103 91       		.byte	0x91
- 541 0104 44       		.sleb128 -60
- 542 0105 08       		.uleb128 0x8
- 543 0106 8E020000 		.4byte	.LASF22
- 544 010a 01       		.byte	0x1
- 545 010b 6D       		.byte	0x6d
- 546 010c 81000000 		.4byte	0x81
- 547 0110 02       		.uleb128 0x2
- 548 0111 91       		.byte	0x91
- 549 0112 43       		.sleb128 -61
- 550 0113 09       		.uleb128 0x9
- 551 0114 10020000 		.4byte	.LASF23
- 552 0118 01       		.byte	0x1
- 553 0119 6E       		.byte	0x6e
- 554 011a C5000000 		.4byte	0xc5
- 555 011e 00000000 		.4byte	.LLST0
- 556 0122 08       		.uleb128 0x8
- 557 0123 EF010000 		.4byte	.LASF24
- 558 0127 01       		.byte	0x1
- 559 0128 7D       		.byte	0x7d
- 560 0129 81000000 		.4byte	0x81
- 561 012d 02       		.uleb128 0x2
- 562 012e 91       		.byte	0x91
- 563 012f 42       		.sleb128 -62
- 564 0130 08       		.uleb128 0x8
- 565 0131 62010000 		.4byte	.LASF25
- 566 0135 01       		.byte	0x1
- 567 0136 8F       		.byte	0x8f
- 568 0137 81000000 		.4byte	0x81
- 569 013b 02       		.uleb128 0x2
- 570 013c 91       		.byte	0x91
- 571 013d 41       		.sleb128 -63
- 572 013e 08       		.uleb128 0x8
- 573 013f 6C010000 		.4byte	.LASF26
- 574 0143 01       		.byte	0x1
- 575 0144 D1       		.byte	0xd1
- 576 0145 81000000 		.4byte	0x81
- 577 0149 02       		.uleb128 0x2
- 578 014a 91       		.byte	0x91
- 579 014b 40       		.sleb128 -64
- 580 014c 0A       		.uleb128 0xa
- 581 014d 14000000 		.4byte	.LBB2
- 582 0151 22000000 		.4byte	.LBE2-.LBB2
- 583 0155 AE010000 		.4byte	0x1ae
- 584 0159 0B       		.uleb128 0xb
- 585 015a 6900     		.ascii	"i\000"
-ARM GAS  C:\Users\noemi\AppData\Local\Temp\cc2A3lrg.s 			page 17
+ 454 0194 434F4E54 		.ascii	"CONTROL REGISTER 1 after being updated: 0x%02X\015\012"
+ 454      524F4C20 
+ 454      52454749 
+ 454      53544552 
+ 454      20312061 
+ 455 01c4 00       		.ascii	"\000"
+ 456 01c5 000000   		.space	3
+ 457              	.LC10:
+ 458 01c8 434F4E54 		.ascii	"CONTROL REGISTER 4: 0x%02X\015\012\000"
+ 458      524F4C20 
+ 458      52454749 
+ 458      53544552 
+ 458      20343A20 
+ 459 01e5 000000   		.space	3
+ 460              	.LC11:
+ 461 01e8 4572726F 		.ascii	"Error occurred during I2C comm to read control regi"
+ 461      72206F63 
+ 461      63757272 
+ 461      65642064 
+ 461      7572696E 
+ 462 021b 73746572 		.ascii	"ster4\015\012\000"
+ 462      340D0A00 
+ 463 0223 00       		.space	1
+ 464              	.LC12:
+ 465 0224 434F4E54 		.ascii	"CONTROL REGISTER 4 successfully written as: 0x%02X\015"
+ 465      524F4C20 
+ 465      52454749 
+ 465      53544552 
+ 465      20342073 
+ 466 0257 0A00     		.ascii	"\012\000"
+ 467 0259 000000   		.space	3
+ 468              	.LC13:
+ 469 025c 434F4E54 		.ascii	"CONTROL REGISTER 4 after being updated: 0x%02X\015\012"
+ 469      524F4C20 
+ 469      52454749 
+ 469      53544552 
+ 469      20342061 
+ 470 028c 00       		.ascii	"\000"
+ 471              		.text
+ 472              	.Letext0:
+ 473              		.file 2 "c:\\program files (x86)\\cypress\\psoc creator\\4.3\\psoc creator\\import\\gnu\\arm\\5.4.
+ 474              		.file 3 "c:\\program files (x86)\\cypress\\psoc creator\\4.3\\psoc creator\\import\\gnu\\arm\\5.4.
+ 475              		.file 4 "Generated_Source\\PSoC5/cytypes.h"
+ 476              		.file 5 "ErrorCodes.h"
+ 477              		.file 6 "Generated_Source\\PSoC5/core_cm3.h"
+ 478              		.file 7 "InterruptRoutines.h"
+ 479              		.file 8 "I2C_Interface.h"
+ 480              		.file 9 "c:\\program files (x86)\\cypress\\psoc creator\\4.3\\psoc creator\\import\\gnu\\arm\\5.4.
+ 481              		.file 10 "Generated_Source\\PSoC5/UART_Debug.h"
+ 482              		.file 11 "Generated_Source\\PSoC5/Timer.h"
+ 483              		.file 12 "Generated_Source\\PSoC5/isr_timer.h"
+ 484              		.file 13 "Generated_Source\\PSoC5/CyLib.h"
+ 485              		.section	.debug_info,"",%progbits
+ 486              	.Ldebug_info0:
+ 487 0000 8C060000 		.4byte	0x68c
+ 488 0004 0400     		.2byte	0x4
+ 489 0006 00000000 		.4byte	.Ldebug_abbrev0
+ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccKhy93y.s 			page 16
 
 
- 586 015c 01       		.byte	0x1
- 587 015d 5D       		.byte	0x5d
- 588 015e 73000000 		.4byte	0x73
- 589 0162 B8000000 		.4byte	.LLST1
- 590 0166 0C       		.uleb128 0xc
- 591 0167 1E000000 		.4byte	.LVL4
- 592 016b 55050000 		.4byte	0x555
- 593 016f 7A010000 		.4byte	0x17a
- 594 0173 0D       		.uleb128 0xd
- 595 0174 01       		.uleb128 0x1
- 596 0175 50       		.byte	0x50
- 597 0176 02       		.uleb128 0x2
- 598 0177 74       		.byte	0x74
- 599 0178 00       		.sleb128 0
- 600 0179 00       		.byte	0
- 601 017a 0C       		.uleb128 0xc
- 602 017b 2A000000 		.4byte	.LVL5
- 603 017f 60050000 		.4byte	0x560
- 604 0183 9D010000 		.4byte	0x19d
- 605 0187 0D       		.uleb128 0xd
- 606 0188 01       		.uleb128 0x1
- 607 0189 50       		.byte	0x50
- 608 018a 02       		.uleb128 0x2
- 609 018b 91       		.byte	0x91
- 610 018c 44       		.sleb128 -60
- 611 018d 0D       		.uleb128 0xd
- 612 018e 01       		.uleb128 0x1
- 613 018f 51       		.byte	0x51
- 614 0190 05       		.uleb128 0x5
- 615 0191 03       		.byte	0x3
- 616 0192 00000000 		.4byte	.LC0
- 617 0196 0D       		.uleb128 0xd
- 618 0197 01       		.uleb128 0x1
- 619 0198 52       		.byte	0x52
- 620 0199 02       		.uleb128 0x2
- 621 019a 74       		.byte	0x74
- 622 019b 00       		.sleb128 0
- 623 019c 00       		.byte	0
- 624 019d 0E       		.uleb128 0xe
- 625 019e 30000000 		.4byte	.LVL6
- 626 01a2 6B050000 		.4byte	0x56b
- 627 01a6 0D       		.uleb128 0xd
- 628 01a7 01       		.uleb128 0x1
- 629 01a8 50       		.byte	0x50
- 630 01a9 02       		.uleb128 0x2
- 631 01aa 91       		.byte	0x91
- 632 01ab 44       		.sleb128 -60
- 633 01ac 00       		.byte	0
- 634 01ad 00       		.byte	0
- 635 01ae 0F       		.uleb128 0xf
- 636 01af 0A000000 		.4byte	.LVL0
- 637 01b3 76050000 		.4byte	0x576
- 638 01b7 0F       		.uleb128 0xf
- 639 01b8 0E000000 		.4byte	.LVL1
- 640 01bc 81050000 		.4byte	0x581
- 641 01c0 0C       		.uleb128 0xc
- 642 01c1 14000000 		.4byte	.LVL2
-ARM GAS  C:\Users\noemi\AppData\Local\Temp\cc2A3lrg.s 			page 18
+ 490 000a 04       		.byte	0x4
+ 491 000b 01       		.uleb128 0x1
+ 492 000c AC000000 		.4byte	.LASF50
+ 493 0010 0C       		.byte	0xc
+ 494 0011 A2020000 		.4byte	.LASF51
+ 495 0015 03020000 		.4byte	.LASF52
+ 496 0019 00000000 		.4byte	.Ldebug_ranges0+0
+ 497 001d 00000000 		.4byte	0
+ 498 0021 00000000 		.4byte	.Ldebug_line0
+ 499 0025 02       		.uleb128 0x2
+ 500 0026 01       		.byte	0x1
+ 501 0027 06       		.byte	0x6
+ 502 0028 0F030000 		.4byte	.LASF0
+ 503 002c 03       		.uleb128 0x3
+ 504 002d 0F000000 		.4byte	.LASF2
+ 505 0031 02       		.byte	0x2
+ 506 0032 1D       		.byte	0x1d
+ 507 0033 37000000 		.4byte	0x37
+ 508 0037 02       		.uleb128 0x2
+ 509 0038 01       		.byte	0x1
+ 510 0039 08       		.byte	0x8
+ 511 003a 9E000000 		.4byte	.LASF1
+ 512 003e 03       		.uleb128 0x3
+ 513 003f 19000000 		.4byte	.LASF3
+ 514 0043 02       		.byte	0x2
+ 515 0044 29       		.byte	0x29
+ 516 0045 49000000 		.4byte	0x49
+ 517 0049 02       		.uleb128 0x2
+ 518 004a 02       		.byte	0x2
+ 519 004b 05       		.byte	0x5
+ 520 004c CA020000 		.4byte	.LASF4
+ 521 0050 02       		.uleb128 0x2
+ 522 0051 02       		.byte	0x2
+ 523 0052 07       		.byte	0x7
+ 524 0053 52010000 		.4byte	.LASF5
+ 525 0057 03       		.uleb128 0x3
+ 526 0058 44000000 		.4byte	.LASF6
+ 527 005c 02       		.byte	0x2
+ 528 005d 3F       		.byte	0x3f
+ 529 005e 62000000 		.4byte	0x62
+ 530 0062 02       		.uleb128 0x2
+ 531 0063 04       		.byte	0x4
+ 532 0064 05       		.byte	0x5
+ 533 0065 4E000000 		.4byte	.LASF7
+ 534 0069 02       		.uleb128 0x2
+ 535 006a 04       		.byte	0x4
+ 536 006b 07       		.byte	0x7
+ 537 006c 40010000 		.4byte	.LASF8
+ 538 0070 02       		.uleb128 0x2
+ 539 0071 08       		.byte	0x8
+ 540 0072 05       		.byte	0x5
+ 541 0073 83020000 		.4byte	.LASF9
+ 542 0077 02       		.uleb128 0x2
+ 543 0078 08       		.byte	0x8
+ 544 0079 07       		.byte	0x7
+ 545 007a E4010000 		.4byte	.LASF10
+ 546 007e 04       		.uleb128 0x4
+ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccKhy93y.s 			page 17
 
 
- 643 01c5 8C050000 		.4byte	0x58c
- 644 01c9 D3010000 		.4byte	0x1d3
- 645 01cd 0D       		.uleb128 0xd
- 646 01ce 01       		.uleb128 0x1
- 647 01cf 50       		.byte	0x50
- 648 01d0 01       		.uleb128 0x1
- 649 01d1 35       		.byte	0x35
- 650 01d2 00       		.byte	0
- 651 01d3 0C       		.uleb128 0xc
- 652 01d4 42000000 		.4byte	.LVL8
- 653 01d8 97050000 		.4byte	0x597
- 654 01dc F1010000 		.4byte	0x1f1
- 655 01e0 0D       		.uleb128 0xd
- 656 01e1 01       		.uleb128 0x1
- 657 01e2 50       		.byte	0x50
- 658 01e3 01       		.uleb128 0x1
- 659 01e4 48       		.byte	0x48
- 660 01e5 0D       		.uleb128 0xd
- 661 01e6 01       		.uleb128 0x1
- 662 01e7 51       		.byte	0x51
- 663 01e8 01       		.uleb128 0x1
- 664 01e9 3F       		.byte	0x3f
- 665 01ea 0D       		.uleb128 0xd
- 666 01eb 01       		.uleb128 0x1
- 667 01ec 52       		.byte	0x52
- 668 01ed 02       		.uleb128 0x2
- 669 01ee 91       		.byte	0x91
- 670 01ef 43       		.sleb128 -61
- 671 01f0 00       		.byte	0
- 672 01f1 0C       		.uleb128 0xc
- 673 01f2 50000000 		.4byte	.LVL10
- 674 01f6 60050000 		.4byte	0x560
- 675 01fa 0E020000 		.4byte	0x20e
- 676 01fe 0D       		.uleb128 0xd
- 677 01ff 01       		.uleb128 0x1
- 678 0200 50       		.byte	0x50
- 679 0201 02       		.uleb128 0x2
- 680 0202 91       		.byte	0x91
- 681 0203 44       		.sleb128 -60
- 682 0204 0D       		.uleb128 0xd
- 683 0205 01       		.uleb128 0x1
- 684 0206 51       		.byte	0x51
- 685 0207 05       		.uleb128 0x5
- 686 0208 03       		.byte	0x3
- 687 0209 20000000 		.4byte	.LC1
- 688 020d 00       		.byte	0
- 689 020e 0C       		.uleb128 0xc
- 690 020f 56000000 		.4byte	.LVL11
- 691 0213 6B050000 		.4byte	0x56b
- 692 0217 22020000 		.4byte	0x222
- 693 021b 0D       		.uleb128 0xd
- 694 021c 01       		.uleb128 0x1
- 695 021d 50       		.byte	0x50
- 696 021e 02       		.uleb128 0x2
- 697 021f 91       		.byte	0x91
- 698 0220 44       		.sleb128 -60
- 699 0221 00       		.byte	0
-ARM GAS  C:\Users\noemi\AppData\Local\Temp\cc2A3lrg.s 			page 19
+ 547 007f 04       		.byte	0x4
+ 548 0080 05       		.byte	0x5
+ 549 0081 696E7400 		.ascii	"int\000"
+ 550 0085 02       		.uleb128 0x2
+ 551 0086 04       		.byte	0x4
+ 552 0087 07       		.byte	0x7
+ 553 0088 D7010000 		.4byte	.LASF11
+ 554 008c 03       		.uleb128 0x3
+ 555 008d FB010000 		.4byte	.LASF12
+ 556 0091 03       		.byte	0x3
+ 557 0092 18       		.byte	0x18
+ 558 0093 2C000000 		.4byte	0x2c
+ 559 0097 03       		.uleb128 0x3
+ 560 0098 50020000 		.4byte	.LASF13
+ 561 009c 03       		.byte	0x3
+ 562 009d 20       		.byte	0x20
+ 563 009e 3E000000 		.4byte	0x3e
+ 564 00a2 03       		.uleb128 0x3
+ 565 00a3 75000000 		.4byte	.LASF14
+ 566 00a7 03       		.byte	0x3
+ 567 00a8 2C       		.byte	0x2c
+ 568 00a9 57000000 		.4byte	0x57
+ 569 00ad 05       		.uleb128 0x5
+ 570 00ae 3A010000 		.4byte	.LASF15
+ 571 00b2 04       		.byte	0x4
+ 572 00b3 E801     		.2byte	0x1e8
+ 573 00b5 49000000 		.4byte	0x49
+ 574 00b9 02       		.uleb128 0x2
+ 575 00ba 04       		.byte	0x4
+ 576 00bb 04       		.byte	0x4
+ 577 00bc 8F000000 		.4byte	.LASF16
+ 578 00c0 02       		.uleb128 0x2
+ 579 00c1 08       		.byte	0x8
+ 580 00c2 04       		.byte	0x4
+ 581 00c3 6C010000 		.4byte	.LASF17
+ 582 00c7 02       		.uleb128 0x2
+ 583 00c8 01       		.byte	0x1
+ 584 00c9 08       		.byte	0x8
+ 585 00ca A9020000 		.4byte	.LASF18
+ 586 00ce 06       		.uleb128 0x6
+ 587 00cf 01       		.byte	0x1
+ 588 00d0 37000000 		.4byte	0x37
+ 589 00d4 05       		.byte	0x5
+ 590 00d5 15       		.byte	0x15
+ 591 00d6 E7000000 		.4byte	0xe7
+ 592 00da 07       		.uleb128 0x7
+ 593 00db E4020000 		.4byte	.LASF19
+ 594 00df 00       		.byte	0
+ 595 00e0 07       		.uleb128 0x7
+ 596 00e1 ED020000 		.4byte	.LASF20
+ 597 00e5 01       		.byte	0x1
+ 598 00e6 00       		.byte	0
+ 599 00e7 03       		.uleb128 0x3
+ 600 00e8 6B000000 		.4byte	.LASF21
+ 601 00ec 05       		.byte	0x5
+ 602 00ed 18       		.byte	0x18
+ 603 00ee CE000000 		.4byte	0xce
+ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccKhy93y.s 			page 18
 
 
- 700 0222 0C       		.uleb128 0xc
- 701 0223 5E000000 		.4byte	.LVL14
- 702 0227 6B050000 		.4byte	0x56b
- 703 022b 39020000 		.4byte	0x239
- 704 022f 0D       		.uleb128 0xd
- 705 0230 01       		.uleb128 0x1
- 706 0231 50       		.byte	0x50
- 707 0232 05       		.uleb128 0x5
- 708 0233 03       		.byte	0x3
- 709 0234 48000000 		.4byte	.LC2
- 710 0238 00       		.byte	0
- 711 0239 0C       		.uleb128 0xc
- 712 023a 6A000000 		.4byte	.LVL15
- 713 023e 97050000 		.4byte	0x597
- 714 0242 58020000 		.4byte	0x258
- 715 0246 0D       		.uleb128 0xd
- 716 0247 01       		.uleb128 0x1
- 717 0248 50       		.byte	0x50
- 718 0249 01       		.uleb128 0x1
- 719 024a 48       		.byte	0x48
- 720 024b 0D       		.uleb128 0xd
- 721 024c 01       		.uleb128 0x1
- 722 024d 51       		.byte	0x51
- 723 024e 02       		.uleb128 0x2
- 724 024f 08       		.byte	0x8
- 725 0250 27       		.byte	0x27
- 726 0251 0D       		.uleb128 0xd
- 727 0252 01       		.uleb128 0x1
- 728 0253 52       		.byte	0x52
- 729 0254 02       		.uleb128 0x2
- 730 0255 91       		.byte	0x91
- 731 0256 42       		.sleb128 -62
- 732 0257 00       		.byte	0
- 733 0258 0C       		.uleb128 0xc
- 734 0259 78000000 		.4byte	.LVL17
- 735 025d 60050000 		.4byte	0x560
- 736 0261 75020000 		.4byte	0x275
- 737 0265 0D       		.uleb128 0xd
- 738 0266 01       		.uleb128 0x1
- 739 0267 50       		.byte	0x50
- 740 0268 02       		.uleb128 0x2
- 741 0269 91       		.byte	0x91
- 742 026a 44       		.sleb128 -60
- 743 026b 0D       		.uleb128 0xd
- 744 026c 01       		.uleb128 0x1
- 745 026d 51       		.byte	0x51
- 746 026e 05       		.uleb128 0x5
- 747 026f 03       		.byte	0x3
- 748 0270 6C000000 		.4byte	.LC3
- 749 0274 00       		.byte	0
- 750 0275 0C       		.uleb128 0xc
- 751 0276 7E000000 		.4byte	.LVL18
- 752 027a 6B050000 		.4byte	0x56b
- 753 027e 89020000 		.4byte	0x289
- 754 0282 0D       		.uleb128 0xd
- 755 0283 01       		.uleb128 0x1
- 756 0284 50       		.byte	0x50
-ARM GAS  C:\Users\noemi\AppData\Local\Temp\cc2A3lrg.s 			page 20
+ 604 00f2 02       		.uleb128 0x2
+ 605 00f3 08       		.byte	0x8
+ 606 00f4 04       		.byte	0x4
+ 607 00f5 03030000 		.4byte	.LASF22
+ 608 00f9 02       		.uleb128 0x2
+ 609 00fa 04       		.byte	0x4
+ 610 00fb 07       		.byte	0x7
+ 611 00fc 74020000 		.4byte	.LASF23
+ 612 0100 08       		.uleb128 0x8
+ 613 0101 8C000000 		.4byte	0x8c
+ 614 0105 09       		.uleb128 0x9
+ 615 0106 A5010000 		.4byte	.LASF53
+ 616 010a 01       		.byte	0x1
+ 617 010b 52       		.byte	0x52
+ 618 010c 7E000000 		.4byte	0x7e
+ 619 0110 00000000 		.4byte	.LFB64
+ 620 0114 50020000 		.4byte	.LFE64-.LFB64
+ 621 0118 01       		.uleb128 0x1
+ 622 0119 9C       		.byte	0x9c
+ 623 011a B3050000 		.4byte	0x5b3
+ 624 011e 0A       		.uleb128 0xa
+ 625 011f 00000000 		.4byte	.LASF24
+ 626 0123 01       		.byte	0x1
+ 627 0124 5F       		.byte	0x5f
+ 628 0125 B3050000 		.4byte	0x5b3
+ 629 0129 02       		.uleb128 0x2
+ 630 012a 91       		.byte	0x91
+ 631 012b 44       		.sleb128 -60
+ 632 012c 0A       		.uleb128 0xa
+ 633 012d 1B030000 		.4byte	.LASF25
+ 634 0131 01       		.byte	0x1
+ 635 0132 72       		.byte	0x72
+ 636 0133 8C000000 		.4byte	0x8c
+ 637 0137 02       		.uleb128 0x2
+ 638 0138 91       		.byte	0x91
+ 639 0139 43       		.sleb128 -61
+ 640 013a 0B       		.uleb128 0xb
+ 641 013b 7D020000 		.4byte	.LASF26
+ 642 013f 01       		.byte	0x1
+ 643 0140 73       		.byte	0x73
+ 644 0141 E7000000 		.4byte	0xe7
+ 645 0145 00000000 		.4byte	.LLST0
+ 646 0149 0A       		.uleb128 0xa
+ 647 014a F3020000 		.4byte	.LASF27
+ 648 014e 01       		.byte	0x1
+ 649 014f 82       		.byte	0x82
+ 650 0150 8C000000 		.4byte	0x8c
+ 651 0154 02       		.uleb128 0x2
+ 652 0155 91       		.byte	0x91
+ 653 0156 42       		.sleb128 -62
+ 654 0157 0A       		.uleb128 0xa
+ 655 0158 B7010000 		.4byte	.LASF28
+ 656 015c 01       		.byte	0x1
+ 657 015d 94       		.byte	0x94
+ 658 015e 8C000000 		.4byte	0x8c
+ 659 0162 02       		.uleb128 0x2
+ 660 0163 91       		.byte	0x91
+ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccKhy93y.s 			page 19
 
 
- 757 0285 02       		.uleb128 0x2
- 758 0286 91       		.byte	0x91
- 759 0287 44       		.sleb128 -60
- 760 0288 00       		.byte	0
- 761 0289 0C       		.uleb128 0xc
- 762 028a 86000000 		.4byte	.LVL21
- 763 028e 6B050000 		.4byte	0x56b
- 764 0292 A0020000 		.4byte	0x2a0
- 765 0296 0D       		.uleb128 0xd
- 766 0297 01       		.uleb128 0x1
- 767 0298 50       		.byte	0x50
- 768 0299 05       		.uleb128 0x5
- 769 029a 03       		.byte	0x3
- 770 029b 88000000 		.4byte	.LC4
- 771 029f 00       		.byte	0
- 772 02a0 0C       		.uleb128 0xc
- 773 02a1 92000000 		.4byte	.LVL22
- 774 02a5 97050000 		.4byte	0x597
- 775 02a9 BF020000 		.4byte	0x2bf
- 776 02ad 0D       		.uleb128 0xd
- 777 02ae 01       		.uleb128 0x1
- 778 02af 50       		.byte	0x50
- 779 02b0 01       		.uleb128 0x1
- 780 02b1 48       		.byte	0x48
- 781 02b2 0D       		.uleb128 0xd
- 782 02b3 01       		.uleb128 0x1
- 783 02b4 51       		.byte	0x51
- 784 02b5 02       		.uleb128 0x2
- 785 02b6 08       		.byte	0x8
- 786 02b7 20       		.byte	0x20
- 787 02b8 0D       		.uleb128 0xd
- 788 02b9 01       		.uleb128 0x1
- 789 02ba 52       		.byte	0x52
- 790 02bb 02       		.uleb128 0x2
- 791 02bc 91       		.byte	0x91
- 792 02bd 41       		.sleb128 -63
- 793 02be 00       		.byte	0
- 794 02bf 0C       		.uleb128 0xc
- 795 02c0 A0000000 		.4byte	.LVL24
- 796 02c4 60050000 		.4byte	0x560
- 797 02c8 DC020000 		.4byte	0x2dc
- 798 02cc 0D       		.uleb128 0xd
- 799 02cd 01       		.uleb128 0x1
- 800 02ce 50       		.byte	0x50
- 801 02cf 02       		.uleb128 0x2
- 802 02d0 91       		.byte	0x91
- 803 02d1 44       		.sleb128 -60
- 804 02d2 0D       		.uleb128 0xd
- 805 02d3 01       		.uleb128 0x1
- 806 02d4 51       		.byte	0x51
- 807 02d5 05       		.uleb128 0x5
- 808 02d6 03       		.byte	0x3
- 809 02d7 C4000000 		.4byte	.LC5
- 810 02db 00       		.byte	0
- 811 02dc 0C       		.uleb128 0xc
- 812 02dd A6000000 		.4byte	.LVL25
- 813 02e1 6B050000 		.4byte	0x56b
-ARM GAS  C:\Users\noemi\AppData\Local\Temp\cc2A3lrg.s 			page 21
+ 661 0164 41       		.sleb128 -63
+ 662 0165 0A       		.uleb128 0xa
+ 663 0166 CD010000 		.4byte	.LASF29
+ 664 016a 01       		.byte	0x1
+ 665 016b D6       		.byte	0xd6
+ 666 016c 8C000000 		.4byte	0x8c
+ 667 0170 02       		.uleb128 0x2
+ 668 0171 91       		.byte	0x91
+ 669 0172 40       		.sleb128 -64
+ 670 0173 0C       		.uleb128 0xc
+ 671 0174 65020000 		.4byte	.LASF30
+ 672 0178 01       		.byte	0x1
+ 673 0179 0E01     		.2byte	0x10e
+ 674 017b 97000000 		.4byte	0x97
+ 675 017f B8000000 		.4byte	.LLST1
+ 676 0183 0C       		.uleb128 0xc
+ 677 0184 6A020000 		.4byte	.LASF31
+ 678 0188 01       		.byte	0x1
+ 679 0189 0F01     		.2byte	0x10f
+ 680 018b 97000000 		.4byte	0x97
+ 681 018f F5000000 		.4byte	.LLST2
+ 682 0193 0C       		.uleb128 0xc
+ 683 0194 6F020000 		.4byte	.LASF32
+ 684 0198 01       		.byte	0x1
+ 685 0199 1001     		.2byte	0x110
+ 686 019b 97000000 		.4byte	0x97
+ 687 019f 32010000 		.4byte	.LLST3
+ 688 01a3 0D       		.uleb128 0xd
+ 689 01a4 08000000 		.4byte	.LASF33
+ 690 01a8 01       		.byte	0x1
+ 691 01a9 1101     		.2byte	0x111
+ 692 01ab 8C000000 		.4byte	0x8c
+ 693 01af A07F     		.sleb128 -96
+ 694 01b1 0D       		.uleb128 0xd
+ 695 01b2 65010000 		.4byte	.LASF34
+ 696 01b6 01       		.byte	0x1
+ 697 01b7 1201     		.2byte	0x112
+ 698 01b9 8C000000 		.4byte	0x8c
+ 699 01bd 40       		.sleb128 -64
+ 700 01be 0E       		.uleb128 0xe
+ 701 01bf 95000000 		.4byte	.LASF35
+ 702 01c3 01       		.byte	0x1
+ 703 01c4 1301     		.2byte	0x113
+ 704 01c6 C3050000 		.4byte	0x5c3
+ 705 01ca 03       		.uleb128 0x3
+ 706 01cb 91       		.byte	0x91
+ 707 01cc B87F     		.sleb128 -72
+ 708 01ce 0F       		.uleb128 0xf
+ 709 01cf 1E000000 		.4byte	.LBB2
+ 710 01d3 22000000 		.4byte	.LBE2-.LBB2
+ 711 01d7 30020000 		.4byte	0x230
+ 712 01db 10       		.uleb128 0x10
+ 713 01dc 6900     		.ascii	"i\000"
+ 714 01de 01       		.byte	0x1
+ 715 01df 62       		.byte	0x62
+ 716 01e0 7E000000 		.4byte	0x7e
+ 717 01e4 91010000 		.4byte	.LLST4
+ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccKhy93y.s 			page 20
 
 
- 814 02e5 F0020000 		.4byte	0x2f0
- 815 02e9 0D       		.uleb128 0xd
- 816 02ea 01       		.uleb128 0x1
- 817 02eb 50       		.byte	0x50
- 818 02ec 02       		.uleb128 0x2
- 819 02ed 91       		.byte	0x91
- 820 02ee 44       		.sleb128 -60
- 821 02ef 00       		.byte	0
- 822 02f0 0C       		.uleb128 0xc
- 823 02f1 AE000000 		.4byte	.LVL28
- 824 02f5 6B050000 		.4byte	0x56b
- 825 02f9 07030000 		.4byte	0x307
- 826 02fd 0D       		.uleb128 0xd
- 827 02fe 01       		.uleb128 0x1
- 828 02ff 50       		.byte	0x50
- 829 0300 05       		.uleb128 0x5
- 830 0301 03       		.byte	0x3
- 831 0302 E4000000 		.4byte	.LC6
- 832 0306 00       		.byte	0
- 833 0307 0C       		.uleb128 0xc
- 834 0308 BC000000 		.4byte	.LVL29
- 835 030c 6B050000 		.4byte	0x56b
- 836 0310 1E030000 		.4byte	0x31e
- 837 0314 0D       		.uleb128 0xd
- 838 0315 01       		.uleb128 0x1
- 839 0316 50       		.byte	0x50
- 840 0317 05       		.uleb128 0x5
- 841 0318 03       		.byte	0x3
- 842 0319 20010000 		.4byte	.LC7
- 843 031d 00       		.byte	0
- 844 031e 0C       		.uleb128 0xc
- 845 031f CA000000 		.4byte	.LVL30
- 846 0323 A2050000 		.4byte	0x5a2
- 847 0327 3D030000 		.4byte	0x33d
- 848 032b 0D       		.uleb128 0xd
- 849 032c 01       		.uleb128 0x1
- 850 032d 50       		.byte	0x50
- 851 032e 01       		.uleb128 0x1
- 852 032f 48       		.byte	0x48
- 853 0330 0D       		.uleb128 0xd
- 854 0331 01       		.uleb128 0x1
- 855 0332 51       		.byte	0x51
- 856 0333 02       		.uleb128 0x2
- 857 0334 08       		.byte	0x8
- 858 0335 20       		.byte	0x20
- 859 0336 0D       		.uleb128 0xd
- 860 0337 01       		.uleb128 0x1
- 861 0338 52       		.byte	0x52
- 862 0339 02       		.uleb128 0x2
- 863 033a 08       		.byte	0x8
- 864 033b 57       		.byte	0x57
- 865 033c 00       		.byte	0
- 866 033d 0C       		.uleb128 0xc
- 867 033e D8000000 		.4byte	.LVL32
- 868 0342 60050000 		.4byte	0x560
- 869 0346 5A030000 		.4byte	0x35a
- 870 034a 0D       		.uleb128 0xd
-ARM GAS  C:\Users\noemi\AppData\Local\Temp\cc2A3lrg.s 			page 22
+ 718 01e8 11       		.uleb128 0x11
+ 719 01e9 28000000 		.4byte	.LVL6
+ 720 01ed 16060000 		.4byte	0x616
+ 721 01f1 FC010000 		.4byte	0x1fc
+ 722 01f5 12       		.uleb128 0x12
+ 723 01f6 01       		.uleb128 0x1
+ 724 01f7 50       		.byte	0x50
+ 725 01f8 02       		.uleb128 0x2
+ 726 01f9 74       		.byte	0x74
+ 727 01fa 00       		.sleb128 0
+ 728 01fb 00       		.byte	0
+ 729 01fc 11       		.uleb128 0x11
+ 730 01fd 34000000 		.4byte	.LVL7
+ 731 0201 21060000 		.4byte	0x621
+ 732 0205 1F020000 		.4byte	0x21f
+ 733 0209 12       		.uleb128 0x12
+ 734 020a 01       		.uleb128 0x1
+ 735 020b 50       		.byte	0x50
+ 736 020c 02       		.uleb128 0x2
+ 737 020d 91       		.byte	0x91
+ 738 020e 44       		.sleb128 -60
+ 739 020f 12       		.uleb128 0x12
+ 740 0210 01       		.uleb128 0x1
+ 741 0211 51       		.byte	0x51
+ 742 0212 05       		.uleb128 0x5
+ 743 0213 03       		.byte	0x3
+ 744 0214 00000000 		.4byte	.LC0
+ 745 0218 12       		.uleb128 0x12
+ 746 0219 01       		.uleb128 0x1
+ 747 021a 52       		.byte	0x52
+ 748 021b 02       		.uleb128 0x2
+ 749 021c 74       		.byte	0x74
+ 750 021d 00       		.sleb128 0
+ 751 021e 00       		.byte	0
+ 752 021f 13       		.uleb128 0x13
+ 753 0220 3A000000 		.4byte	.LVL8
+ 754 0224 2C060000 		.4byte	0x62c
+ 755 0228 12       		.uleb128 0x12
+ 756 0229 01       		.uleb128 0x1
+ 757 022a 50       		.byte	0x50
+ 758 022b 02       		.uleb128 0x2
+ 759 022c 91       		.byte	0x91
+ 760 022d 44       		.sleb128 -60
+ 761 022e 00       		.byte	0
+ 762 022f 00       		.byte	0
+ 763 0230 14       		.uleb128 0x14
+ 764 0231 0A000000 		.4byte	.LVL0
+ 765 0235 37060000 		.4byte	0x637
+ 766 0239 14       		.uleb128 0x14
+ 767 023a 0E000000 		.4byte	.LVL1
+ 768 023e 42060000 		.4byte	0x642
+ 769 0242 14       		.uleb128 0x14
+ 770 0243 12000000 		.4byte	.LVL2
+ 771 0247 4D060000 		.4byte	0x64d
+ 772 024b 14       		.uleb128 0x14
+ 773 024c 18000000 		.4byte	.LVL3
+ 774 0250 58060000 		.4byte	0x658
+ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccKhy93y.s 			page 21
 
 
- 871 034b 01       		.uleb128 0x1
- 872 034c 50       		.byte	0x50
- 873 034d 02       		.uleb128 0x2
- 874 034e 91       		.byte	0x91
- 875 034f 44       		.sleb128 -60
- 876 0350 0D       		.uleb128 0xd
- 877 0351 01       		.uleb128 0x1
- 878 0352 51       		.byte	0x51
- 879 0353 05       		.uleb128 0x5
- 880 0354 03       		.byte	0x3
- 881 0355 3C010000 		.4byte	.LC8
- 882 0359 00       		.byte	0
- 883 035a 0C       		.uleb128 0xc
- 884 035b DE000000 		.4byte	.LVL33
- 885 035f 6B050000 		.4byte	0x56b
- 886 0363 6E030000 		.4byte	0x36e
- 887 0367 0D       		.uleb128 0xd
- 888 0368 01       		.uleb128 0x1
- 889 0369 50       		.byte	0x50
- 890 036a 02       		.uleb128 0x2
- 891 036b 91       		.byte	0x91
- 892 036c 44       		.sleb128 -60
- 893 036d 00       		.byte	0
- 894 036e 0C       		.uleb128 0xc
- 895 036f E6000000 		.4byte	.LVL36
- 896 0373 6B050000 		.4byte	0x56b
- 897 0377 85030000 		.4byte	0x385
- 898 037b 0D       		.uleb128 0xd
- 899 037c 01       		.uleb128 0x1
- 900 037d 50       		.byte	0x50
- 901 037e 05       		.uleb128 0x5
- 902 037f 03       		.byte	0x3
- 903 0380 74010000 		.4byte	.LC9
- 904 0384 00       		.byte	0
- 905 0385 0C       		.uleb128 0xc
- 906 0386 F2000000 		.4byte	.LVL37
- 907 038a 97050000 		.4byte	0x597
- 908 038e A4030000 		.4byte	0x3a4
- 909 0392 0D       		.uleb128 0xd
- 910 0393 01       		.uleb128 0x1
- 911 0394 50       		.byte	0x50
- 912 0395 01       		.uleb128 0x1
- 913 0396 48       		.byte	0x48
- 914 0397 0D       		.uleb128 0xd
- 915 0398 01       		.uleb128 0x1
- 916 0399 51       		.byte	0x51
- 917 039a 02       		.uleb128 0x2
- 918 039b 08       		.byte	0x8
- 919 039c 20       		.byte	0x20
- 920 039d 0D       		.uleb128 0xd
- 921 039e 01       		.uleb128 0x1
- 922 039f 52       		.byte	0x52
- 923 03a0 02       		.uleb128 0x2
- 924 03a1 91       		.byte	0x91
- 925 03a2 41       		.sleb128 -63
- 926 03a3 00       		.byte	0
- 927 03a4 0C       		.uleb128 0xc
-ARM GAS  C:\Users\noemi\AppData\Local\Temp\cc2A3lrg.s 			page 23
+ 775 0254 11       		.uleb128 0x11
+ 776 0255 1E000000 		.4byte	.LVL4
+ 777 0259 63060000 		.4byte	0x663
+ 778 025d 67020000 		.4byte	0x267
+ 779 0261 12       		.uleb128 0x12
+ 780 0262 01       		.uleb128 0x1
+ 781 0263 50       		.byte	0x50
+ 782 0264 01       		.uleb128 0x1
+ 783 0265 35       		.byte	0x35
+ 784 0266 00       		.byte	0
+ 785 0267 11       		.uleb128 0x11
+ 786 0268 4C000000 		.4byte	.LVL10
+ 787 026c 6E060000 		.4byte	0x66e
+ 788 0270 85020000 		.4byte	0x285
+ 789 0274 12       		.uleb128 0x12
+ 790 0275 01       		.uleb128 0x1
+ 791 0276 50       		.byte	0x50
+ 792 0277 01       		.uleb128 0x1
+ 793 0278 48       		.byte	0x48
+ 794 0279 12       		.uleb128 0x12
+ 795 027a 01       		.uleb128 0x1
+ 796 027b 51       		.byte	0x51
+ 797 027c 01       		.uleb128 0x1
+ 798 027d 3F       		.byte	0x3f
+ 799 027e 12       		.uleb128 0x12
+ 800 027f 01       		.uleb128 0x1
+ 801 0280 52       		.byte	0x52
+ 802 0281 02       		.uleb128 0x2
+ 803 0282 91       		.byte	0x91
+ 804 0283 43       		.sleb128 -61
+ 805 0284 00       		.byte	0
+ 806 0285 11       		.uleb128 0x11
+ 807 0286 5A000000 		.4byte	.LVL12
+ 808 028a 21060000 		.4byte	0x621
+ 809 028e A2020000 		.4byte	0x2a2
+ 810 0292 12       		.uleb128 0x12
+ 811 0293 01       		.uleb128 0x1
+ 812 0294 50       		.byte	0x50
+ 813 0295 02       		.uleb128 0x2
+ 814 0296 91       		.byte	0x91
+ 815 0297 44       		.sleb128 -60
+ 816 0298 12       		.uleb128 0x12
+ 817 0299 01       		.uleb128 0x1
+ 818 029a 51       		.byte	0x51
+ 819 029b 05       		.uleb128 0x5
+ 820 029c 03       		.byte	0x3
+ 821 029d 20000000 		.4byte	.LC1
+ 822 02a1 00       		.byte	0
+ 823 02a2 11       		.uleb128 0x11
+ 824 02a3 60000000 		.4byte	.LVL13
+ 825 02a7 2C060000 		.4byte	0x62c
+ 826 02ab B6020000 		.4byte	0x2b6
+ 827 02af 12       		.uleb128 0x12
+ 828 02b0 01       		.uleb128 0x1
+ 829 02b1 50       		.byte	0x50
+ 830 02b2 02       		.uleb128 0x2
+ 831 02b3 91       		.byte	0x91
+ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccKhy93y.s 			page 22
 
 
- 928 03a5 00010000 		.4byte	.LVL39
- 929 03a9 60050000 		.4byte	0x560
- 930 03ad C1030000 		.4byte	0x3c1
- 931 03b1 0D       		.uleb128 0xd
- 932 03b2 01       		.uleb128 0x1
- 933 03b3 50       		.byte	0x50
- 934 03b4 02       		.uleb128 0x2
- 935 03b5 91       		.byte	0x91
- 936 03b6 44       		.sleb128 -60
- 937 03b7 0D       		.uleb128 0xd
- 938 03b8 01       		.uleb128 0x1
- 939 03b9 51       		.byte	0x51
- 940 03ba 05       		.uleb128 0x5
- 941 03bb 03       		.byte	0x3
- 942 03bc B0010000 		.4byte	.LC10
- 943 03c0 00       		.byte	0
- 944 03c1 0C       		.uleb128 0xc
- 945 03c2 06010000 		.4byte	.LVL40
- 946 03c6 6B050000 		.4byte	0x56b
- 947 03ca D5030000 		.4byte	0x3d5
- 948 03ce 0D       		.uleb128 0xd
- 949 03cf 01       		.uleb128 0x1
- 950 03d0 50       		.byte	0x50
- 951 03d1 02       		.uleb128 0x2
- 952 03d2 91       		.byte	0x91
- 953 03d3 44       		.sleb128 -60
- 954 03d4 00       		.byte	0
- 955 03d5 0C       		.uleb128 0xc
- 956 03d6 0E010000 		.4byte	.LVL43
- 957 03da 6B050000 		.4byte	0x56b
- 958 03de EC030000 		.4byte	0x3ec
- 959 03e2 0D       		.uleb128 0xd
- 960 03e3 01       		.uleb128 0x1
- 961 03e4 50       		.byte	0x50
- 962 03e5 05       		.uleb128 0x5
- 963 03e6 03       		.byte	0x3
- 964 03e7 E4000000 		.4byte	.LC6
- 965 03eb 00       		.byte	0
- 966 03ec 0C       		.uleb128 0xc
- 967 03ed 18010000 		.4byte	.LVL44
- 968 03f1 97050000 		.4byte	0x597
- 969 03f5 0B040000 		.4byte	0x40b
- 970 03f9 0D       		.uleb128 0xd
- 971 03fa 01       		.uleb128 0x1
- 972 03fb 50       		.byte	0x50
- 973 03fc 01       		.uleb128 0x1
- 974 03fd 48       		.byte	0x48
- 975 03fe 0D       		.uleb128 0xd
- 976 03ff 01       		.uleb128 0x1
- 977 0400 51       		.byte	0x51
- 978 0401 02       		.uleb128 0x2
- 979 0402 08       		.byte	0x8
- 980 0403 23       		.byte	0x23
- 981 0404 0D       		.uleb128 0xd
- 982 0405 01       		.uleb128 0x1
- 983 0406 52       		.byte	0x52
- 984 0407 02       		.uleb128 0x2
-ARM GAS  C:\Users\noemi\AppData\Local\Temp\cc2A3lrg.s 			page 24
+ 832 02b4 44       		.sleb128 -60
+ 833 02b5 00       		.byte	0
+ 834 02b6 11       		.uleb128 0x11
+ 835 02b7 68000000 		.4byte	.LVL16
+ 836 02bb 2C060000 		.4byte	0x62c
+ 837 02bf CD020000 		.4byte	0x2cd
+ 838 02c3 12       		.uleb128 0x12
+ 839 02c4 01       		.uleb128 0x1
+ 840 02c5 50       		.byte	0x50
+ 841 02c6 05       		.uleb128 0x5
+ 842 02c7 03       		.byte	0x3
+ 843 02c8 48000000 		.4byte	.LC2
+ 844 02cc 00       		.byte	0
+ 845 02cd 11       		.uleb128 0x11
+ 846 02ce 74000000 		.4byte	.LVL17
+ 847 02d2 6E060000 		.4byte	0x66e
+ 848 02d6 EC020000 		.4byte	0x2ec
+ 849 02da 12       		.uleb128 0x12
+ 850 02db 01       		.uleb128 0x1
+ 851 02dc 50       		.byte	0x50
+ 852 02dd 01       		.uleb128 0x1
+ 853 02de 48       		.byte	0x48
+ 854 02df 12       		.uleb128 0x12
+ 855 02e0 01       		.uleb128 0x1
+ 856 02e1 51       		.byte	0x51
+ 857 02e2 02       		.uleb128 0x2
+ 858 02e3 08       		.byte	0x8
+ 859 02e4 27       		.byte	0x27
+ 860 02e5 12       		.uleb128 0x12
+ 861 02e6 01       		.uleb128 0x1
+ 862 02e7 52       		.byte	0x52
+ 863 02e8 02       		.uleb128 0x2
+ 864 02e9 91       		.byte	0x91
+ 865 02ea 42       		.sleb128 -62
+ 866 02eb 00       		.byte	0
+ 867 02ec 11       		.uleb128 0x11
+ 868 02ed 82000000 		.4byte	.LVL19
+ 869 02f1 21060000 		.4byte	0x621
+ 870 02f5 09030000 		.4byte	0x309
+ 871 02f9 12       		.uleb128 0x12
+ 872 02fa 01       		.uleb128 0x1
+ 873 02fb 50       		.byte	0x50
+ 874 02fc 02       		.uleb128 0x2
+ 875 02fd 91       		.byte	0x91
+ 876 02fe 44       		.sleb128 -60
+ 877 02ff 12       		.uleb128 0x12
+ 878 0300 01       		.uleb128 0x1
+ 879 0301 51       		.byte	0x51
+ 880 0302 05       		.uleb128 0x5
+ 881 0303 03       		.byte	0x3
+ 882 0304 6C000000 		.4byte	.LC3
+ 883 0308 00       		.byte	0
+ 884 0309 11       		.uleb128 0x11
+ 885 030a 88000000 		.4byte	.LVL20
+ 886 030e 2C060000 		.4byte	0x62c
+ 887 0312 1D030000 		.4byte	0x31d
+ 888 0316 12       		.uleb128 0x12
+ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccKhy93y.s 			page 23
 
 
- 985 0408 7D       		.byte	0x7d
- 986 0409 00       		.sleb128 0
- 987 040a 00       		.byte	0
- 988 040b 0C       		.uleb128 0xc
- 989 040c 26010000 		.4byte	.LVL46
- 990 0410 60050000 		.4byte	0x560
- 991 0414 28040000 		.4byte	0x428
- 992 0418 0D       		.uleb128 0xd
- 993 0419 01       		.uleb128 0x1
- 994 041a 50       		.byte	0x50
- 995 041b 02       		.uleb128 0x2
- 996 041c 91       		.byte	0x91
- 997 041d 44       		.sleb128 -60
- 998 041e 0D       		.uleb128 0xd
- 999 041f 01       		.uleb128 0x1
- 1000 0420 51       		.byte	0x51
- 1001 0421 05       		.uleb128 0x5
- 1002 0422 03       		.byte	0x3
- 1003 0423 E4010000 		.4byte	.LC11
- 1004 0427 00       		.byte	0
- 1005 0428 0C       		.uleb128 0xc
- 1006 0429 2C010000 		.4byte	.LVL47
- 1007 042d 6B050000 		.4byte	0x56b
- 1008 0431 3C040000 		.4byte	0x43c
- 1009 0435 0D       		.uleb128 0xd
- 1010 0436 01       		.uleb128 0x1
- 1011 0437 50       		.byte	0x50
- 1012 0438 02       		.uleb128 0x2
- 1013 0439 91       		.byte	0x91
- 1014 043a 44       		.sleb128 -60
- 1015 043b 00       		.byte	0
- 1016 043c 0C       		.uleb128 0xc
- 1017 043d 34010000 		.4byte	.LVL50
- 1018 0441 6B050000 		.4byte	0x56b
- 1019 0445 53040000 		.4byte	0x453
- 1020 0449 0D       		.uleb128 0xd
- 1021 044a 01       		.uleb128 0x1
- 1022 044b 50       		.byte	0x50
- 1023 044c 05       		.uleb128 0x5
- 1024 044d 03       		.byte	0x3
- 1025 044e 04020000 		.4byte	.LC12
- 1026 0452 00       		.byte	0
- 1027 0453 0C       		.uleb128 0xc
- 1028 0454 40010000 		.4byte	.LVL51
- 1029 0458 6B050000 		.4byte	0x56b
- 1030 045c 6A040000 		.4byte	0x46a
- 1031 0460 0D       		.uleb128 0xd
- 1032 0461 01       		.uleb128 0x1
- 1033 0462 50       		.byte	0x50
- 1034 0463 05       		.uleb128 0x5
- 1035 0464 03       		.byte	0x3
- 1036 0465 20010000 		.4byte	.LC7
- 1037 0469 00       		.byte	0
- 1038 046a 0C       		.uleb128 0xc
- 1039 046b 4E010000 		.4byte	.LVL52
- 1040 046f A2050000 		.4byte	0x5a2
- 1041 0473 88040000 		.4byte	0x488
-ARM GAS  C:\Users\noemi\AppData\Local\Temp\cc2A3lrg.s 			page 25
+ 889 0317 01       		.uleb128 0x1
+ 890 0318 50       		.byte	0x50
+ 891 0319 02       		.uleb128 0x2
+ 892 031a 91       		.byte	0x91
+ 893 031b 44       		.sleb128 -60
+ 894 031c 00       		.byte	0
+ 895 031d 11       		.uleb128 0x11
+ 896 031e 90000000 		.4byte	.LVL23
+ 897 0322 2C060000 		.4byte	0x62c
+ 898 0326 34030000 		.4byte	0x334
+ 899 032a 12       		.uleb128 0x12
+ 900 032b 01       		.uleb128 0x1
+ 901 032c 50       		.byte	0x50
+ 902 032d 05       		.uleb128 0x5
+ 903 032e 03       		.byte	0x3
+ 904 032f 88000000 		.4byte	.LC4
+ 905 0333 00       		.byte	0
+ 906 0334 11       		.uleb128 0x11
+ 907 0335 9C000000 		.4byte	.LVL24
+ 908 0339 6E060000 		.4byte	0x66e
+ 909 033d 53030000 		.4byte	0x353
+ 910 0341 12       		.uleb128 0x12
+ 911 0342 01       		.uleb128 0x1
+ 912 0343 50       		.byte	0x50
+ 913 0344 01       		.uleb128 0x1
+ 914 0345 48       		.byte	0x48
+ 915 0346 12       		.uleb128 0x12
+ 916 0347 01       		.uleb128 0x1
+ 917 0348 51       		.byte	0x51
+ 918 0349 02       		.uleb128 0x2
+ 919 034a 08       		.byte	0x8
+ 920 034b 20       		.byte	0x20
+ 921 034c 12       		.uleb128 0x12
+ 922 034d 01       		.uleb128 0x1
+ 923 034e 52       		.byte	0x52
+ 924 034f 02       		.uleb128 0x2
+ 925 0350 91       		.byte	0x91
+ 926 0351 41       		.sleb128 -63
+ 927 0352 00       		.byte	0
+ 928 0353 11       		.uleb128 0x11
+ 929 0354 AA000000 		.4byte	.LVL26
+ 930 0358 21060000 		.4byte	0x621
+ 931 035c 70030000 		.4byte	0x370
+ 932 0360 12       		.uleb128 0x12
+ 933 0361 01       		.uleb128 0x1
+ 934 0362 50       		.byte	0x50
+ 935 0363 02       		.uleb128 0x2
+ 936 0364 91       		.byte	0x91
+ 937 0365 44       		.sleb128 -60
+ 938 0366 12       		.uleb128 0x12
+ 939 0367 01       		.uleb128 0x1
+ 940 0368 51       		.byte	0x51
+ 941 0369 05       		.uleb128 0x5
+ 942 036a 03       		.byte	0x3
+ 943 036b C4000000 		.4byte	.LC5
+ 944 036f 00       		.byte	0
+ 945 0370 11       		.uleb128 0x11
+ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccKhy93y.s 			page 24
 
 
- 1042 0477 0D       		.uleb128 0xd
- 1043 0478 01       		.uleb128 0x1
- 1044 0479 50       		.byte	0x50
- 1045 047a 01       		.uleb128 0x1
- 1046 047b 48       		.byte	0x48
- 1047 047c 0D       		.uleb128 0xd
- 1048 047d 01       		.uleb128 0x1
- 1049 047e 51       		.byte	0x51
- 1050 047f 02       		.uleb128 0x2
- 1051 0480 08       		.byte	0x8
- 1052 0481 23       		.byte	0x23
- 1053 0482 0D       		.uleb128 0xd
- 1054 0483 01       		.uleb128 0x1
- 1055 0484 52       		.byte	0x52
- 1056 0485 01       		.uleb128 0x1
- 1057 0486 30       		.byte	0x30
- 1058 0487 00       		.byte	0
- 1059 0488 0C       		.uleb128 0xc
- 1060 0489 5C010000 		.4byte	.LVL54
- 1061 048d 60050000 		.4byte	0x560
- 1062 0491 A5040000 		.4byte	0x4a5
- 1063 0495 0D       		.uleb128 0xd
- 1064 0496 01       		.uleb128 0x1
- 1065 0497 50       		.byte	0x50
- 1066 0498 02       		.uleb128 0x2
- 1067 0499 91       		.byte	0x91
- 1068 049a 44       		.sleb128 -60
- 1069 049b 0D       		.uleb128 0xd
- 1070 049c 01       		.uleb128 0x1
- 1071 049d 51       		.byte	0x51
- 1072 049e 05       		.uleb128 0x5
- 1073 049f 03       		.byte	0x3
- 1074 04a0 40020000 		.4byte	.LC13
- 1075 04a4 00       		.byte	0
- 1076 04a5 0C       		.uleb128 0xc
- 1077 04a6 62010000 		.4byte	.LVL55
- 1078 04aa 6B050000 		.4byte	0x56b
- 1079 04ae B9040000 		.4byte	0x4b9
- 1080 04b2 0D       		.uleb128 0xd
- 1081 04b3 01       		.uleb128 0x1
- 1082 04b4 50       		.byte	0x50
- 1083 04b5 02       		.uleb128 0x2
- 1084 04b6 91       		.byte	0x91
- 1085 04b7 44       		.sleb128 -60
- 1086 04b8 00       		.byte	0
- 1087 04b9 0C       		.uleb128 0xc
- 1088 04ba 6A010000 		.4byte	.LVL58
- 1089 04be 6B050000 		.4byte	0x56b
- 1090 04c2 D0040000 		.4byte	0x4d0
- 1091 04c6 0D       		.uleb128 0xd
- 1092 04c7 01       		.uleb128 0x1
- 1093 04c8 50       		.byte	0x50
- 1094 04c9 05       		.uleb128 0x5
- 1095 04ca 03       		.byte	0x3
- 1096 04cb 74010000 		.4byte	.LC9
- 1097 04cf 00       		.byte	0
- 1098 04d0 0C       		.uleb128 0xc
-ARM GAS  C:\Users\noemi\AppData\Local\Temp\cc2A3lrg.s 			page 26
+ 946 0371 B0000000 		.4byte	.LVL27
+ 947 0375 2C060000 		.4byte	0x62c
+ 948 0379 84030000 		.4byte	0x384
+ 949 037d 12       		.uleb128 0x12
+ 950 037e 01       		.uleb128 0x1
+ 951 037f 50       		.byte	0x50
+ 952 0380 02       		.uleb128 0x2
+ 953 0381 91       		.byte	0x91
+ 954 0382 44       		.sleb128 -60
+ 955 0383 00       		.byte	0
+ 956 0384 11       		.uleb128 0x11
+ 957 0385 B8000000 		.4byte	.LVL30
+ 958 0389 2C060000 		.4byte	0x62c
+ 959 038d 9B030000 		.4byte	0x39b
+ 960 0391 12       		.uleb128 0x12
+ 961 0392 01       		.uleb128 0x1
+ 962 0393 50       		.byte	0x50
+ 963 0394 05       		.uleb128 0x5
+ 964 0395 03       		.byte	0x3
+ 965 0396 E4000000 		.4byte	.LC6
+ 966 039a 00       		.byte	0
+ 967 039b 11       		.uleb128 0x11
+ 968 039c CE000000 		.4byte	.LVL31
+ 969 03a0 79060000 		.4byte	0x679
+ 970 03a4 BA030000 		.4byte	0x3ba
+ 971 03a8 12       		.uleb128 0x12
+ 972 03a9 01       		.uleb128 0x1
+ 973 03aa 50       		.byte	0x50
+ 974 03ab 01       		.uleb128 0x1
+ 975 03ac 48       		.byte	0x48
+ 976 03ad 12       		.uleb128 0x12
+ 977 03ae 01       		.uleb128 0x1
+ 978 03af 51       		.byte	0x51
+ 979 03b0 02       		.uleb128 0x2
+ 980 03b1 08       		.byte	0x8
+ 981 03b2 20       		.byte	0x20
+ 982 03b3 12       		.uleb128 0x12
+ 983 03b4 01       		.uleb128 0x1
+ 984 03b5 52       		.byte	0x52
+ 985 03b6 02       		.uleb128 0x2
+ 986 03b7 08       		.byte	0x8
+ 987 03b8 57       		.byte	0x57
+ 988 03b9 00       		.byte	0
+ 989 03ba 11       		.uleb128 0x11
+ 990 03bb DC000000 		.4byte	.LVL33
+ 991 03bf 21060000 		.4byte	0x621
+ 992 03c3 D7030000 		.4byte	0x3d7
+ 993 03c7 12       		.uleb128 0x12
+ 994 03c8 01       		.uleb128 0x1
+ 995 03c9 50       		.byte	0x50
+ 996 03ca 02       		.uleb128 0x2
+ 997 03cb 91       		.byte	0x91
+ 998 03cc 44       		.sleb128 -60
+ 999 03cd 12       		.uleb128 0x12
+ 1000 03ce 01       		.uleb128 0x1
+ 1001 03cf 51       		.byte	0x51
+ 1002 03d0 05       		.uleb128 0x5
+ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccKhy93y.s 			page 25
 
 
- 1099 04d1 74010000 		.4byte	.LVL59
- 1100 04d5 97050000 		.4byte	0x597
- 1101 04d9 EF040000 		.4byte	0x4ef
- 1102 04dd 0D       		.uleb128 0xd
- 1103 04de 01       		.uleb128 0x1
- 1104 04df 50       		.byte	0x50
- 1105 04e0 01       		.uleb128 0x1
- 1106 04e1 48       		.byte	0x48
- 1107 04e2 0D       		.uleb128 0xd
- 1108 04e3 01       		.uleb128 0x1
- 1109 04e4 51       		.byte	0x51
- 1110 04e5 02       		.uleb128 0x2
- 1111 04e6 08       		.byte	0x8
- 1112 04e7 23       		.byte	0x23
- 1113 04e8 0D       		.uleb128 0xd
- 1114 04e9 01       		.uleb128 0x1
- 1115 04ea 52       		.byte	0x52
- 1116 04eb 02       		.uleb128 0x2
- 1117 04ec 7D       		.byte	0x7d
- 1118 04ed 00       		.sleb128 0
- 1119 04ee 00       		.byte	0
- 1120 04ef 0C       		.uleb128 0xc
- 1121 04f0 82010000 		.4byte	.LVL61
- 1122 04f4 60050000 		.4byte	0x560
- 1123 04f8 0C050000 		.4byte	0x50c
- 1124 04fc 0D       		.uleb128 0xd
- 1125 04fd 01       		.uleb128 0x1
- 1126 04fe 50       		.byte	0x50
- 1127 04ff 02       		.uleb128 0x2
- 1128 0500 91       		.byte	0x91
- 1129 0501 44       		.sleb128 -60
- 1130 0502 0D       		.uleb128 0xd
- 1131 0503 01       		.uleb128 0x1
- 1132 0504 51       		.byte	0x51
- 1133 0505 05       		.uleb128 0x5
- 1134 0506 03       		.byte	0x3
- 1135 0507 78020000 		.4byte	.LC14
- 1136 050b 00       		.byte	0
- 1137 050c 0C       		.uleb128 0xc
- 1138 050d 88010000 		.4byte	.LVL62
- 1139 0511 6B050000 		.4byte	0x56b
- 1140 0515 20050000 		.4byte	0x520
- 1141 0519 0D       		.uleb128 0xd
- 1142 051a 01       		.uleb128 0x1
- 1143 051b 50       		.byte	0x50
- 1144 051c 02       		.uleb128 0x2
- 1145 051d 91       		.byte	0x91
- 1146 051e 44       		.sleb128 -60
- 1147 051f 00       		.byte	0
- 1148 0520 0E       		.uleb128 0xe
- 1149 0521 90010000 		.4byte	.LVL65
- 1150 0525 6B050000 		.4byte	0x56b
- 1151 0529 0D       		.uleb128 0xd
- 1152 052a 01       		.uleb128 0x1
- 1153 052b 50       		.byte	0x50
- 1154 052c 05       		.uleb128 0x5
- 1155 052d 03       		.byte	0x3
-ARM GAS  C:\Users\noemi\AppData\Local\Temp\cc2A3lrg.s 			page 27
+ 1003 03d1 03       		.byte	0x3
+ 1004 03d2 20010000 		.4byte	.LC7
+ 1005 03d6 00       		.byte	0
+ 1006 03d7 11       		.uleb128 0x11
+ 1007 03d8 E2000000 		.4byte	.LVL34
+ 1008 03dc 2C060000 		.4byte	0x62c
+ 1009 03e0 EB030000 		.4byte	0x3eb
+ 1010 03e4 12       		.uleb128 0x12
+ 1011 03e5 01       		.uleb128 0x1
+ 1012 03e6 50       		.byte	0x50
+ 1013 03e7 02       		.uleb128 0x2
+ 1014 03e8 91       		.byte	0x91
+ 1015 03e9 44       		.sleb128 -60
+ 1016 03ea 00       		.byte	0
+ 1017 03eb 11       		.uleb128 0x11
+ 1018 03ec EA000000 		.4byte	.LVL37
+ 1019 03f0 2C060000 		.4byte	0x62c
+ 1020 03f4 02040000 		.4byte	0x402
+ 1021 03f8 12       		.uleb128 0x12
+ 1022 03f9 01       		.uleb128 0x1
+ 1023 03fa 50       		.byte	0x50
+ 1024 03fb 05       		.uleb128 0x5
+ 1025 03fc 03       		.byte	0x3
+ 1026 03fd 58010000 		.4byte	.LC8
+ 1027 0401 00       		.byte	0
+ 1028 0402 11       		.uleb128 0x11
+ 1029 0403 F6000000 		.4byte	.LVL38
+ 1030 0407 6E060000 		.4byte	0x66e
+ 1031 040b 21040000 		.4byte	0x421
+ 1032 040f 12       		.uleb128 0x12
+ 1033 0410 01       		.uleb128 0x1
+ 1034 0411 50       		.byte	0x50
+ 1035 0412 01       		.uleb128 0x1
+ 1036 0413 48       		.byte	0x48
+ 1037 0414 12       		.uleb128 0x12
+ 1038 0415 01       		.uleb128 0x1
+ 1039 0416 51       		.byte	0x51
+ 1040 0417 02       		.uleb128 0x2
+ 1041 0418 08       		.byte	0x8
+ 1042 0419 20       		.byte	0x20
+ 1043 041a 12       		.uleb128 0x12
+ 1044 041b 01       		.uleb128 0x1
+ 1045 041c 52       		.byte	0x52
+ 1046 041d 02       		.uleb128 0x2
+ 1047 041e 91       		.byte	0x91
+ 1048 041f 41       		.sleb128 -63
+ 1049 0420 00       		.byte	0
+ 1050 0421 11       		.uleb128 0x11
+ 1051 0422 04010000 		.4byte	.LVL40
+ 1052 0426 21060000 		.4byte	0x621
+ 1053 042a 3E040000 		.4byte	0x43e
+ 1054 042e 12       		.uleb128 0x12
+ 1055 042f 01       		.uleb128 0x1
+ 1056 0430 50       		.byte	0x50
+ 1057 0431 02       		.uleb128 0x2
+ 1058 0432 91       		.byte	0x91
+ 1059 0433 44       		.sleb128 -60
+ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccKhy93y.s 			page 26
 
 
- 1156 052e 04020000 		.4byte	.LC12
- 1157 0532 00       		.byte	0
- 1158 0533 00       		.byte	0
- 1159 0534 10       		.uleb128 0x10
- 1160 0535 A5000000 		.4byte	0xa5
- 1161 0539 44050000 		.4byte	0x544
- 1162 053d 11       		.uleb128 0x11
- 1163 053e D7000000 		.4byte	0xd7
- 1164 0542 31       		.byte	0x31
- 1165 0543 00       		.byte	0
- 1166 0544 12       		.uleb128 0x12
- 1167 0545 17010000 		.4byte	.LASF39
- 1168 0549 09       		.byte	0x9
- 1169 054a 1207     		.2byte	0x712
- 1170 054c 50050000 		.4byte	0x550
- 1171 0550 13       		.uleb128 0x13
- 1172 0551 8C000000 		.4byte	0x8c
- 1173 0555 14       		.uleb128 0x14
- 1174 0556 12000000 		.4byte	.LASF27
- 1175 055a 12000000 		.4byte	.LASF27
- 1176 055e 05       		.byte	0x5
- 1177 055f 5D       		.byte	0x5d
- 1178 0560 14       		.uleb128 0x14
- 1179 0561 9B020000 		.4byte	.LASF28
- 1180 0565 9B020000 		.4byte	.LASF28
- 1181 0569 06       		.byte	0x6
- 1182 056a E7       		.byte	0xe7
- 1183 056b 14       		.uleb128 0x14
- 1184 056c 2B010000 		.4byte	.LASF29
- 1185 0570 2B010000 		.4byte	.LASF29
- 1186 0574 07       		.byte	0x7
- 1187 0575 8B       		.byte	0x8b
- 1188 0576 14       		.uleb128 0x14
- 1189 0577 AB020000 		.4byte	.LASF30
- 1190 057b AB020000 		.4byte	.LASF30
- 1191 057f 05       		.byte	0x5
- 1192 0580 17       		.byte	0x17
- 1193 0581 14       		.uleb128 0x14
- 1194 0582 24020000 		.4byte	.LASF31
- 1195 0586 24020000 		.4byte	.LASF31
- 1196 058a 07       		.byte	0x7
- 1197 058b 54       		.byte	0x54
- 1198 058c 14       		.uleb128 0x14
- 1199 058d A3020000 		.4byte	.LASF32
- 1200 0591 A3020000 		.4byte	.LASF32
- 1201 0595 08       		.byte	0x8
- 1202 0596 76       		.byte	0x76
- 1203 0597 14       		.uleb128 0x14
- 1204 0598 41020000 		.4byte	.LASF33
- 1205 059c 41020000 		.4byte	.LASF33
- 1206 05a0 05       		.byte	0x5
- 1207 05a1 28       		.byte	0x28
- 1208 05a2 14       		.uleb128 0x14
- 1209 05a3 40010000 		.4byte	.LASF34
- 1210 05a7 40010000 		.4byte	.LASF34
- 1211 05ab 05       		.byte	0x5
- 1212 05ac 43       		.byte	0x43
-ARM GAS  C:\Users\noemi\AppData\Local\Temp\cc2A3lrg.s 			page 28
+ 1060 0434 12       		.uleb128 0x12
+ 1061 0435 01       		.uleb128 0x1
+ 1062 0436 51       		.byte	0x51
+ 1063 0437 05       		.uleb128 0x5
+ 1064 0438 03       		.byte	0x3
+ 1065 0439 94010000 		.4byte	.LC9
+ 1066 043d 00       		.byte	0
+ 1067 043e 11       		.uleb128 0x11
+ 1068 043f 0A010000 		.4byte	.LVL41
+ 1069 0443 2C060000 		.4byte	0x62c
+ 1070 0447 52040000 		.4byte	0x452
+ 1071 044b 12       		.uleb128 0x12
+ 1072 044c 01       		.uleb128 0x1
+ 1073 044d 50       		.byte	0x50
+ 1074 044e 02       		.uleb128 0x2
+ 1075 044f 91       		.byte	0x91
+ 1076 0450 44       		.sleb128 -60
+ 1077 0451 00       		.byte	0
+ 1078 0452 11       		.uleb128 0x11
+ 1079 0453 12010000 		.4byte	.LVL44
+ 1080 0457 2C060000 		.4byte	0x62c
+ 1081 045b 69040000 		.4byte	0x469
+ 1082 045f 12       		.uleb128 0x12
+ 1083 0460 01       		.uleb128 0x1
+ 1084 0461 50       		.byte	0x50
+ 1085 0462 05       		.uleb128 0x5
+ 1086 0463 03       		.byte	0x3
+ 1087 0464 E4000000 		.4byte	.LC6
+ 1088 0468 00       		.byte	0
+ 1089 0469 11       		.uleb128 0x11
+ 1090 046a 1C010000 		.4byte	.LVL45
+ 1091 046e 6E060000 		.4byte	0x66e
+ 1092 0472 88040000 		.4byte	0x488
+ 1093 0476 12       		.uleb128 0x12
+ 1094 0477 01       		.uleb128 0x1
+ 1095 0478 50       		.byte	0x50
+ 1096 0479 01       		.uleb128 0x1
+ 1097 047a 48       		.byte	0x48
+ 1098 047b 12       		.uleb128 0x12
+ 1099 047c 01       		.uleb128 0x1
+ 1100 047d 51       		.byte	0x51
+ 1101 047e 02       		.uleb128 0x2
+ 1102 047f 08       		.byte	0x8
+ 1103 0480 23       		.byte	0x23
+ 1104 0481 12       		.uleb128 0x12
+ 1105 0482 01       		.uleb128 0x1
+ 1106 0483 52       		.byte	0x52
+ 1107 0484 02       		.uleb128 0x2
+ 1108 0485 91       		.byte	0x91
+ 1109 0486 40       		.sleb128 -64
+ 1110 0487 00       		.byte	0
+ 1111 0488 11       		.uleb128 0x11
+ 1112 0489 2A010000 		.4byte	.LVL47
+ 1113 048d 21060000 		.4byte	0x621
+ 1114 0491 A5040000 		.4byte	0x4a5
+ 1115 0495 12       		.uleb128 0x12
+ 1116 0496 01       		.uleb128 0x1
+ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccKhy93y.s 			page 27
 
 
- 1213 05ad 00       		.byte	0
- 1214              		.section	.debug_abbrev,"",%progbits
- 1215              	.Ldebug_abbrev0:
- 1216 0000 01       		.uleb128 0x1
- 1217 0001 11       		.uleb128 0x11
- 1218 0002 01       		.byte	0x1
- 1219 0003 25       		.uleb128 0x25
- 1220 0004 0E       		.uleb128 0xe
- 1221 0005 13       		.uleb128 0x13
- 1222 0006 0B       		.uleb128 0xb
- 1223 0007 03       		.uleb128 0x3
- 1224 0008 0E       		.uleb128 0xe
- 1225 0009 1B       		.uleb128 0x1b
- 1226 000a 0E       		.uleb128 0xe
- 1227 000b 55       		.uleb128 0x55
- 1228 000c 17       		.uleb128 0x17
- 1229 000d 11       		.uleb128 0x11
- 1230 000e 01       		.uleb128 0x1
- 1231 000f 10       		.uleb128 0x10
- 1232 0010 17       		.uleb128 0x17
- 1233 0011 00       		.byte	0
- 1234 0012 00       		.byte	0
- 1235 0013 02       		.uleb128 0x2
- 1236 0014 24       		.uleb128 0x24
- 1237 0015 00       		.byte	0
- 1238 0016 0B       		.uleb128 0xb
- 1239 0017 0B       		.uleb128 0xb
- 1240 0018 3E       		.uleb128 0x3e
- 1241 0019 0B       		.uleb128 0xb
- 1242 001a 03       		.uleb128 0x3
- 1243 001b 0E       		.uleb128 0xe
- 1244 001c 00       		.byte	0
- 1245 001d 00       		.byte	0
- 1246 001e 03       		.uleb128 0x3
- 1247 001f 16       		.uleb128 0x16
- 1248 0020 00       		.byte	0
- 1249 0021 03       		.uleb128 0x3
- 1250 0022 0E       		.uleb128 0xe
- 1251 0023 3A       		.uleb128 0x3a
- 1252 0024 0B       		.uleb128 0xb
- 1253 0025 3B       		.uleb128 0x3b
- 1254 0026 0B       		.uleb128 0xb
- 1255 0027 49       		.uleb128 0x49
- 1256 0028 13       		.uleb128 0x13
- 1257 0029 00       		.byte	0
- 1258 002a 00       		.byte	0
- 1259 002b 04       		.uleb128 0x4
- 1260 002c 24       		.uleb128 0x24
- 1261 002d 00       		.byte	0
- 1262 002e 0B       		.uleb128 0xb
- 1263 002f 0B       		.uleb128 0xb
- 1264 0030 3E       		.uleb128 0x3e
- 1265 0031 0B       		.uleb128 0xb
- 1266 0032 03       		.uleb128 0x3
- 1267 0033 08       		.uleb128 0x8
- 1268 0034 00       		.byte	0
- 1269 0035 00       		.byte	0
-ARM GAS  C:\Users\noemi\AppData\Local\Temp\cc2A3lrg.s 			page 29
+ 1117 0497 50       		.byte	0x50
+ 1118 0498 02       		.uleb128 0x2
+ 1119 0499 91       		.byte	0x91
+ 1120 049a 44       		.sleb128 -60
+ 1121 049b 12       		.uleb128 0x12
+ 1122 049c 01       		.uleb128 0x1
+ 1123 049d 51       		.byte	0x51
+ 1124 049e 05       		.uleb128 0x5
+ 1125 049f 03       		.byte	0x3
+ 1126 04a0 C8010000 		.4byte	.LC10
+ 1127 04a4 00       		.byte	0
+ 1128 04a5 11       		.uleb128 0x11
+ 1129 04a6 30010000 		.4byte	.LVL48
+ 1130 04aa 2C060000 		.4byte	0x62c
+ 1131 04ae B9040000 		.4byte	0x4b9
+ 1132 04b2 12       		.uleb128 0x12
+ 1133 04b3 01       		.uleb128 0x1
+ 1134 04b4 50       		.byte	0x50
+ 1135 04b5 02       		.uleb128 0x2
+ 1136 04b6 91       		.byte	0x91
+ 1137 04b7 44       		.sleb128 -60
+ 1138 04b8 00       		.byte	0
+ 1139 04b9 11       		.uleb128 0x11
+ 1140 04ba 38010000 		.4byte	.LVL51
+ 1141 04be 2C060000 		.4byte	0x62c
+ 1142 04c2 D0040000 		.4byte	0x4d0
+ 1143 04c6 12       		.uleb128 0x12
+ 1144 04c7 01       		.uleb128 0x1
+ 1145 04c8 50       		.byte	0x50
+ 1146 04c9 05       		.uleb128 0x5
+ 1147 04ca 03       		.byte	0x3
+ 1148 04cb E8010000 		.4byte	.LC11
+ 1149 04cf 00       		.byte	0
+ 1150 04d0 11       		.uleb128 0x11
+ 1151 04d1 4C010000 		.4byte	.LVL52
+ 1152 04d5 79060000 		.4byte	0x679
+ 1153 04d9 EE040000 		.4byte	0x4ee
+ 1154 04dd 12       		.uleb128 0x12
+ 1155 04de 01       		.uleb128 0x1
+ 1156 04df 50       		.byte	0x50
+ 1157 04e0 01       		.uleb128 0x1
+ 1158 04e1 48       		.byte	0x48
+ 1159 04e2 12       		.uleb128 0x12
+ 1160 04e3 01       		.uleb128 0x1
+ 1161 04e4 51       		.byte	0x51
+ 1162 04e5 02       		.uleb128 0x2
+ 1163 04e6 08       		.byte	0x8
+ 1164 04e7 23       		.byte	0x23
+ 1165 04e8 12       		.uleb128 0x12
+ 1166 04e9 01       		.uleb128 0x1
+ 1167 04ea 52       		.byte	0x52
+ 1168 04eb 01       		.uleb128 0x1
+ 1169 04ec 30       		.byte	0x30
+ 1170 04ed 00       		.byte	0
+ 1171 04ee 11       		.uleb128 0x11
+ 1172 04ef 5A010000 		.4byte	.LVL54
+ 1173 04f3 21060000 		.4byte	0x621
+ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccKhy93y.s 			page 28
 
 
- 1270 0036 05       		.uleb128 0x5
- 1271 0037 04       		.uleb128 0x4
- 1272 0038 01       		.byte	0x1
- 1273 0039 0B       		.uleb128 0xb
- 1274 003a 0B       		.uleb128 0xb
- 1275 003b 49       		.uleb128 0x49
- 1276 003c 13       		.uleb128 0x13
- 1277 003d 3A       		.uleb128 0x3a
- 1278 003e 0B       		.uleb128 0xb
- 1279 003f 3B       		.uleb128 0x3b
- 1280 0040 0B       		.uleb128 0xb
- 1281 0041 01       		.uleb128 0x1
- 1282 0042 13       		.uleb128 0x13
- 1283 0043 00       		.byte	0
- 1284 0044 00       		.byte	0
- 1285 0045 06       		.uleb128 0x6
- 1286 0046 28       		.uleb128 0x28
- 1287 0047 00       		.byte	0
- 1288 0048 03       		.uleb128 0x3
- 1289 0049 0E       		.uleb128 0xe
- 1290 004a 1C       		.uleb128 0x1c
- 1291 004b 0B       		.uleb128 0xb
- 1292 004c 00       		.byte	0
- 1293 004d 00       		.byte	0
- 1294 004e 07       		.uleb128 0x7
- 1295 004f 2E       		.uleb128 0x2e
- 1296 0050 01       		.byte	0x1
- 1297 0051 3F       		.uleb128 0x3f
- 1298 0052 19       		.uleb128 0x19
- 1299 0053 03       		.uleb128 0x3
- 1300 0054 0E       		.uleb128 0xe
- 1301 0055 3A       		.uleb128 0x3a
- 1302 0056 0B       		.uleb128 0xb
- 1303 0057 3B       		.uleb128 0x3b
- 1304 0058 0B       		.uleb128 0xb
- 1305 0059 27       		.uleb128 0x27
- 1306 005a 19       		.uleb128 0x19
- 1307 005b 49       		.uleb128 0x49
- 1308 005c 13       		.uleb128 0x13
- 1309 005d 8701     		.uleb128 0x87
- 1310 005f 19       		.uleb128 0x19
- 1311 0060 11       		.uleb128 0x11
- 1312 0061 01       		.uleb128 0x1
- 1313 0062 12       		.uleb128 0x12
- 1314 0063 06       		.uleb128 0x6
- 1315 0064 40       		.uleb128 0x40
- 1316 0065 18       		.uleb128 0x18
- 1317 0066 9742     		.uleb128 0x2117
- 1318 0068 19       		.uleb128 0x19
- 1319 0069 01       		.uleb128 0x1
- 1320 006a 13       		.uleb128 0x13
- 1321 006b 00       		.byte	0
- 1322 006c 00       		.byte	0
- 1323 006d 08       		.uleb128 0x8
- 1324 006e 34       		.uleb128 0x34
- 1325 006f 00       		.byte	0
- 1326 0070 03       		.uleb128 0x3
-ARM GAS  C:\Users\noemi\AppData\Local\Temp\cc2A3lrg.s 			page 30
+ 1174 04f7 0B050000 		.4byte	0x50b
+ 1175 04fb 12       		.uleb128 0x12
+ 1176 04fc 01       		.uleb128 0x1
+ 1177 04fd 50       		.byte	0x50
+ 1178 04fe 02       		.uleb128 0x2
+ 1179 04ff 91       		.byte	0x91
+ 1180 0500 44       		.sleb128 -60
+ 1181 0501 12       		.uleb128 0x12
+ 1182 0502 01       		.uleb128 0x1
+ 1183 0503 51       		.byte	0x51
+ 1184 0504 05       		.uleb128 0x5
+ 1185 0505 03       		.byte	0x3
+ 1186 0506 24020000 		.4byte	.LC12
+ 1187 050a 00       		.byte	0
+ 1188 050b 11       		.uleb128 0x11
+ 1189 050c 60010000 		.4byte	.LVL55
+ 1190 0510 2C060000 		.4byte	0x62c
+ 1191 0514 1F050000 		.4byte	0x51f
+ 1192 0518 12       		.uleb128 0x12
+ 1193 0519 01       		.uleb128 0x1
+ 1194 051a 50       		.byte	0x50
+ 1195 051b 02       		.uleb128 0x2
+ 1196 051c 91       		.byte	0x91
+ 1197 051d 44       		.sleb128 -60
+ 1198 051e 00       		.byte	0
+ 1199 051f 11       		.uleb128 0x11
+ 1200 0520 68010000 		.4byte	.LVL58
+ 1201 0524 2C060000 		.4byte	0x62c
+ 1202 0528 36050000 		.4byte	0x536
+ 1203 052c 12       		.uleb128 0x12
+ 1204 052d 01       		.uleb128 0x1
+ 1205 052e 50       		.byte	0x50
+ 1206 052f 05       		.uleb128 0x5
+ 1207 0530 03       		.byte	0x3
+ 1208 0531 58010000 		.4byte	.LC8
+ 1209 0535 00       		.byte	0
+ 1210 0536 11       		.uleb128 0x11
+ 1211 0537 72010000 		.4byte	.LVL59
+ 1212 053b 6E060000 		.4byte	0x66e
+ 1213 053f 55050000 		.4byte	0x555
+ 1214 0543 12       		.uleb128 0x12
+ 1215 0544 01       		.uleb128 0x1
+ 1216 0545 50       		.byte	0x50
+ 1217 0546 01       		.uleb128 0x1
+ 1218 0547 48       		.byte	0x48
+ 1219 0548 12       		.uleb128 0x12
+ 1220 0549 01       		.uleb128 0x1
+ 1221 054a 51       		.byte	0x51
+ 1222 054b 02       		.uleb128 0x2
+ 1223 054c 08       		.byte	0x8
+ 1224 054d 23       		.byte	0x23
+ 1225 054e 12       		.uleb128 0x12
+ 1226 054f 01       		.uleb128 0x1
+ 1227 0550 52       		.byte	0x52
+ 1228 0551 02       		.uleb128 0x2
+ 1229 0552 91       		.byte	0x91
+ 1230 0553 40       		.sleb128 -64
+ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccKhy93y.s 			page 29
 
 
- 1327 0071 0E       		.uleb128 0xe
- 1328 0072 3A       		.uleb128 0x3a
- 1329 0073 0B       		.uleb128 0xb
- 1330 0074 3B       		.uleb128 0x3b
- 1331 0075 0B       		.uleb128 0xb
- 1332 0076 49       		.uleb128 0x49
- 1333 0077 13       		.uleb128 0x13
- 1334 0078 02       		.uleb128 0x2
- 1335 0079 18       		.uleb128 0x18
- 1336 007a 00       		.byte	0
- 1337 007b 00       		.byte	0
- 1338 007c 09       		.uleb128 0x9
- 1339 007d 34       		.uleb128 0x34
- 1340 007e 00       		.byte	0
- 1341 007f 03       		.uleb128 0x3
- 1342 0080 0E       		.uleb128 0xe
- 1343 0081 3A       		.uleb128 0x3a
- 1344 0082 0B       		.uleb128 0xb
- 1345 0083 3B       		.uleb128 0x3b
- 1346 0084 0B       		.uleb128 0xb
- 1347 0085 49       		.uleb128 0x49
- 1348 0086 13       		.uleb128 0x13
- 1349 0087 02       		.uleb128 0x2
- 1350 0088 17       		.uleb128 0x17
- 1351 0089 00       		.byte	0
- 1352 008a 00       		.byte	0
- 1353 008b 0A       		.uleb128 0xa
- 1354 008c 0B       		.uleb128 0xb
- 1355 008d 01       		.byte	0x1
- 1356 008e 11       		.uleb128 0x11
- 1357 008f 01       		.uleb128 0x1
- 1358 0090 12       		.uleb128 0x12
- 1359 0091 06       		.uleb128 0x6
- 1360 0092 01       		.uleb128 0x1
- 1361 0093 13       		.uleb128 0x13
- 1362 0094 00       		.byte	0
- 1363 0095 00       		.byte	0
- 1364 0096 0B       		.uleb128 0xb
- 1365 0097 34       		.uleb128 0x34
- 1366 0098 00       		.byte	0
- 1367 0099 03       		.uleb128 0x3
- 1368 009a 08       		.uleb128 0x8
- 1369 009b 3A       		.uleb128 0x3a
- 1370 009c 0B       		.uleb128 0xb
- 1371 009d 3B       		.uleb128 0x3b
- 1372 009e 0B       		.uleb128 0xb
- 1373 009f 49       		.uleb128 0x49
- 1374 00a0 13       		.uleb128 0x13
- 1375 00a1 02       		.uleb128 0x2
- 1376 00a2 17       		.uleb128 0x17
- 1377 00a3 00       		.byte	0
- 1378 00a4 00       		.byte	0
- 1379 00a5 0C       		.uleb128 0xc
- 1380 00a6 898201   		.uleb128 0x4109
- 1381 00a9 01       		.byte	0x1
- 1382 00aa 11       		.uleb128 0x11
- 1383 00ab 01       		.uleb128 0x1
-ARM GAS  C:\Users\noemi\AppData\Local\Temp\cc2A3lrg.s 			page 31
+ 1231 0554 00       		.byte	0
+ 1232 0555 11       		.uleb128 0x11
+ 1233 0556 80010000 		.4byte	.LVL61
+ 1234 055a 21060000 		.4byte	0x621
+ 1235 055e 72050000 		.4byte	0x572
+ 1236 0562 12       		.uleb128 0x12
+ 1237 0563 01       		.uleb128 0x1
+ 1238 0564 50       		.byte	0x50
+ 1239 0565 02       		.uleb128 0x2
+ 1240 0566 91       		.byte	0x91
+ 1241 0567 44       		.sleb128 -60
+ 1242 0568 12       		.uleb128 0x12
+ 1243 0569 01       		.uleb128 0x1
+ 1244 056a 51       		.byte	0x51
+ 1245 056b 05       		.uleb128 0x5
+ 1246 056c 03       		.byte	0x3
+ 1247 056d 5C020000 		.4byte	.LC13
+ 1248 0571 00       		.byte	0
+ 1249 0572 11       		.uleb128 0x11
+ 1250 0573 86010000 		.4byte	.LVL62
+ 1251 0577 2C060000 		.4byte	0x62c
+ 1252 057b 86050000 		.4byte	0x586
+ 1253 057f 12       		.uleb128 0x12
+ 1254 0580 01       		.uleb128 0x1
+ 1255 0581 50       		.byte	0x50
+ 1256 0582 02       		.uleb128 0x2
+ 1257 0583 91       		.byte	0x91
+ 1258 0584 44       		.sleb128 -60
+ 1259 0585 00       		.byte	0
+ 1260 0586 11       		.uleb128 0x11
+ 1261 0587 8E010000 		.4byte	.LVL65
+ 1262 058b 2C060000 		.4byte	0x62c
+ 1263 058f 9D050000 		.4byte	0x59d
+ 1264 0593 12       		.uleb128 0x12
+ 1265 0594 01       		.uleb128 0x1
+ 1266 0595 50       		.byte	0x50
+ 1267 0596 05       		.uleb128 0x5
+ 1268 0597 03       		.byte	0x3
+ 1269 0598 E8010000 		.4byte	.LC11
+ 1270 059c 00       		.byte	0
+ 1271 059d 13       		.uleb128 0x13
+ 1272 059e 08020000 		.4byte	.LVL73
+ 1273 05a2 84060000 		.4byte	0x684
+ 1274 05a6 12       		.uleb128 0x12
+ 1275 05a7 01       		.uleb128 0x1
+ 1276 05a8 50       		.byte	0x50
+ 1277 05a9 02       		.uleb128 0x2
+ 1278 05aa 7D       		.byte	0x7d
+ 1279 05ab 00       		.sleb128 0
+ 1280 05ac 12       		.uleb128 0x12
+ 1281 05ad 01       		.uleb128 0x1
+ 1282 05ae 51       		.byte	0x51
+ 1283 05af 01       		.uleb128 0x1
+ 1284 05b0 38       		.byte	0x38
+ 1285 05b1 00       		.byte	0
+ 1286 05b2 00       		.byte	0
+ 1287 05b3 15       		.uleb128 0x15
+ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccKhy93y.s 			page 30
 
 
- 1384 00ac 31       		.uleb128 0x31
- 1385 00ad 13       		.uleb128 0x13
- 1386 00ae 01       		.uleb128 0x1
- 1387 00af 13       		.uleb128 0x13
- 1388 00b0 00       		.byte	0
- 1389 00b1 00       		.byte	0
- 1390 00b2 0D       		.uleb128 0xd
- 1391 00b3 8A8201   		.uleb128 0x410a
- 1392 00b6 00       		.byte	0
- 1393 00b7 02       		.uleb128 0x2
- 1394 00b8 18       		.uleb128 0x18
- 1395 00b9 9142     		.uleb128 0x2111
- 1396 00bb 18       		.uleb128 0x18
- 1397 00bc 00       		.byte	0
- 1398 00bd 00       		.byte	0
- 1399 00be 0E       		.uleb128 0xe
- 1400 00bf 898201   		.uleb128 0x4109
- 1401 00c2 01       		.byte	0x1
- 1402 00c3 11       		.uleb128 0x11
- 1403 00c4 01       		.uleb128 0x1
- 1404 00c5 31       		.uleb128 0x31
- 1405 00c6 13       		.uleb128 0x13
- 1406 00c7 00       		.byte	0
- 1407 00c8 00       		.byte	0
- 1408 00c9 0F       		.uleb128 0xf
- 1409 00ca 898201   		.uleb128 0x4109
- 1410 00cd 00       		.byte	0
- 1411 00ce 11       		.uleb128 0x11
- 1412 00cf 01       		.uleb128 0x1
- 1413 00d0 31       		.uleb128 0x31
- 1414 00d1 13       		.uleb128 0x13
- 1415 00d2 00       		.byte	0
- 1416 00d3 00       		.byte	0
- 1417 00d4 10       		.uleb128 0x10
- 1418 00d5 01       		.uleb128 0x1
- 1419 00d6 01       		.byte	0x1
- 1420 00d7 49       		.uleb128 0x49
- 1421 00d8 13       		.uleb128 0x13
- 1422 00d9 01       		.uleb128 0x1
- 1423 00da 13       		.uleb128 0x13
- 1424 00db 00       		.byte	0
- 1425 00dc 00       		.byte	0
- 1426 00dd 11       		.uleb128 0x11
- 1427 00de 21       		.uleb128 0x21
- 1428 00df 00       		.byte	0
- 1429 00e0 49       		.uleb128 0x49
- 1430 00e1 13       		.uleb128 0x13
- 1431 00e2 2F       		.uleb128 0x2f
- 1432 00e3 0B       		.uleb128 0xb
- 1433 00e4 00       		.byte	0
- 1434 00e5 00       		.byte	0
- 1435 00e6 12       		.uleb128 0x12
- 1436 00e7 34       		.uleb128 0x34
- 1437 00e8 00       		.byte	0
- 1438 00e9 03       		.uleb128 0x3
- 1439 00ea 0E       		.uleb128 0xe
- 1440 00eb 3A       		.uleb128 0x3a
-ARM GAS  C:\Users\noemi\AppData\Local\Temp\cc2A3lrg.s 			page 32
+ 1288 05b4 C7000000 		.4byte	0xc7
+ 1289 05b8 C3050000 		.4byte	0x5c3
+ 1290 05bc 16       		.uleb128 0x16
+ 1291 05bd F9000000 		.4byte	0xf9
+ 1292 05c1 31       		.byte	0x31
+ 1293 05c2 00       		.byte	0
+ 1294 05c3 15       		.uleb128 0x15
+ 1295 05c4 8C000000 		.4byte	0x8c
+ 1296 05c8 D3050000 		.4byte	0x5d3
+ 1297 05cc 16       		.uleb128 0x16
+ 1298 05cd F9000000 		.4byte	0xf9
+ 1299 05d1 07       		.byte	0x7
+ 1300 05d2 00       		.byte	0
+ 1301 05d3 17       		.uleb128 0x17
+ 1302 05d4 58020000 		.4byte	.LASF36
+ 1303 05d8 06       		.byte	0x6
+ 1304 05d9 1207     		.2byte	0x712
+ 1305 05db DF050000 		.4byte	0x5df
+ 1306 05df 08       		.uleb128 0x8
+ 1307 05e0 A2000000 		.4byte	0xa2
+ 1308 05e4 15       		.uleb128 0x15
+ 1309 05e5 8C000000 		.4byte	0x8c
+ 1310 05e9 F4050000 		.4byte	0x5f4
+ 1311 05ed 16       		.uleb128 0x16
+ 1312 05ee F9000000 		.4byte	0xf9
+ 1313 05f2 05       		.byte	0x5
+ 1314 05f3 00       		.byte	0
+ 1315 05f4 18       		.uleb128 0x18
+ 1316 05f5 AA010000 		.4byte	.LASF37
+ 1317 05f9 07       		.byte	0x7
+ 1318 05fa 12       		.byte	0x12
+ 1319 05fb E4050000 		.4byte	0x5e4
+ 1320 05ff 05       		.uleb128 0x5
+ 1321 0600 03       		.byte	0x3
+ 1322 0601 00000000 		.4byte	Acceleration
+ 1323 0605 18       		.uleb128 0x18
+ 1324 0606 D4020000 		.4byte	.LASF38
+ 1325 060a 07       		.byte	0x7
+ 1326 060b 13       		.byte	0x13
+ 1327 060c 00010000 		.4byte	0x100
+ 1328 0610 05       		.uleb128 0x5
+ 1329 0611 03       		.byte	0x3
+ 1330 0612 00000000 		.4byte	PacketReadyFlag
+ 1331 0616 19       		.uleb128 0x19
+ 1332 0617 23000000 		.4byte	.LASF39
+ 1333 061b 23000000 		.4byte	.LASF39
+ 1334 061f 08       		.byte	0x8
+ 1335 0620 5D       		.byte	0x5d
+ 1336 0621 19       		.uleb128 0x19
+ 1337 0622 28030000 		.4byte	.LASF40
+ 1338 0626 28030000 		.4byte	.LASF40
+ 1339 062a 09       		.byte	0x9
+ 1340 062b E7       		.byte	0xe7
+ 1341 062c 19       		.uleb128 0x19
+ 1342 062d 73010000 		.4byte	.LASF41
+ 1343 0631 73010000 		.4byte	.LASF41
+ 1344 0635 0A       		.byte	0xa
+ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccKhy93y.s 			page 31
 
 
- 1441 00ec 0B       		.uleb128 0xb
- 1442 00ed 3B       		.uleb128 0x3b
- 1443 00ee 05       		.uleb128 0x5
- 1444 00ef 49       		.uleb128 0x49
- 1445 00f0 13       		.uleb128 0x13
- 1446 00f1 3F       		.uleb128 0x3f
- 1447 00f2 19       		.uleb128 0x19
- 1448 00f3 3C       		.uleb128 0x3c
- 1449 00f4 19       		.uleb128 0x19
- 1450 00f5 00       		.byte	0
- 1451 00f6 00       		.byte	0
- 1452 00f7 13       		.uleb128 0x13
- 1453 00f8 35       		.uleb128 0x35
- 1454 00f9 00       		.byte	0
- 1455 00fa 49       		.uleb128 0x49
- 1456 00fb 13       		.uleb128 0x13
- 1457 00fc 00       		.byte	0
- 1458 00fd 00       		.byte	0
- 1459 00fe 14       		.uleb128 0x14
- 1460 00ff 2E       		.uleb128 0x2e
- 1461 0100 00       		.byte	0
- 1462 0101 3F       		.uleb128 0x3f
- 1463 0102 19       		.uleb128 0x19
- 1464 0103 3C       		.uleb128 0x3c
- 1465 0104 19       		.uleb128 0x19
- 1466 0105 6E       		.uleb128 0x6e
- 1467 0106 0E       		.uleb128 0xe
- 1468 0107 03       		.uleb128 0x3
- 1469 0108 0E       		.uleb128 0xe
- 1470 0109 3A       		.uleb128 0x3a
- 1471 010a 0B       		.uleb128 0xb
- 1472 010b 3B       		.uleb128 0x3b
- 1473 010c 0B       		.uleb128 0xb
- 1474 010d 00       		.byte	0
- 1475 010e 00       		.byte	0
- 1476 010f 00       		.byte	0
- 1477              		.section	.debug_loc,"",%progbits
- 1478              	.Ldebug_loc0:
- 1479              	.LLST0:
- 1480 0000 42000000 		.4byte	.LVL8
- 1481 0004 4C000000 		.4byte	.LVL9
- 1482 0008 0100     		.2byte	0x1
- 1483 000a 50       		.byte	0x50
- 1484 000b 58000000 		.4byte	.LVL12
- 1485 000f 5A000000 		.4byte	.LVL13
- 1486 0013 0100     		.2byte	0x1
- 1487 0015 50       		.byte	0x50
- 1488 0016 6A000000 		.4byte	.LVL15
- 1489 001a 74000000 		.4byte	.LVL16
- 1490 001e 0100     		.2byte	0x1
- 1491 0020 50       		.byte	0x50
- 1492 0021 80000000 		.4byte	.LVL19
- 1493 0025 82000000 		.4byte	.LVL20
- 1494 0029 0100     		.2byte	0x1
- 1495 002b 50       		.byte	0x50
- 1496 002c 92000000 		.4byte	.LVL22
- 1497 0030 9C000000 		.4byte	.LVL23
-ARM GAS  C:\Users\noemi\AppData\Local\Temp\cc2A3lrg.s 			page 33
+ 1345 0636 8B       		.byte	0x8b
+ 1346 0637 19       		.uleb128 0x19
+ 1347 0638 38030000 		.4byte	.LASF42
+ 1348 063c 38030000 		.4byte	.LASF42
+ 1349 0640 08       		.byte	0x8
+ 1350 0641 17       		.byte	0x17
+ 1351 0642 19       		.uleb128 0x19
+ 1352 0643 91020000 		.4byte	.LASF43
+ 1353 0647 91020000 		.4byte	.LASF43
+ 1354 064b 0A       		.byte	0xa
+ 1355 064c 54       		.byte	0x54
+ 1356 064d 19       		.uleb128 0x19
+ 1357 064e C1010000 		.4byte	.LASF44
+ 1358 0652 C1010000 		.4byte	.LASF44
+ 1359 0656 0B       		.byte	0xb
+ 1360 0657 5A       		.byte	0x5a
+ 1361 0658 19       		.uleb128 0x19
+ 1362 0659 7D000000 		.4byte	.LASF45
+ 1363 065d 7D000000 		.4byte	.LASF45
+ 1364 0661 0C       		.byte	0xc
+ 1365 0662 18       		.byte	0x18
+ 1366 0663 19       		.uleb128 0x19
+ 1367 0664 30030000 		.4byte	.LASF46
+ 1368 0668 30030000 		.4byte	.LASF46
+ 1369 066c 0D       		.byte	0xd
+ 1370 066d 76       		.byte	0x76
+ 1371 066e 19       		.uleb128 0x19
+ 1372 066f AE020000 		.4byte	.LASF47
+ 1373 0673 AE020000 		.4byte	.LASF47
+ 1374 0677 08       		.byte	0x8
+ 1375 0678 28       		.byte	0x28
+ 1376 0679 19       		.uleb128 0x19
+ 1377 067a 88010000 		.4byte	.LASF48
+ 1378 067e 88010000 		.4byte	.LASF48
+ 1379 0682 08       		.byte	0x8
+ 1380 0683 43       		.byte	0x43
+ 1381 0684 19       		.uleb128 0x19
+ 1382 0685 57000000 		.4byte	.LASF49
+ 1383 0689 57000000 		.4byte	.LASF49
+ 1384 068d 0A       		.byte	0xa
+ 1385 068e 8C       		.byte	0x8c
+ 1386 068f 00       		.byte	0
+ 1387              		.section	.debug_abbrev,"",%progbits
+ 1388              	.Ldebug_abbrev0:
+ 1389 0000 01       		.uleb128 0x1
+ 1390 0001 11       		.uleb128 0x11
+ 1391 0002 01       		.byte	0x1
+ 1392 0003 25       		.uleb128 0x25
+ 1393 0004 0E       		.uleb128 0xe
+ 1394 0005 13       		.uleb128 0x13
+ 1395 0006 0B       		.uleb128 0xb
+ 1396 0007 03       		.uleb128 0x3
+ 1397 0008 0E       		.uleb128 0xe
+ 1398 0009 1B       		.uleb128 0x1b
+ 1399 000a 0E       		.uleb128 0xe
+ 1400 000b 55       		.uleb128 0x55
+ 1401 000c 17       		.uleb128 0x17
+ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccKhy93y.s 			page 32
 
 
- 1498 0034 0100     		.2byte	0x1
- 1499 0036 50       		.byte	0x50
- 1500 0037 A8000000 		.4byte	.LVL26
- 1501 003b AA000000 		.4byte	.LVL27
- 1502 003f 0100     		.2byte	0x1
- 1503 0041 50       		.byte	0x50
- 1504 0042 CA000000 		.4byte	.LVL30
- 1505 0046 D4000000 		.4byte	.LVL31
- 1506 004a 0100     		.2byte	0x1
- 1507 004c 50       		.byte	0x50
- 1508 004d E0000000 		.4byte	.LVL34
- 1509 0051 E2000000 		.4byte	.LVL35
- 1510 0055 0100     		.2byte	0x1
- 1511 0057 50       		.byte	0x50
- 1512 0058 F2000000 		.4byte	.LVL37
- 1513 005c FC000000 		.4byte	.LVL38
- 1514 0060 0100     		.2byte	0x1
- 1515 0062 50       		.byte	0x50
- 1516 0063 08010000 		.4byte	.LVL41
- 1517 0067 0A010000 		.4byte	.LVL42
- 1518 006b 0100     		.2byte	0x1
- 1519 006d 50       		.byte	0x50
- 1520 006e 18010000 		.4byte	.LVL44
- 1521 0072 22010000 		.4byte	.LVL45
- 1522 0076 0100     		.2byte	0x1
- 1523 0078 50       		.byte	0x50
- 1524 0079 2E010000 		.4byte	.LVL48
- 1525 007d 30010000 		.4byte	.LVL49
- 1526 0081 0100     		.2byte	0x1
- 1527 0083 50       		.byte	0x50
- 1528 0084 4E010000 		.4byte	.LVL52
- 1529 0088 58010000 		.4byte	.LVL53
- 1530 008c 0100     		.2byte	0x1
- 1531 008e 50       		.byte	0x50
- 1532 008f 64010000 		.4byte	.LVL56
- 1533 0093 66010000 		.4byte	.LVL57
- 1534 0097 0100     		.2byte	0x1
- 1535 0099 50       		.byte	0x50
- 1536 009a 74010000 		.4byte	.LVL59
- 1537 009e 7E010000 		.4byte	.LVL60
- 1538 00a2 0100     		.2byte	0x1
- 1539 00a4 50       		.byte	0x50
- 1540 00a5 8A010000 		.4byte	.LVL63
- 1541 00a9 8C010000 		.4byte	.LVL64
- 1542 00ad 0100     		.2byte	0x1
- 1543 00af 50       		.byte	0x50
- 1544 00b0 00000000 		.4byte	0
- 1545 00b4 00000000 		.4byte	0
- 1546              	.LLST1:
- 1547 00b8 14000000 		.4byte	.LVL2
- 1548 00bc 18000000 		.4byte	.LVL3
- 1549 00c0 0200     		.2byte	0x2
- 1550 00c2 30       		.byte	0x30
- 1551 00c3 9F       		.byte	0x9f
- 1552 00c4 18000000 		.4byte	.LVL3
- 1553 00c8 D0010000 		.4byte	.LFE64
- 1554 00cc 0100     		.2byte	0x1
-ARM GAS  C:\Users\noemi\AppData\Local\Temp\cc2A3lrg.s 			page 34
+ 1402 000d 11       		.uleb128 0x11
+ 1403 000e 01       		.uleb128 0x1
+ 1404 000f 10       		.uleb128 0x10
+ 1405 0010 17       		.uleb128 0x17
+ 1406 0011 00       		.byte	0
+ 1407 0012 00       		.byte	0
+ 1408 0013 02       		.uleb128 0x2
+ 1409 0014 24       		.uleb128 0x24
+ 1410 0015 00       		.byte	0
+ 1411 0016 0B       		.uleb128 0xb
+ 1412 0017 0B       		.uleb128 0xb
+ 1413 0018 3E       		.uleb128 0x3e
+ 1414 0019 0B       		.uleb128 0xb
+ 1415 001a 03       		.uleb128 0x3
+ 1416 001b 0E       		.uleb128 0xe
+ 1417 001c 00       		.byte	0
+ 1418 001d 00       		.byte	0
+ 1419 001e 03       		.uleb128 0x3
+ 1420 001f 16       		.uleb128 0x16
+ 1421 0020 00       		.byte	0
+ 1422 0021 03       		.uleb128 0x3
+ 1423 0022 0E       		.uleb128 0xe
+ 1424 0023 3A       		.uleb128 0x3a
+ 1425 0024 0B       		.uleb128 0xb
+ 1426 0025 3B       		.uleb128 0x3b
+ 1427 0026 0B       		.uleb128 0xb
+ 1428 0027 49       		.uleb128 0x49
+ 1429 0028 13       		.uleb128 0x13
+ 1430 0029 00       		.byte	0
+ 1431 002a 00       		.byte	0
+ 1432 002b 04       		.uleb128 0x4
+ 1433 002c 24       		.uleb128 0x24
+ 1434 002d 00       		.byte	0
+ 1435 002e 0B       		.uleb128 0xb
+ 1436 002f 0B       		.uleb128 0xb
+ 1437 0030 3E       		.uleb128 0x3e
+ 1438 0031 0B       		.uleb128 0xb
+ 1439 0032 03       		.uleb128 0x3
+ 1440 0033 08       		.uleb128 0x8
+ 1441 0034 00       		.byte	0
+ 1442 0035 00       		.byte	0
+ 1443 0036 05       		.uleb128 0x5
+ 1444 0037 16       		.uleb128 0x16
+ 1445 0038 00       		.byte	0
+ 1446 0039 03       		.uleb128 0x3
+ 1447 003a 0E       		.uleb128 0xe
+ 1448 003b 3A       		.uleb128 0x3a
+ 1449 003c 0B       		.uleb128 0xb
+ 1450 003d 3B       		.uleb128 0x3b
+ 1451 003e 05       		.uleb128 0x5
+ 1452 003f 49       		.uleb128 0x49
+ 1453 0040 13       		.uleb128 0x13
+ 1454 0041 00       		.byte	0
+ 1455 0042 00       		.byte	0
+ 1456 0043 06       		.uleb128 0x6
+ 1457 0044 04       		.uleb128 0x4
+ 1458 0045 01       		.byte	0x1
+ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccKhy93y.s 			page 33
 
 
- 1555 00ce 54       		.byte	0x54
- 1556 00cf 00000000 		.4byte	0
- 1557 00d3 00000000 		.4byte	0
- 1558              		.section	.debug_aranges,"",%progbits
- 1559 0000 1C000000 		.4byte	0x1c
- 1560 0004 0200     		.2byte	0x2
- 1561 0006 00000000 		.4byte	.Ldebug_info0
- 1562 000a 04       		.byte	0x4
- 1563 000b 00       		.byte	0
- 1564 000c 0000     		.2byte	0
- 1565 000e 0000     		.2byte	0
- 1566 0010 00000000 		.4byte	.LFB64
- 1567 0014 D0010000 		.4byte	.LFE64-.LFB64
- 1568 0018 00000000 		.4byte	0
- 1569 001c 00000000 		.4byte	0
- 1570              		.section	.debug_ranges,"",%progbits
- 1571              	.Ldebug_ranges0:
- 1572 0000 00000000 		.4byte	.LFB64
- 1573 0004 D0010000 		.4byte	.LFE64
- 1574 0008 00000000 		.4byte	0
- 1575 000c 00000000 		.4byte	0
- 1576              		.section	.debug_line,"",%progbits
- 1577              	.Ldebug_line0:
- 1578 0000 50020000 		.section	.debug_str,"MS",%progbits,1
- 1578      0200F001 
- 1578      00000201 
- 1578      FB0E0D00 
- 1578      01010101 
- 1579              	.LASF21:
- 1580 0000 6D657373 		.ascii	"message\000"
- 1580      61676500 
- 1581              	.LASF4:
- 1582 0008 5F5F7569 		.ascii	"__uint8_t\000"
- 1582      6E74385F 
- 1582      7400
- 1583              	.LASF27:
- 1584 0012 4932435F 		.ascii	"I2C_Peripheral_IsDeviceConnected\000"
- 1584      50657269 
- 1584      70686572 
- 1584      616C5F49 
- 1584      73446576 
- 1585              	.LASF5:
- 1586 0033 5F5F696E 		.ascii	"__int32_t\000"
- 1586      7433325F 
- 1586      7400
- 1587              	.LASF6:
- 1588 003d 6C6F6E67 		.ascii	"long int\000"
- 1588      20696E74 
- 1588      00
- 1589              	.LASF18:
- 1590 0046 4572726F 		.ascii	"ErrorCode\000"
- 1590      72436F64 
- 1590      6500
- 1591              	.LASF13:
- 1592 0050 666C6F61 		.ascii	"float\000"
- 1592      7400
- 1593              	.LASF1:
-ARM GAS  C:\Users\noemi\AppData\Local\Temp\cc2A3lrg.s 			page 35
+ 1459 0046 0B       		.uleb128 0xb
+ 1460 0047 0B       		.uleb128 0xb
+ 1461 0048 49       		.uleb128 0x49
+ 1462 0049 13       		.uleb128 0x13
+ 1463 004a 3A       		.uleb128 0x3a
+ 1464 004b 0B       		.uleb128 0xb
+ 1465 004c 3B       		.uleb128 0x3b
+ 1466 004d 0B       		.uleb128 0xb
+ 1467 004e 01       		.uleb128 0x1
+ 1468 004f 13       		.uleb128 0x13
+ 1469 0050 00       		.byte	0
+ 1470 0051 00       		.byte	0
+ 1471 0052 07       		.uleb128 0x7
+ 1472 0053 28       		.uleb128 0x28
+ 1473 0054 00       		.byte	0
+ 1474 0055 03       		.uleb128 0x3
+ 1475 0056 0E       		.uleb128 0xe
+ 1476 0057 1C       		.uleb128 0x1c
+ 1477 0058 0B       		.uleb128 0xb
+ 1478 0059 00       		.byte	0
+ 1479 005a 00       		.byte	0
+ 1480 005b 08       		.uleb128 0x8
+ 1481 005c 35       		.uleb128 0x35
+ 1482 005d 00       		.byte	0
+ 1483 005e 49       		.uleb128 0x49
+ 1484 005f 13       		.uleb128 0x13
+ 1485 0060 00       		.byte	0
+ 1486 0061 00       		.byte	0
+ 1487 0062 09       		.uleb128 0x9
+ 1488 0063 2E       		.uleb128 0x2e
+ 1489 0064 01       		.byte	0x1
+ 1490 0065 3F       		.uleb128 0x3f
+ 1491 0066 19       		.uleb128 0x19
+ 1492 0067 03       		.uleb128 0x3
+ 1493 0068 0E       		.uleb128 0xe
+ 1494 0069 3A       		.uleb128 0x3a
+ 1495 006a 0B       		.uleb128 0xb
+ 1496 006b 3B       		.uleb128 0x3b
+ 1497 006c 0B       		.uleb128 0xb
+ 1498 006d 27       		.uleb128 0x27
+ 1499 006e 19       		.uleb128 0x19
+ 1500 006f 49       		.uleb128 0x49
+ 1501 0070 13       		.uleb128 0x13
+ 1502 0071 8701     		.uleb128 0x87
+ 1503 0073 19       		.uleb128 0x19
+ 1504 0074 11       		.uleb128 0x11
+ 1505 0075 01       		.uleb128 0x1
+ 1506 0076 12       		.uleb128 0x12
+ 1507 0077 06       		.uleb128 0x6
+ 1508 0078 40       		.uleb128 0x40
+ 1509 0079 18       		.uleb128 0x18
+ 1510 007a 9742     		.uleb128 0x2117
+ 1511 007c 19       		.uleb128 0x19
+ 1512 007d 01       		.uleb128 0x1
+ 1513 007e 13       		.uleb128 0x13
+ 1514 007f 00       		.byte	0
+ 1515 0080 00       		.byte	0
+ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccKhy93y.s 			page 34
 
 
- 1594 0056 756E7369 		.ascii	"unsigned char\000"
- 1594      676E6564 
- 1594      20636861 
- 1594      7200
- 1595              	.LASF35:
- 1596 0064 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
- 1596      43313120 
- 1596      352E342E 
- 1596      31203230 
- 1596      31363036 
- 1597 0097 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
- 1597      20726576 
- 1597      6973696F 
- 1597      6E203233 
- 1597      37373135 
- 1598 00ca 67202D66 		.ascii	"g -ffunction-sections -ffat-lto-objects\000"
- 1598      66756E63 
- 1598      74696F6E 
- 1598      2D736563 
- 1598      74696F6E 
- 1599              	.LASF7:
- 1600 00f2 6C6F6E67 		.ascii	"long unsigned int\000"
- 1600      20756E73 
- 1600      69676E65 
- 1600      6420696E 
- 1600      7400
- 1601              	.LASF3:
- 1602 0104 73686F72 		.ascii	"short unsigned int\000"
- 1602      7420756E 
- 1602      7369676E 
- 1602      65642069 
- 1602      6E7400
- 1603              	.LASF39:
- 1604 0117 49544D5F 		.ascii	"ITM_RxBuffer\000"
- 1604      52784275 
- 1604      66666572 
- 1604      00
- 1605              	.LASF14:
- 1606 0124 646F7562 		.ascii	"double\000"
- 1606      6C6500
- 1607              	.LASF29:
- 1608 012b 55415254 		.ascii	"UART_Debug_PutString\000"
- 1608      5F446562 
- 1608      75675F50 
- 1608      75745374 
- 1608      72696E67 
- 1609              	.LASF34:
- 1610 0140 4932435F 		.ascii	"I2C_Peripheral_WriteRegister\000"
- 1610      50657269 
- 1610      70686572 
- 1610      616C5F57 
- 1610      72697465 
- 1611              	.LASF38:
- 1612 015d 6D61696E 		.ascii	"main\000"
- 1612      00
- 1613              	.LASF25:
- 1614 0162 6374726C 		.ascii	"ctrl_reg1\000"
-ARM GAS  C:\Users\noemi\AppData\Local\Temp\cc2A3lrg.s 			page 36
+ 1516 0081 0A       		.uleb128 0xa
+ 1517 0082 34       		.uleb128 0x34
+ 1518 0083 00       		.byte	0
+ 1519 0084 03       		.uleb128 0x3
+ 1520 0085 0E       		.uleb128 0xe
+ 1521 0086 3A       		.uleb128 0x3a
+ 1522 0087 0B       		.uleb128 0xb
+ 1523 0088 3B       		.uleb128 0x3b
+ 1524 0089 0B       		.uleb128 0xb
+ 1525 008a 49       		.uleb128 0x49
+ 1526 008b 13       		.uleb128 0x13
+ 1527 008c 02       		.uleb128 0x2
+ 1528 008d 18       		.uleb128 0x18
+ 1529 008e 00       		.byte	0
+ 1530 008f 00       		.byte	0
+ 1531 0090 0B       		.uleb128 0xb
+ 1532 0091 34       		.uleb128 0x34
+ 1533 0092 00       		.byte	0
+ 1534 0093 03       		.uleb128 0x3
+ 1535 0094 0E       		.uleb128 0xe
+ 1536 0095 3A       		.uleb128 0x3a
+ 1537 0096 0B       		.uleb128 0xb
+ 1538 0097 3B       		.uleb128 0x3b
+ 1539 0098 0B       		.uleb128 0xb
+ 1540 0099 49       		.uleb128 0x49
+ 1541 009a 13       		.uleb128 0x13
+ 1542 009b 02       		.uleb128 0x2
+ 1543 009c 17       		.uleb128 0x17
+ 1544 009d 00       		.byte	0
+ 1545 009e 00       		.byte	0
+ 1546 009f 0C       		.uleb128 0xc
+ 1547 00a0 34       		.uleb128 0x34
+ 1548 00a1 00       		.byte	0
+ 1549 00a2 03       		.uleb128 0x3
+ 1550 00a3 0E       		.uleb128 0xe
+ 1551 00a4 3A       		.uleb128 0x3a
+ 1552 00a5 0B       		.uleb128 0xb
+ 1553 00a6 3B       		.uleb128 0x3b
+ 1554 00a7 05       		.uleb128 0x5
+ 1555 00a8 49       		.uleb128 0x49
+ 1556 00a9 13       		.uleb128 0x13
+ 1557 00aa 02       		.uleb128 0x2
+ 1558 00ab 17       		.uleb128 0x17
+ 1559 00ac 00       		.byte	0
+ 1560 00ad 00       		.byte	0
+ 1561 00ae 0D       		.uleb128 0xd
+ 1562 00af 34       		.uleb128 0x34
+ 1563 00b0 00       		.byte	0
+ 1564 00b1 03       		.uleb128 0x3
+ 1565 00b2 0E       		.uleb128 0xe
+ 1566 00b3 3A       		.uleb128 0x3a
+ 1567 00b4 0B       		.uleb128 0xb
+ 1568 00b5 3B       		.uleb128 0x3b
+ 1569 00b6 05       		.uleb128 0x5
+ 1570 00b7 49       		.uleb128 0x49
+ 1571 00b8 13       		.uleb128 0x13
+ 1572 00b9 1C       		.uleb128 0x1c
+ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccKhy93y.s 			page 35
 
 
- 1614      5F726567 
- 1614      3100
- 1615              	.LASF26:
- 1616 016c 6374726C 		.ascii	"ctrl_reg4\000"
- 1616      5F726567 
- 1616      3400
- 1617              	.LASF10:
- 1618 0176 756E7369 		.ascii	"unsigned int\000"
- 1618      676E6564 
- 1618      20696E74 
- 1618      00
- 1619              	.LASF9:
- 1620 0183 6C6F6E67 		.ascii	"long long unsigned int\000"
- 1620      206C6F6E 
- 1620      6720756E 
- 1620      7369676E 
- 1620      65642069 
- 1621              	.LASF11:
- 1622 019a 75696E74 		.ascii	"uint8_t\000"
- 1622      385F7400 
- 1623              	.LASF37:
- 1624 01a2 433A5C55 		.ascii	"C:\\Users\\noemi\\Desktop\\PSoC_03_Complete\\PSoC_0"
- 1624      73657273 
- 1624      5C6E6F65 
- 1624      6D695C44 
- 1624      65736B74 
- 1625 01d0 335C4159 		.ascii	"3\\AY1920_II_HW_05_PROJ_2.cydsn\000"
- 1625      31393230 
- 1625      5F49495F 
- 1625      48575F30 
- 1625      355F5052 
- 1626              	.LASF24:
- 1627 01ef 73746174 		.ascii	"status_register\000"
- 1627      75735F72 
- 1627      65676973 
- 1627      74657200 
- 1628              	.LASF12:
- 1629 01ff 696E7433 		.ascii	"int32_t\000"
- 1629      325F7400 
- 1630              	.LASF20:
- 1631 0207 73697A65 		.ascii	"sizetype\000"
- 1631      74797065 
- 1631      00
- 1632              	.LASF23:
- 1633 0210 6572726F 		.ascii	"error\000"
- 1633      7200
- 1634              	.LASF8:
- 1635 0216 6C6F6E67 		.ascii	"long long int\000"
- 1635      206C6F6E 
- 1635      6720696E 
- 1635      7400
- 1636              	.LASF31:
- 1637 0224 55415254 		.ascii	"UART_Debug_Start\000"
- 1637      5F446562 
- 1637      75675F53 
- 1637      74617274 
- 1637      00
-ARM GAS  C:\Users\noemi\AppData\Local\Temp\cc2A3lrg.s 			page 37
+ 1573 00ba 0D       		.uleb128 0xd
+ 1574 00bb 00       		.byte	0
+ 1575 00bc 00       		.byte	0
+ 1576 00bd 0E       		.uleb128 0xe
+ 1577 00be 34       		.uleb128 0x34
+ 1578 00bf 00       		.byte	0
+ 1579 00c0 03       		.uleb128 0x3
+ 1580 00c1 0E       		.uleb128 0xe
+ 1581 00c2 3A       		.uleb128 0x3a
+ 1582 00c3 0B       		.uleb128 0xb
+ 1583 00c4 3B       		.uleb128 0x3b
+ 1584 00c5 05       		.uleb128 0x5
+ 1585 00c6 49       		.uleb128 0x49
+ 1586 00c7 13       		.uleb128 0x13
+ 1587 00c8 02       		.uleb128 0x2
+ 1588 00c9 18       		.uleb128 0x18
+ 1589 00ca 00       		.byte	0
+ 1590 00cb 00       		.byte	0
+ 1591 00cc 0F       		.uleb128 0xf
+ 1592 00cd 0B       		.uleb128 0xb
+ 1593 00ce 01       		.byte	0x1
+ 1594 00cf 11       		.uleb128 0x11
+ 1595 00d0 01       		.uleb128 0x1
+ 1596 00d1 12       		.uleb128 0x12
+ 1597 00d2 06       		.uleb128 0x6
+ 1598 00d3 01       		.uleb128 0x1
+ 1599 00d4 13       		.uleb128 0x13
+ 1600 00d5 00       		.byte	0
+ 1601 00d6 00       		.byte	0
+ 1602 00d7 10       		.uleb128 0x10
+ 1603 00d8 34       		.uleb128 0x34
+ 1604 00d9 00       		.byte	0
+ 1605 00da 03       		.uleb128 0x3
+ 1606 00db 08       		.uleb128 0x8
+ 1607 00dc 3A       		.uleb128 0x3a
+ 1608 00dd 0B       		.uleb128 0xb
+ 1609 00de 3B       		.uleb128 0x3b
+ 1610 00df 0B       		.uleb128 0xb
+ 1611 00e0 49       		.uleb128 0x49
+ 1612 00e1 13       		.uleb128 0x13
+ 1613 00e2 02       		.uleb128 0x2
+ 1614 00e3 17       		.uleb128 0x17
+ 1615 00e4 00       		.byte	0
+ 1616 00e5 00       		.byte	0
+ 1617 00e6 11       		.uleb128 0x11
+ 1618 00e7 898201   		.uleb128 0x4109
+ 1619 00ea 01       		.byte	0x1
+ 1620 00eb 11       		.uleb128 0x11
+ 1621 00ec 01       		.uleb128 0x1
+ 1622 00ed 31       		.uleb128 0x31
+ 1623 00ee 13       		.uleb128 0x13
+ 1624 00ef 01       		.uleb128 0x1
+ 1625 00f0 13       		.uleb128 0x13
+ 1626 00f1 00       		.byte	0
+ 1627 00f2 00       		.byte	0
+ 1628 00f3 12       		.uleb128 0x12
+ 1629 00f4 8A8201   		.uleb128 0x410a
+ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccKhy93y.s 			page 36
 
 
- 1638              	.LASF36:
- 1639 0235 6D61696E 		.ascii	"main.c\000"
- 1639      2E6300
- 1640              	.LASF15:
- 1641 023c 63686172 		.ascii	"char\000"
- 1641      00
- 1642              	.LASF33:
- 1643 0241 4932435F 		.ascii	"I2C_Peripheral_ReadRegister\000"
- 1643      50657269 
- 1643      70686572 
- 1643      616C5F52 
- 1643      65616452 
- 1644              	.LASF2:
- 1645 025d 73686F72 		.ascii	"short int\000"
- 1645      7420696E 
- 1645      7400
- 1646              	.LASF16:
- 1647 0267 4E4F5F45 		.ascii	"NO_ERROR\000"
- 1647      52524F52 
- 1647      00
- 1648              	.LASF17:
- 1649 0270 4552524F 		.ascii	"ERROR\000"
- 1649      5200
- 1650              	.LASF19:
- 1651 0276 6C6F6E67 		.ascii	"long double\000"
- 1651      20646F75 
- 1651      626C6500 
- 1652              	.LASF0:
- 1653 0282 7369676E 		.ascii	"signed char\000"
- 1653      65642063 
- 1653      68617200 
- 1654              	.LASF22:
- 1655 028e 77686F5F 		.ascii	"who_am_i_reg\000"
- 1655      616D5F69 
- 1655      5F726567 
- 1655      00
- 1656              	.LASF28:
- 1657 029b 73707269 		.ascii	"sprintf\000"
- 1657      6E746600 
- 1658              	.LASF32:
- 1659 02a3 43794465 		.ascii	"CyDelay\000"
- 1659      6C617900 
- 1660              	.LASF30:
- 1661 02ab 4932435F 		.ascii	"I2C_Peripheral_Start\000"
- 1661      50657269 
- 1661      70686572 
- 1661      616C5F53 
- 1661      74617274 
- 1662              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran
+ 1630 00f7 00       		.byte	0
+ 1631 00f8 02       		.uleb128 0x2
+ 1632 00f9 18       		.uleb128 0x18
+ 1633 00fa 9142     		.uleb128 0x2111
+ 1634 00fc 18       		.uleb128 0x18
+ 1635 00fd 00       		.byte	0
+ 1636 00fe 00       		.byte	0
+ 1637 00ff 13       		.uleb128 0x13
+ 1638 0100 898201   		.uleb128 0x4109
+ 1639 0103 01       		.byte	0x1
+ 1640 0104 11       		.uleb128 0x11
+ 1641 0105 01       		.uleb128 0x1
+ 1642 0106 31       		.uleb128 0x31
+ 1643 0107 13       		.uleb128 0x13
+ 1644 0108 00       		.byte	0
+ 1645 0109 00       		.byte	0
+ 1646 010a 14       		.uleb128 0x14
+ 1647 010b 898201   		.uleb128 0x4109
+ 1648 010e 00       		.byte	0
+ 1649 010f 11       		.uleb128 0x11
+ 1650 0110 01       		.uleb128 0x1
+ 1651 0111 31       		.uleb128 0x31
+ 1652 0112 13       		.uleb128 0x13
+ 1653 0113 00       		.byte	0
+ 1654 0114 00       		.byte	0
+ 1655 0115 15       		.uleb128 0x15
+ 1656 0116 01       		.uleb128 0x1
+ 1657 0117 01       		.byte	0x1
+ 1658 0118 49       		.uleb128 0x49
+ 1659 0119 13       		.uleb128 0x13
+ 1660 011a 01       		.uleb128 0x1
+ 1661 011b 13       		.uleb128 0x13
+ 1662 011c 00       		.byte	0
+ 1663 011d 00       		.byte	0
+ 1664 011e 16       		.uleb128 0x16
+ 1665 011f 21       		.uleb128 0x21
+ 1666 0120 00       		.byte	0
+ 1667 0121 49       		.uleb128 0x49
+ 1668 0122 13       		.uleb128 0x13
+ 1669 0123 2F       		.uleb128 0x2f
+ 1670 0124 0B       		.uleb128 0xb
+ 1671 0125 00       		.byte	0
+ 1672 0126 00       		.byte	0
+ 1673 0127 17       		.uleb128 0x17
+ 1674 0128 34       		.uleb128 0x34
+ 1675 0129 00       		.byte	0
+ 1676 012a 03       		.uleb128 0x3
+ 1677 012b 0E       		.uleb128 0xe
+ 1678 012c 3A       		.uleb128 0x3a
+ 1679 012d 0B       		.uleb128 0xb
+ 1680 012e 3B       		.uleb128 0x3b
+ 1681 012f 05       		.uleb128 0x5
+ 1682 0130 49       		.uleb128 0x49
+ 1683 0131 13       		.uleb128 0x13
+ 1684 0132 3F       		.uleb128 0x3f
+ 1685 0133 19       		.uleb128 0x19
+ 1686 0134 3C       		.uleb128 0x3c
+ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccKhy93y.s 			page 37
+
+
+ 1687 0135 19       		.uleb128 0x19
+ 1688 0136 00       		.byte	0
+ 1689 0137 00       		.byte	0
+ 1690 0138 18       		.uleb128 0x18
+ 1691 0139 34       		.uleb128 0x34
+ 1692 013a 00       		.byte	0
+ 1693 013b 03       		.uleb128 0x3
+ 1694 013c 0E       		.uleb128 0xe
+ 1695 013d 3A       		.uleb128 0x3a
+ 1696 013e 0B       		.uleb128 0xb
+ 1697 013f 3B       		.uleb128 0x3b
+ 1698 0140 0B       		.uleb128 0xb
+ 1699 0141 49       		.uleb128 0x49
+ 1700 0142 13       		.uleb128 0x13
+ 1701 0143 3F       		.uleb128 0x3f
+ 1702 0144 19       		.uleb128 0x19
+ 1703 0145 02       		.uleb128 0x2
+ 1704 0146 18       		.uleb128 0x18
+ 1705 0147 00       		.byte	0
+ 1706 0148 00       		.byte	0
+ 1707 0149 19       		.uleb128 0x19
+ 1708 014a 2E       		.uleb128 0x2e
+ 1709 014b 00       		.byte	0
+ 1710 014c 3F       		.uleb128 0x3f
+ 1711 014d 19       		.uleb128 0x19
+ 1712 014e 3C       		.uleb128 0x3c
+ 1713 014f 19       		.uleb128 0x19
+ 1714 0150 6E       		.uleb128 0x6e
+ 1715 0151 0E       		.uleb128 0xe
+ 1716 0152 03       		.uleb128 0x3
+ 1717 0153 0E       		.uleb128 0xe
+ 1718 0154 3A       		.uleb128 0x3a
+ 1719 0155 0B       		.uleb128 0xb
+ 1720 0156 3B       		.uleb128 0x3b
+ 1721 0157 0B       		.uleb128 0xb
+ 1722 0158 00       		.byte	0
+ 1723 0159 00       		.byte	0
+ 1724 015a 00       		.byte	0
+ 1725              		.section	.debug_loc,"",%progbits
+ 1726              	.Ldebug_loc0:
+ 1727              	.LLST0:
+ 1728 0000 4C000000 		.4byte	.LVL10
+ 1729 0004 56000000 		.4byte	.LVL11
+ 1730 0008 0100     		.2byte	0x1
+ 1731 000a 50       		.byte	0x50
+ 1732 000b 62000000 		.4byte	.LVL14
+ 1733 000f 64000000 		.4byte	.LVL15
+ 1734 0013 0100     		.2byte	0x1
+ 1735 0015 50       		.byte	0x50
+ 1736 0016 74000000 		.4byte	.LVL17
+ 1737 001a 7E000000 		.4byte	.LVL18
+ 1738 001e 0100     		.2byte	0x1
+ 1739 0020 50       		.byte	0x50
+ 1740 0021 8A000000 		.4byte	.LVL21
+ 1741 0025 8C000000 		.4byte	.LVL22
+ 1742 0029 0100     		.2byte	0x1
+ 1743 002b 50       		.byte	0x50
+ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccKhy93y.s 			page 38
+
+
+ 1744 002c 9C000000 		.4byte	.LVL24
+ 1745 0030 A6000000 		.4byte	.LVL25
+ 1746 0034 0100     		.2byte	0x1
+ 1747 0036 50       		.byte	0x50
+ 1748 0037 B2000000 		.4byte	.LVL28
+ 1749 003b B4000000 		.4byte	.LVL29
+ 1750 003f 0100     		.2byte	0x1
+ 1751 0041 50       		.byte	0x50
+ 1752 0042 CE000000 		.4byte	.LVL31
+ 1753 0046 D8000000 		.4byte	.LVL32
+ 1754 004a 0100     		.2byte	0x1
+ 1755 004c 50       		.byte	0x50
+ 1756 004d E4000000 		.4byte	.LVL35
+ 1757 0051 E6000000 		.4byte	.LVL36
+ 1758 0055 0100     		.2byte	0x1
+ 1759 0057 50       		.byte	0x50
+ 1760 0058 F6000000 		.4byte	.LVL38
+ 1761 005c 00010000 		.4byte	.LVL39
+ 1762 0060 0100     		.2byte	0x1
+ 1763 0062 50       		.byte	0x50
+ 1764 0063 0C010000 		.4byte	.LVL42
+ 1765 0067 0E010000 		.4byte	.LVL43
+ 1766 006b 0100     		.2byte	0x1
+ 1767 006d 50       		.byte	0x50
+ 1768 006e 1C010000 		.4byte	.LVL45
+ 1769 0072 26010000 		.4byte	.LVL46
+ 1770 0076 0100     		.2byte	0x1
+ 1771 0078 50       		.byte	0x50
+ 1772 0079 32010000 		.4byte	.LVL49
+ 1773 007d 34010000 		.4byte	.LVL50
+ 1774 0081 0100     		.2byte	0x1
+ 1775 0083 50       		.byte	0x50
+ 1776 0084 4C010000 		.4byte	.LVL52
+ 1777 0088 56010000 		.4byte	.LVL53
+ 1778 008c 0100     		.2byte	0x1
+ 1779 008e 50       		.byte	0x50
+ 1780 008f 62010000 		.4byte	.LVL56
+ 1781 0093 64010000 		.4byte	.LVL57
+ 1782 0097 0100     		.2byte	0x1
+ 1783 0099 50       		.byte	0x50
+ 1784 009a 72010000 		.4byte	.LVL59
+ 1785 009e 7C010000 		.4byte	.LVL60
+ 1786 00a2 0100     		.2byte	0x1
+ 1787 00a4 50       		.byte	0x50
+ 1788 00a5 88010000 		.4byte	.LVL63
+ 1789 00a9 8A010000 		.4byte	.LVL64
+ 1790 00ad 0100     		.2byte	0x1
+ 1791 00af 50       		.byte	0x50
+ 1792 00b0 00000000 		.4byte	0
+ 1793 00b4 00000000 		.4byte	0
+ 1794              	.LLST1:
+ 1795 00b8 C2010000 		.4byte	.LVL66
+ 1796 00bc E8010000 		.4byte	.LVL69
+ 1797 00c0 0100     		.2byte	0x1
+ 1798 00c2 51       		.byte	0x51
+ 1799 00c3 E8010000 		.4byte	.LVL69
+ 1800 00c7 07020000 		.4byte	.LVL73-1
+ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccKhy93y.s 			page 39
+
+
+ 1801 00cb 2000     		.2byte	0x20
+ 1802 00cd 03       		.byte	0x3
+ 1803 00ce 01000000 		.4byte	Acceleration+1
+ 1804 00d2 94       		.byte	0x94
+ 1805 00d3 01       		.byte	0x1
+ 1806 00d4 08       		.byte	0x8
+ 1807 00d5 FF       		.byte	0xff
+ 1808 00d6 1A       		.byte	0x1a
+ 1809 00d7 38       		.byte	0x38
+ 1810 00d8 24       		.byte	0x24
+ 1811 00d9 03       		.byte	0x3
+ 1812 00da 00000000 		.4byte	Acceleration
+ 1813 00de 94       		.byte	0x94
+ 1814 00df 01       		.byte	0x1
+ 1815 00e0 08       		.byte	0x8
+ 1816 00e1 FF       		.byte	0xff
+ 1817 00e2 1A       		.byte	0x1a
+ 1818 00e3 21       		.byte	0x21
+ 1819 00e4 09       		.byte	0x9
+ 1820 00e5 F4       		.byte	0xf4
+ 1821 00e6 24       		.byte	0x24
+ 1822 00e7 09       		.byte	0x9
+ 1823 00e8 FA       		.byte	0xfa
+ 1824 00e9 26       		.byte	0x26
+ 1825 00ea 32       		.byte	0x32
+ 1826 00eb 24       		.byte	0x24
+ 1827 00ec 9F       		.byte	0x9f
+ 1828 00ed 00000000 		.4byte	0
+ 1829 00f1 00000000 		.4byte	0
+ 1830              	.LLST2:
+ 1831 00f5 D2010000 		.4byte	.LVL67
+ 1832 00f9 F2010000 		.4byte	.LVL70
+ 1833 00fd 0100     		.2byte	0x1
+ 1834 00ff 52       		.byte	0x52
+ 1835 0100 F2010000 		.4byte	.LVL70
+ 1836 0104 07020000 		.4byte	.LVL73-1
+ 1837 0108 2000     		.2byte	0x20
+ 1838 010a 03       		.byte	0x3
+ 1839 010b 03000000 		.4byte	Acceleration+3
+ 1840 010f 94       		.byte	0x94
+ 1841 0110 01       		.byte	0x1
+ 1842 0111 08       		.byte	0x8
+ 1843 0112 FF       		.byte	0xff
+ 1844 0113 1A       		.byte	0x1a
+ 1845 0114 38       		.byte	0x38
+ 1846 0115 24       		.byte	0x24
+ 1847 0116 03       		.byte	0x3
+ 1848 0117 02000000 		.4byte	Acceleration+2
+ 1849 011b 94       		.byte	0x94
+ 1850 011c 01       		.byte	0x1
+ 1851 011d 08       		.byte	0x8
+ 1852 011e FF       		.byte	0xff
+ 1853 011f 1A       		.byte	0x1a
+ 1854 0120 21       		.byte	0x21
+ 1855 0121 09       		.byte	0x9
+ 1856 0122 F4       		.byte	0xf4
+ 1857 0123 24       		.byte	0x24
+ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccKhy93y.s 			page 40
+
+
+ 1858 0124 09       		.byte	0x9
+ 1859 0125 FA       		.byte	0xfa
+ 1860 0126 26       		.byte	0x26
+ 1861 0127 32       		.byte	0x32
+ 1862 0128 24       		.byte	0x24
+ 1863 0129 9F       		.byte	0x9f
+ 1864 012a 00000000 		.4byte	0
+ 1865 012e 00000000 		.4byte	0
+ 1866              	.LLST3:
+ 1867 0132 E2010000 		.4byte	.LVL68
+ 1868 0136 FC010000 		.4byte	.LVL71
+ 1869 013a 0100     		.2byte	0x1
+ 1870 013c 53       		.byte	0x53
+ 1871 013d FC010000 		.4byte	.LVL71
+ 1872 0141 04020000 		.4byte	.LVL72
+ 1873 0145 1800     		.2byte	0x18
+ 1874 0147 70       		.byte	0x70
+ 1875 0148 00       		.sleb128 0
+ 1876 0149 38       		.byte	0x38
+ 1877 014a 24       		.byte	0x24
+ 1878 014b 03       		.byte	0x3
+ 1879 014c 04000000 		.4byte	Acceleration+4
+ 1880 0150 94       		.byte	0x94
+ 1881 0151 01       		.byte	0x1
+ 1882 0152 08       		.byte	0x8
+ 1883 0153 FF       		.byte	0xff
+ 1884 0154 1A       		.byte	0x1a
+ 1885 0155 21       		.byte	0x21
+ 1886 0156 09       		.byte	0x9
+ 1887 0157 F4       		.byte	0xf4
+ 1888 0158 24       		.byte	0x24
+ 1889 0159 09       		.byte	0x9
+ 1890 015a FA       		.byte	0xfa
+ 1891 015b 26       		.byte	0x26
+ 1892 015c 32       		.byte	0x32
+ 1893 015d 24       		.byte	0x24
+ 1894 015e 9F       		.byte	0x9f
+ 1895 015f 04020000 		.4byte	.LVL72
+ 1896 0163 07020000 		.4byte	.LVL73-1
+ 1897 0167 2000     		.2byte	0x20
+ 1898 0169 03       		.byte	0x3
+ 1899 016a 05000000 		.4byte	Acceleration+5
+ 1900 016e 94       		.byte	0x94
+ 1901 016f 01       		.byte	0x1
+ 1902 0170 08       		.byte	0x8
+ 1903 0171 FF       		.byte	0xff
+ 1904 0172 1A       		.byte	0x1a
+ 1905 0173 38       		.byte	0x38
+ 1906 0174 24       		.byte	0x24
+ 1907 0175 03       		.byte	0x3
+ 1908 0176 04000000 		.4byte	Acceleration+4
+ 1909 017a 94       		.byte	0x94
+ 1910 017b 01       		.byte	0x1
+ 1911 017c 08       		.byte	0x8
+ 1912 017d FF       		.byte	0xff
+ 1913 017e 1A       		.byte	0x1a
+ 1914 017f 21       		.byte	0x21
+ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccKhy93y.s 			page 41
+
+
+ 1915 0180 09       		.byte	0x9
+ 1916 0181 F4       		.byte	0xf4
+ 1917 0182 24       		.byte	0x24
+ 1918 0183 09       		.byte	0x9
+ 1919 0184 FA       		.byte	0xfa
+ 1920 0185 26       		.byte	0x26
+ 1921 0186 32       		.byte	0x32
+ 1922 0187 24       		.byte	0x24
+ 1923 0188 9F       		.byte	0x9f
+ 1924 0189 00000000 		.4byte	0
+ 1925 018d 00000000 		.4byte	0
+ 1926              	.LLST4:
+ 1927 0191 1E000000 		.4byte	.LVL4
+ 1928 0195 22000000 		.4byte	.LVL5
+ 1929 0199 0200     		.2byte	0x2
+ 1930 019b 30       		.byte	0x30
+ 1931 019c 9F       		.byte	0x9f
+ 1932 019d 22000000 		.4byte	.LVL5
+ 1933 01a1 50020000 		.4byte	.LFE64
+ 1934 01a5 0100     		.2byte	0x1
+ 1935 01a7 54       		.byte	0x54
+ 1936 01a8 00000000 		.4byte	0
+ 1937 01ac 00000000 		.4byte	0
+ 1938              		.section	.debug_aranges,"",%progbits
+ 1939 0000 1C000000 		.4byte	0x1c
+ 1940 0004 0200     		.2byte	0x2
+ 1941 0006 00000000 		.4byte	.Ldebug_info0
+ 1942 000a 04       		.byte	0x4
+ 1943 000b 00       		.byte	0
+ 1944 000c 0000     		.2byte	0
+ 1945 000e 0000     		.2byte	0
+ 1946 0010 00000000 		.4byte	.LFB64
+ 1947 0014 50020000 		.4byte	.LFE64-.LFB64
+ 1948 0018 00000000 		.4byte	0
+ 1949 001c 00000000 		.4byte	0
+ 1950              		.section	.debug_ranges,"",%progbits
+ 1951              	.Ldebug_ranges0:
+ 1952 0000 00000000 		.4byte	.LFB64
+ 1953 0004 50020000 		.4byte	.LFE64
+ 1954 0008 00000000 		.4byte	0
+ 1955 000c 00000000 		.4byte	0
+ 1956              		.section	.debug_line,"",%progbits
+ 1957              	.Ldebug_line0:
+ 1958 0000 9F020000 		.section	.debug_str,"MS",%progbits,1
+ 1958      02002E02 
+ 1958      00000201 
+ 1958      FB0E0D00 
+ 1958      01010101 
+ 1959              	.LASF24:
+ 1960 0000 6D657373 		.ascii	"message\000"
+ 1960      61676500 
+ 1961              	.LASF33:
+ 1962 0008 68656164 		.ascii	"header\000"
+ 1962      657200
+ 1963              	.LASF2:
+ 1964 000f 5F5F7569 		.ascii	"__uint8_t\000"
+ 1964      6E74385F 
+ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccKhy93y.s 			page 42
+
+
+ 1964      7400
+ 1965              	.LASF3:
+ 1966 0019 5F5F696E 		.ascii	"__int16_t\000"
+ 1966      7431365F 
+ 1966      7400
+ 1967              	.LASF39:
+ 1968 0023 4932435F 		.ascii	"I2C_Peripheral_IsDeviceConnected\000"
+ 1968      50657269 
+ 1968      70686572 
+ 1968      616C5F49 
+ 1968      73446576 
+ 1969              	.LASF6:
+ 1970 0044 5F5F696E 		.ascii	"__int32_t\000"
+ 1970      7433325F 
+ 1970      7400
+ 1971              	.LASF7:
+ 1972 004e 6C6F6E67 		.ascii	"long int\000"
+ 1972      20696E74 
+ 1972      00
+ 1973              	.LASF49:
+ 1974 0057 55415254 		.ascii	"UART_Debug_PutArray\000"
+ 1974      5F446562 
+ 1974      75675F50 
+ 1974      75744172 
+ 1974      72617900 
+ 1975              	.LASF21:
+ 1976 006b 4572726F 		.ascii	"ErrorCode\000"
+ 1976      72436F64 
+ 1976      6500
+ 1977              	.LASF14:
+ 1978 0075 696E7433 		.ascii	"int32_t\000"
+ 1978      325F7400 
+ 1979              	.LASF45:
+ 1980 007d 6973725F 		.ascii	"isr_timer_StartEx\000"
+ 1980      74696D65 
+ 1980      725F5374 
+ 1980      61727445 
+ 1980      7800
+ 1981              	.LASF16:
+ 1982 008f 666C6F61 		.ascii	"float\000"
+ 1982      7400
+ 1983              	.LASF35:
+ 1984 0095 4F757441 		.ascii	"OutArray\000"
+ 1984      72726179 
+ 1984      00
+ 1985              	.LASF1:
+ 1986 009e 756E7369 		.ascii	"unsigned char\000"
+ 1986      676E6564 
+ 1986      20636861 
+ 1986      7200
+ 1987              	.LASF50:
+ 1988 00ac 474E5520 		.ascii	"GNU C11 5.4.1 20160609 (release) [ARM/embedded-5-br"
+ 1988      43313120 
+ 1988      352E342E 
+ 1988      31203230 
+ 1988      31363036 
+ 1989 00df 616E6368 		.ascii	"anch revision 237715] -mcpu=cortex-m3 -mthumb -g -O"
+ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccKhy93y.s 			page 43
+
+
+ 1989      20726576 
+ 1989      6973696F 
+ 1989      6E203233 
+ 1989      37373135 
+ 1990 0112 67202D66 		.ascii	"g -ffunction-sections -ffat-lto-objects\000"
+ 1990      66756E63 
+ 1990      74696F6E 
+ 1990      2D736563 
+ 1990      74696F6E 
+ 1991              	.LASF15:
+ 1992 013a 696E7431 		.ascii	"int16\000"
+ 1992      3600
+ 1993              	.LASF8:
+ 1994 0140 6C6F6E67 		.ascii	"long unsigned int\000"
+ 1994      20756E73 
+ 1994      69676E65 
+ 1994      6420696E 
+ 1994      7400
+ 1995              	.LASF5:
+ 1996 0152 73686F72 		.ascii	"short unsigned int\000"
+ 1996      7420756E 
+ 1996      7369676E 
+ 1996      65642069 
+ 1996      6E7400
+ 1997              	.LASF34:
+ 1998 0165 666F6F74 		.ascii	"footer\000"
+ 1998      657200
+ 1999              	.LASF17:
+ 2000 016c 646F7562 		.ascii	"double\000"
+ 2000      6C6500
+ 2001              	.LASF41:
+ 2002 0173 55415254 		.ascii	"UART_Debug_PutString\000"
+ 2002      5F446562 
+ 2002      75675F50 
+ 2002      75745374 
+ 2002      72696E67 
+ 2003              	.LASF48:
+ 2004 0188 4932435F 		.ascii	"I2C_Peripheral_WriteRegister\000"
+ 2004      50657269 
+ 2004      70686572 
+ 2004      616C5F57 
+ 2004      72697465 
+ 2005              	.LASF53:
+ 2006 01a5 6D61696E 		.ascii	"main\000"
+ 2006      00
+ 2007              	.LASF37:
+ 2008 01aa 41636365 		.ascii	"Acceleration\000"
+ 2008      6C657261 
+ 2008      74696F6E 
+ 2008      00
+ 2009              	.LASF28:
+ 2010 01b7 6374726C 		.ascii	"ctrl_reg1\000"
+ 2010      5F726567 
+ 2010      3100
+ 2011              	.LASF44:
+ 2012 01c1 54696D65 		.ascii	"Timer_Start\000"
+ 2012      725F5374 
+ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccKhy93y.s 			page 44
+
+
+ 2012      61727400 
+ 2013              	.LASF29:
+ 2014 01cd 6374726C 		.ascii	"ctrl_reg4\000"
+ 2014      5F726567 
+ 2014      3400
+ 2015              	.LASF11:
+ 2016 01d7 756E7369 		.ascii	"unsigned int\000"
+ 2016      676E6564 
+ 2016      20696E74 
+ 2016      00
+ 2017              	.LASF10:
+ 2018 01e4 6C6F6E67 		.ascii	"long long unsigned int\000"
+ 2018      206C6F6E 
+ 2018      6720756E 
+ 2018      7369676E 
+ 2018      65642069 
+ 2019              	.LASF12:
+ 2020 01fb 75696E74 		.ascii	"uint8_t\000"
+ 2020      385F7400 
+ 2021              	.LASF52:
+ 2022 0203 433A5C55 		.ascii	"C:\\Users\\noemi\\Desktop\\PSoC_03_Complete\\PSoC_0"
+ 2022      73657273 
+ 2022      5C6E6F65 
+ 2022      6D695C44 
+ 2022      65736B74 
+ 2023 0231 335C4159 		.ascii	"3\\AY1920_II_HW_05_PROJ_2.cydsn\000"
+ 2023      31393230 
+ 2023      5F49495F 
+ 2023      48575F30 
+ 2023      355F5052 
+ 2024              	.LASF13:
+ 2025 0250 696E7431 		.ascii	"int16_t\000"
+ 2025      365F7400 
+ 2026              	.LASF36:
+ 2027 0258 49544D5F 		.ascii	"ITM_RxBuffer\000"
+ 2027      52784275 
+ 2027      66666572 
+ 2027      00
+ 2028              	.LASF30:
+ 2029 0265 4F757458 		.ascii	"OutX\000"
+ 2029      00
+ 2030              	.LASF31:
+ 2031 026a 4F757459 		.ascii	"OutY\000"
+ 2031      00
+ 2032              	.LASF32:
+ 2033 026f 4F75745A 		.ascii	"OutZ\000"
+ 2033      00
+ 2034              	.LASF23:
+ 2035 0274 73697A65 		.ascii	"sizetype\000"
+ 2035      74797065 
+ 2035      00
+ 2036              	.LASF26:
+ 2037 027d 6572726F 		.ascii	"error\000"
+ 2037      7200
+ 2038              	.LASF9:
+ 2039 0283 6C6F6E67 		.ascii	"long long int\000"
+ 2039      206C6F6E 
+ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccKhy93y.s 			page 45
+
+
+ 2039      6720696E 
+ 2039      7400
+ 2040              	.LASF43:
+ 2041 0291 55415254 		.ascii	"UART_Debug_Start\000"
+ 2041      5F446562 
+ 2041      75675F53 
+ 2041      74617274 
+ 2041      00
+ 2042              	.LASF51:
+ 2043 02a2 6D61696E 		.ascii	"main.c\000"
+ 2043      2E6300
+ 2044              	.LASF18:
+ 2045 02a9 63686172 		.ascii	"char\000"
+ 2045      00
+ 2046              	.LASF47:
+ 2047 02ae 4932435F 		.ascii	"I2C_Peripheral_ReadRegister\000"
+ 2047      50657269 
+ 2047      70686572 
+ 2047      616C5F52 
+ 2047      65616452 
+ 2048              	.LASF4:
+ 2049 02ca 73686F72 		.ascii	"short int\000"
+ 2049      7420696E 
+ 2049      7400
+ 2050              	.LASF38:
+ 2051 02d4 5061636B 		.ascii	"PacketReadyFlag\000"
+ 2051      65745265 
+ 2051      61647946 
+ 2051      6C616700 
+ 2052              	.LASF19:
+ 2053 02e4 4E4F5F45 		.ascii	"NO_ERROR\000"
+ 2053      52524F52 
+ 2053      00
+ 2054              	.LASF20:
+ 2055 02ed 4552524F 		.ascii	"ERROR\000"
+ 2055      5200
+ 2056              	.LASF27:
+ 2057 02f3 73746174 		.ascii	"status_register\000"
+ 2057      75735F72 
+ 2057      65676973 
+ 2057      74657200 
+ 2058              	.LASF22:
+ 2059 0303 6C6F6E67 		.ascii	"long double\000"
+ 2059      20646F75 
+ 2059      626C6500 
+ 2060              	.LASF0:
+ 2061 030f 7369676E 		.ascii	"signed char\000"
+ 2061      65642063 
+ 2061      68617200 
+ 2062              	.LASF25:
+ 2063 031b 77686F5F 		.ascii	"who_am_i_reg\000"
+ 2063      616D5F69 
+ 2063      5F726567 
+ 2063      00
+ 2064              	.LASF40:
+ 2065 0328 73707269 		.ascii	"sprintf\000"
+ 2065      6E746600 
+ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccKhy93y.s 			page 46
+
+
+ 2066              	.LASF46:
+ 2067 0330 43794465 		.ascii	"CyDelay\000"
+ 2067      6C617900 
+ 2068              	.LASF42:
+ 2069 0338 4932435F 		.ascii	"I2C_Peripheral_Start\000"
+ 2069      50657269 
+ 2069      70686572 
+ 2069      616C5F53 
+ 2069      74617274 
+ 2070              		.ident	"GCC: (GNU Tools for ARM Embedded Processors) 5.4.1 20160609 (release) [ARM/embedded-5-bran

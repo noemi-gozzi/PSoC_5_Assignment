@@ -13,6 +13,7 @@
 #include "I2C_Interface.h"
 #include "project.h"
 #include "stdio.h"
+#include "InterruptRoutines.h"
 
 /**
 *   \brief 7-bit I2C address of the slave device.
@@ -76,6 +77,8 @@ ctrl register 4 in normal mode, +- 2g (bit FS[1:0] set to 0 --> FSR +-2g
 */
 #define LIS3DH_CTRL_REG4_NORMAL_MODE 0x00
 
+#define packet_dimension 8
+
 int main(void)
 {
     CyGlobalIntEnable; /* Enable global interrupts. */
@@ -83,6 +86,8 @@ int main(void)
     /* Place your initialization/startup code here (e.g. MyInst_Start()) */
     I2C_Peripheral_Start();
     UART_Debug_Start();
+    Timer_Start();
+    isr_timer_StartEx(Custom_ISR_Timer_XYZ);
     
     CyDelay(5); //"The boot procedure is complete about 5 milliseconds after device power-up."
     
@@ -261,9 +266,34 @@ int main(void)
         }
         
     }
-
+    
+    int16_t OutX;
+    int16_t OutY;
+    int16_t OutZ;
+    uint8_t header = 0xA0;
+    uint8_t footer = 0xC0;
+    uint8_t OutArray[packet_dimension]; 
+    
+    OutArray[0] = header;
+    OutArray[packet_dimension-1] = footer;
+    PacketReadyFlag=0;
+    
     for(;;)
     {
+                
+        if (PacketReadyFlag){
+                /*
+                in section 3.2.1 of the datasheet is specified that in normal mode mg/digit is 4 
+                that is an approximation that deals with FSR=+-2g, nbit=10bit; fsr/2 is around 512
+                that equal 2000mg.
+                each value is rescaled in mg
+                */
+                PacketReadyFlag=0;
+                OutX = ((int16)((Acceleration[0]) | (Acceleration[1])<<8)>>6)*4;
+                OutY = ((int16)((Acceleration[2]) | (Acceleration[3])<<8)>>6)*4;
+                OutZ = ((int16)((Acceleration[4]) | (Acceleration[5])<<8)>>6)*4;
+                
+                }
     }
 }
 
