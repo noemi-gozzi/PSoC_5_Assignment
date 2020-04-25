@@ -5,8 +5,8 @@
 * to understand the I2C protocol and communicate with a
 * a I2C Slave device (LIS3DH Accelerometer).
 *
-* \author Gabriele Belotti
-* \date , 2020
+* \author Gozzi Noemi
+* \date April 2020
 */
 
 // Include required header files
@@ -66,16 +66,25 @@
 
 #define LIS3DH_OUT_X_L 0x28 //register for acceleration in X (LSB)
 
-/**
-*   Hex value to set the accelerator in normal mode acceleration and 100 Hz,
-    correspondent to 0101 1000, enabling XYZ 
+/*
+    Hex value to set the accelerator in normal mode acceleration and 100 Hz,
+    correspondent to 0101 0111, enabling XYZ 
+    bit[4:7]= ODR: 100Hz: 0101
+    bit[3]=Lpen High resolution/Normal Mode: 0
+    bit[0:2]= XYZ enable
 */
 #define LIS3DH_NORMAL_MODE_CTRL_REG1_XYZ 0x57
 
 /*
-ctrl register 4 in normal mode, +- 2g (bit FS[1:0] set to 0 --> FSR +-2g
+    ctrl register 4 in normal mode 0x00
+    bit[4:5]= FS[0:1]= 00 for FSR +-2g
+    bit [3]= HR: Normal mode 0
 */
 #define LIS3DH_CTRL_REG4_NORMAL_MODE 0x00
+
+/* 
+    packet dimension: 8 bytes (3 data 2-bytes each, 1 byte header, 1 byte tail
+*/
 
 #define packet_dimension 8
 
@@ -161,7 +170,7 @@ int main(void)
     }
     
     /******************************************/
-    /*            I2C Writing                 */
+    /*    I2C Writing  normal mode, 100Hz     */
     /******************************************/
     
         
@@ -208,8 +217,8 @@ int main(void)
     
     
     
-     /******************************************/
-    /*     Read Control Register 4     */
+    /******************************************/
+    /*        Read Control Register 4         */
     /******************************************/
     uint8_t ctrl_reg4;
 
@@ -228,7 +237,7 @@ int main(void)
     }
     
     /******************************************/
-    /*            I2C Writing   REGISTER 4              */
+    /*       I2C Writing   REGISTER 4         */
     /******************************************/
     
     
@@ -266,6 +275,9 @@ int main(void)
         }
         
     }
+    /*
+    variable settings
+    */
     
     int16_t OutX;
     int16_t OutY;
@@ -283,15 +295,20 @@ int main(void)
                 
         if (PacketReadyFlag){
                 /*
-                in section 3.2.1 of the datasheet is specified that in normal mode mg/digit is 4 
-                that is an approximation that deals with FSR=+-2g, nbit=10bit; fsr/2 is around 512
-                that equal 2000mg.
-                each value is rescaled in mg
+                in section 3.2.1 of the datasheet is specified that in normal mode mg/digit sensitivity is 4 
+                that is an approximation that deals with FSR=+-2g, nbit=10bit; 
+                fsr/2=512=2000mg
+                acc[mg]=acc[digit]*3.9026 --> in Int is around 4
                 */
-                PacketReadyFlag=0;
+            
+                PacketReadyFlag=0; //flag is cleared
                 OutX = ((int16)((Acceleration[0]) | (Acceleration[1])<<8)>>6)*4;
                 OutY = ((int16)((Acceleration[2]) | (Acceleration[3])<<8)>>6)*4;
                 OutZ = ((int16)((Acceleration[4]) | (Acceleration[5])<<8)>>6)*4;
+                
+                /*
+                Acceleration values are organized in 8 bits data to be sent through UART communication
+                */
                 
                 OutArray[1] = (uint8_t)(OutX & 0xFF);
                 OutArray[2] = (uint8_t)(OutX >> 8);

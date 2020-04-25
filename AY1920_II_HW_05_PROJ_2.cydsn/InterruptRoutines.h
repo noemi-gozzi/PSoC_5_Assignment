@@ -14,13 +14,7 @@
     #include "project.h"
     #include "I2C_Interface.h"
     CY_ISR_PROTO(Custom_ISR_Timer_XYZ);
-    
-    uint8_t Acceleration[6];
-    volatile uint8_t PacketReadyFlag;
-    
-    
-    
-   
-   
+    uint8_t Acceleration[6]; //vairable where data will be stored
+    volatile uint8_t PacketReadyFlag; //used for communication between isr and main when data are ready to be sent
 #endif
 /* [] END OF FILE */

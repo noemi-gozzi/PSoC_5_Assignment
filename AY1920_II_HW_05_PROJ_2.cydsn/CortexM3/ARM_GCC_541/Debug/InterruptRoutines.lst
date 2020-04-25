@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccP1UIbA.s 			page 1
+ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccWRMlv0.s 			page 1
 
 
    1              		.syntax unified
@@ -30,44 +30,46 @@ ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccP1UIbA.s 			page 1
   27              		.file 1 "InterruptRoutines.c"
    1:InterruptRoutines.c **** /* ========================================
    2:InterruptRoutines.c ****  *
-   3:InterruptRoutines.c ****  * Copyright YOUR COMPANY, THE YEAR
-   4:InterruptRoutines.c ****  * All Rights Reserved
-   5:InterruptRoutines.c ****  * UNPUBLISHED, LICENSED SOFTWARE.
-   6:InterruptRoutines.c ****  *
-   7:InterruptRoutines.c ****  * CONFIDENTIAL AND PROPRIETARY INFORMATION
-   8:InterruptRoutines.c ****  * WHICH IS THE PROPERTY OF your company.
-   9:InterruptRoutines.c ****  *
-  10:InterruptRoutines.c ****  * ========================================
-  11:InterruptRoutines.c **** */
-  12:InterruptRoutines.c **** 
-  13:InterruptRoutines.c **** #include "InterruptRoutines.h"
-  14:InterruptRoutines.c **** #define LIS3DH_DEVICE_ADDRESS 0x18
-  15:InterruptRoutines.c **** #define LIS3DH_OUT_X_L 0x28
-  16:InterruptRoutines.c **** #define LIS3DH_STATUS_REG 0x27
-  17:InterruptRoutines.c **** #define STATUS_REGISTER_NEW_DATA 0x08
-  18:InterruptRoutines.c **** uint8_t status_register_newdata;
-  19:InterruptRoutines.c **** 
-  20:InterruptRoutines.c **** ErrorCode error;
-  21:InterruptRoutines.c **** 
-  22:InterruptRoutines.c **** CY_ISR(Custom_ISR_Timer_XYZ){
-  28              		.loc 1 22 0
+   3:InterruptRoutines.c **** ISR FILE: it has been chosen to use an ISR on timer to deal with acceleration data at a correct fre
+   4:InterruptRoutines.c **** Other methods (such us exploiting FIFO functionality and buffer) are less robust when dealing with 
+   5:InterruptRoutines.c **** time application. Checking, with an ISR if new data are available (status register bit XYZDA=1), wi
+   6:InterruptRoutines.c **** frequency higher than the one of the system (i.e. f LIS3DH 100 HZ, ISR 400 Hz) ensures that data ar
+   7:InterruptRoutines.c **** missed. This has been confirmed also in Bridge control Panel where the rate at which data are recev
+   8:InterruptRoutines.c **** plotted is around 98-102 data per seconds.
+   9:InterruptRoutines.c **** It has been decided to read also XYZ data in the ISR to be sure that the data are the ones correspo
+  10:InterruptRoutines.c **** the exat time when XYZDA flag has been written to 1;
+  11:InterruptRoutines.c ****  *
+  12:InterruptRoutines.c ****  * ========================================
+  13:InterruptRoutines.c **** */
+  14:InterruptRoutines.c **** 
+  15:InterruptRoutines.c **** #include "InterruptRoutines.h"
+  16:InterruptRoutines.c **** #define LIS3DH_DEVICE_ADDRESS 0x18
+  17:InterruptRoutines.c **** #define LIS3DH_OUT_X_L 0x28
+  18:InterruptRoutines.c **** #define LIS3DH_STATUS_REG 0x27
+  19:InterruptRoutines.c **** #define STATUS_REGISTER_NEW_DATA 0x08 //status register bit[3]=1 when new data is available
+  20:InterruptRoutines.c **** uint8_t status_register_newdata;
+  21:InterruptRoutines.c **** ErrorCode error;
+  22:InterruptRoutines.c **** 
+  23:InterruptRoutines.c **** CY_ISR(Custom_ISR_Timer_XYZ){
+  28              		.loc 1 23 0
   29              		.cfi_startproc
   30              		@ args = 0, pretend = 0, frame = 0
   31              		@ frame_needed = 0, uses_anonymous_args = 0
   32 0000 08B5     		push	{r3, lr}
   33              		.cfi_def_cfa_offset 8
   34              		.cfi_offset 3, -8
+ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccWRMlv0.s 			page 2
+
+
   35              		.cfi_offset 14, -4
-ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccP1UIbA.s 			page 2
-
-
-  23:InterruptRoutines.c ****     
-  24:InterruptRoutines.c ****      Timer_ReadStatusRegister();
-  36              		.loc 1 24 0
+  24:InterruptRoutines.c ****     
+  25:InterruptRoutines.c ****     Timer_ReadStatusRegister(); 
+  36              		.loc 1 25 0
   37 0002 FFF7FEFF 		bl	Timer_ReadStatusRegister
   38              	.LVL0:
-  25:InterruptRoutines.c ****      error = I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
-  39              		.loc 1 25 0
+  26:InterruptRoutines.c ****     //read status register value
+  27:InterruptRoutines.c ****     error = I2C_Peripheral_ReadRegister(LIS3DH_DEVICE_ADDRESS,
+  39              		.loc 1 27 0
   40 0006 0D4A     		ldr	r2, .L4
   41 0008 2721     		movs	r1, #39
   42 000a 1820     		movs	r0, #24
@@ -75,20 +77,20 @@ ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccP1UIbA.s 			page 1
   44              	.LVL1:
   45 0010 0B4B     		ldr	r3, .L4+4
   46 0012 1870     		strb	r0, [r3]
-  26:InterruptRoutines.c ****                                         LIS3DH_STATUS_REG,
-  27:InterruptRoutines.c ****                                         &status_register_newdata);
-  28:InterruptRoutines.c ****         
-  29:InterruptRoutines.c ****      if ((error==NO_ERROR)&&((status_register_newdata) & (STATUS_REGISTER_NEW_DATA))){
-  47              		.loc 1 29 0
+  28:InterruptRoutines.c ****                                         LIS3DH_STATUS_REG,
+  29:InterruptRoutines.c ****                                         &status_register_newdata);
+  30:InterruptRoutines.c ****     //when new data is available the read XYZ values with ReadRegisterMulti function.   
+  31:InterruptRoutines.c ****     if ((error==NO_ERROR)&&((status_register_newdata) & (STATUS_REGISTER_NEW_DATA))){
+  47              		.loc 1 31 0
   48 0014 80B9     		cbnz	r0, .L1
-  49              		.loc 1 29 0 is_stmt 0 discriminator 1
+  49              		.loc 1 31 0 is_stmt 0 discriminator 1
   50 0016 094B     		ldr	r3, .L4
   51 0018 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
   52 001a 13F0080F 		tst	r3, #8
   53 001e 0BD0     		beq	.L1
-  30:InterruptRoutines.c ****         
-  31:InterruptRoutines.c ****             error=I2C_Peripheral_ReadRegisterMulti(LIS3DH_DEVICE_ADDRESS, LIS3DH_OUT_X_L, 6 , (&Acc
-  54              		.loc 1 31 0 is_stmt 1
+  32:InterruptRoutines.c ****         
+  33:InterruptRoutines.c ****             error=I2C_Peripheral_ReadRegisterMulti(LIS3DH_DEVICE_ADDRESS, LIS3DH_OUT_X_L, 6 , (&Acc
+  54              		.loc 1 33 0 is_stmt 1
   55 0020 084B     		ldr	r3, .L4+8
   56 0022 0622     		movs	r2, #6
   57 0024 2821     		movs	r1, #40
@@ -97,12 +99,12 @@ ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccP1UIbA.s 			page 1
   60              	.LVL2:
   61 002c 044B     		ldr	r3, .L4+4
   62 002e 1870     		strb	r0, [r3]
-  32:InterruptRoutines.c ****     //                           
-  33:InterruptRoutines.c ****             if(error == NO_ERROR){
-  63              		.loc 1 33 0
+  34:InterruptRoutines.c ****             //if data are correctly read, then communicate to main that data are ready to be sent.
+  35:InterruptRoutines.c ****             if(error == NO_ERROR){
+  63              		.loc 1 35 0
   64 0030 10B9     		cbnz	r0, .L1
-  34:InterruptRoutines.c ****                 PacketReadyFlag=1;
-  65              		.loc 1 34 0
+  36:InterruptRoutines.c ****             PacketReadyFlag=1;
+  65              		.loc 1 36 0
   66 0032 0122     		movs	r2, #1
   67 0034 044B     		ldr	r3, .L4+12
   68 0036 1A70     		strb	r2, [r3]
@@ -116,11 +118,11 @@ ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccP1UIbA.s 			page 1
   76 0044 00000000 		.word	Acceleration
   77 0048 00000000 		.word	PacketReadyFlag
   78              		.cfi_endproc
+ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccWRMlv0.s 			page 3
+
+
   79              	.LFE63:
   80              		.size	Custom_ISR_Timer_XYZ, .-Custom_ISR_Timer_XYZ
-ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccP1UIbA.s 			page 3
-
-
   81              		.comm	error,1,1
   82              		.comm	status_register_newdata,1,1
   83              		.comm	PacketReadyFlag,1,1
@@ -176,11 +178,11 @@ ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccP1UIbA.s 			page 1
  133 0053 57000000 		.4byte	0x57
  134 0057 02       		.uleb128 0x2
  135 0058 04       		.byte	0x4
+ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccWRMlv0.s 			page 4
+
+
  136 0059 05       		.byte	0x5
  137 005a 13010000 		.4byte	.LASF6
-ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccP1UIbA.s 			page 4
-
-
  138 005e 02       		.uleb128 0x2
  139 005f 04       		.byte	0x4
  140 0060 07       		.byte	0x7
@@ -236,11 +238,11 @@ ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccP1UIbA.s 			page 1
  190 00bf 06       		.uleb128 0x6
  191 00c0 01       		.byte	0x1
  192 00c1 37000000 		.4byte	0x37
+ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccWRMlv0.s 			page 5
+
+
  193 00c5 04       		.byte	0x4
  194 00c6 15       		.byte	0x15
-ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccP1UIbA.s 			page 5
-
-
  195 00c7 D8000000 		.4byte	0xd8
  196 00cb 07       		.uleb128 0x7
  197 00cc 4F020000 		.4byte	.LASF18
@@ -257,7 +259,7 @@ ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccP1UIbA.s 			page 1
  208 00e3 08       		.uleb128 0x8
  209 00e4 37000000 		.4byte	.LASF32
  210 00e8 01       		.byte	0x1
- 211 00e9 16       		.byte	0x16
+ 211 00e9 17       		.byte	0x17
  212 00ea 00000000 		.4byte	.LFB63
  213 00ee 4C000000 		.4byte	.LFE63-.LFB63
  214 00f2 01       		.uleb128 0x1
@@ -296,11 +298,11 @@ ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccP1UIbA.s 			page 1
  247 012e 50       		.byte	0x50
  248 012f 01       		.uleb128 0x1
  249 0130 48       		.byte	0x48
+ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccWRMlv0.s 			page 6
+
+
  250 0131 0B       		.uleb128 0xb
  251 0132 01       		.uleb128 0x1
-ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccP1UIbA.s 			page 6
-
-
  252 0133 51       		.byte	0x51
  253 0134 02       		.uleb128 0x2
  254 0135 08       		.byte	0x8
@@ -335,7 +337,7 @@ ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccP1UIbA.s 			page 1
  283 0168 10       		.uleb128 0x10
  284 0169 69010000 		.4byte	.LASF22
  285 016d 06       		.byte	0x6
- 286 016e 12       		.byte	0x12
+ 286 016e 11       		.byte	0x11
  287 016f 58010000 		.4byte	0x158
  288 0173 05       		.uleb128 0x5
  289 0174 03       		.byte	0x3
@@ -343,7 +345,7 @@ ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccP1UIbA.s 			page 1
  291 0179 10       		.uleb128 0x10
  292 017a 3F020000 		.4byte	.LASF23
  293 017e 06       		.byte	0x6
- 294 017f 13       		.byte	0x13
+ 294 017f 12       		.byte	0x12
  295 0180 BA000000 		.4byte	0xba
  296 0184 05       		.uleb128 0x5
  297 0185 03       		.byte	0x3
@@ -351,18 +353,18 @@ ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccP1UIbA.s 			page 1
  299 018a 10       		.uleb128 0x10
  300 018b 51010000 		.4byte	.LASF24
  301 018f 01       		.byte	0x1
- 302 0190 12       		.byte	0x12
+ 302 0190 14       		.byte	0x14
  303 0191 81000000 		.4byte	0x81
  304 0195 05       		.uleb128 0x5
  305 0196 03       		.byte	0x3
  306 0197 00000000 		.4byte	status_register_newdata
+ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccWRMlv0.s 			page 7
+
+
  307 019b 10       		.uleb128 0x10
  308 019c 00020000 		.4byte	.LASF25
-ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccP1UIbA.s 			page 7
-
-
  309 01a0 01       		.byte	0x1
- 310 01a1 14       		.byte	0x14
+ 310 01a1 15       		.byte	0x15
  311 01a2 D8000000 		.4byte	0xd8
  312 01a6 05       		.uleb128 0x5
  313 01a7 03       		.byte	0x3
@@ -416,11 +418,11 @@ ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccP1UIbA.s 			page 1
  361 001c 00       		.byte	0
  362 001d 00       		.byte	0
  363 001e 03       		.uleb128 0x3
+ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccWRMlv0.s 			page 8
+
+
  364 001f 16       		.uleb128 0x16
  365 0020 00       		.byte	0
-ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccP1UIbA.s 			page 8
-
-
  366 0021 03       		.uleb128 0x3
  367 0022 0E       		.uleb128 0xe
  368 0023 3A       		.uleb128 0x3a
@@ -476,11 +478,11 @@ ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccP1UIbA.s 			page 1
  418 0055 08       		.uleb128 0x8
  419 0056 2E       		.uleb128 0x2e
  420 0057 01       		.byte	0x1
+ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccWRMlv0.s 			page 9
+
+
  421 0058 3F       		.uleb128 0x3f
  422 0059 19       		.uleb128 0x19
-ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccP1UIbA.s 			page 9
-
-
  423 005a 03       		.uleb128 0x3
  424 005b 0E       		.uleb128 0xe
  425 005c 3A       		.uleb128 0x3a
@@ -536,11 +538,11 @@ ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccP1UIbA.s 			page 1
  475 0098 11       		.uleb128 0x11
  476 0099 01       		.uleb128 0x1
  477 009a 31       		.uleb128 0x31
+ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccWRMlv0.s 			page 10
+
+
  478 009b 13       		.uleb128 0x13
  479 009c 00       		.byte	0
-ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccP1UIbA.s 			page 10
-
-
  480 009d 00       		.byte	0
  481 009e 0D       		.uleb128 0xd
  482 009f 34       		.uleb128 0x34
@@ -596,11 +598,11 @@ ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccP1UIbA.s 			page 1
  532 00d1 00       		.byte	0
  533 00d2 11       		.uleb128 0x11
  534 00d3 2E       		.uleb128 0x2e
+ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccWRMlv0.s 			page 11
+
+
  535 00d4 00       		.byte	0
  536 00d5 3F       		.uleb128 0x3f
-ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccP1UIbA.s 			page 11
-
-
  537 00d6 19       		.uleb128 0x19
  538 00d7 3C       		.uleb128 0x3c
  539 00d8 19       		.uleb128 0x19
@@ -656,11 +658,11 @@ ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccP1UIbA.s 			page 1
  577      52656769 
  578              	.LASF20:
  579 002d 4572726F 		.ascii	"ErrorCode\000"
+ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccWRMlv0.s 			page 12
+
+
  579      72436F64 
  579      6500
-ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccP1UIbA.s 			page 12
-
-
  580              	.LASF32:
  581 0037 43757374 		.ascii	"Custom_ISR_Timer_XYZ\000"
  581      6F6D5F49 
@@ -716,11 +718,11 @@ ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccP1UIbA.s 			page 1
  599 0129 646F7562 		.ascii	"double\000"
  599      6C6500
  600              	.LASF28:
+ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccWRMlv0.s 			page 13
+
+
  601 0130 4932435F 		.ascii	"I2C_Peripheral_ReadRegisterMulti\000"
  601      50657269 
-ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccP1UIbA.s 			page 13
-
-
  601      70686572 
  601      616C5F52 
  601      65616452 
@@ -776,11 +778,11 @@ ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccP1UIbA.s 			page 1
  622      6720696E 
  622      7400
  623              	.LASF15:
+ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccWRMlv0.s 			page 14
+
+
  624 0214 63686172 		.ascii	"char\000"
  624      00
-ARM GAS  C:\Users\noemi\AppData\Local\Temp\ccP1UIbA.s 			page 14
-
-
  625              	.LASF27:
  626 0219 4932435F 		.ascii	"I2C_Peripheral_ReadRegister\000"
  626      50657269 
