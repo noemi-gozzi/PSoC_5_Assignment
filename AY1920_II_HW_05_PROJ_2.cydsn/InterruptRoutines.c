@@ -4,10 +4,17 @@ ISR FILE: it has been chosen to use an ISR on timer to deal with acceleration da
 Other methods (such us exploiting FIFO functionality and buffer) are less robust when dealing with real
 time application. Checking, with an ISR if new data are available (status register bit XYZDA=1), with a 
 frequency higher than the one of the system (i.e. f LIS3DH 100 HZ, ISR 400 Hz) ensures that data are not 
-missed. This has been confirmed also in Bridge control Panel where the rate at which data are recevied and 
-plotted is around 98-102 data per seconds.
-It has been decided to read also XYZ data in the ISR to be sure that the data are the ones corresponent to
-the exat time when XYZDA flag has been written to 1;
+missed (flag will be high not every ISR but only when status register confirm new data).
+-   This has been confirmed also in Bridge control Panel where the rate at which data are recevied and 
+    plotted is around 98-102 data per seconds. (as per requirements)
+-   Furthermore it has been checked using cool-term and an error message that the frequency is enough and data
+    never overrun [status register bit[7]= XYZOR]; using this frequency of ISR and and checking inside the ISR if 
+    status_register&0x80 was true (also with 0xF0 to check X,Y,Z separately), and using an Overrun flag to communicate 
+    with the main, no error message was printed in coolterm, confirming that data were not missed.
+    
+It has been decided to read directly XYZ data in the ISR to be sure that the data are the ones corresponent 
+to the exat time when XYZDA flag has been written to 1 (time does not intercurr between staus register reading 
+and data reading);
  *
  * ========================================
 */

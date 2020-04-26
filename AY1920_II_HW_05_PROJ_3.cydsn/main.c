@@ -5,8 +5,8 @@
 * to understand the I2C protocol and communicate with a
 * a I2C Slave device (LIS3DH Accelerometer).
 *
-* \author Gabriele Belotti
-* \date , 2020
+* \author Noemi Gozzi
+* \date April 2020
 */
 
 // Include required header files
@@ -77,7 +77,7 @@ ctrl register 4 inhigh resolutio HR=1, +- 4g (bit FS[1:0] set to 01 --> FSR +-4g
 */
 #define LIS3DH_CTRL_REG4_HIGH_RES 0x18
 
-#define packet_dimension 14
+#define packet_dimension 14 //3 acceleration data each 4 byte and 1 header and 1 tail
 
 int main(void)
 {
@@ -267,13 +267,13 @@ int main(void)
         
     }
     
-    int16_t OutX;
+    int16_t OutX; //data from 2 8-bits registers
     int16_t OutY;
     int16_t OutZ;
-    float32 OutX_f;
+    float32 OutX_f; //data after conversion in m/s^2
     float32 OutY_f;
     float32 OutZ_f;
-    int32 OutX_32;
+    int32 OutX_32; //data after conversion casted to int
     int32 OutY_32;
     int32 OutZ_32;
     uint8_t header = 0xA0;
@@ -289,9 +289,10 @@ int main(void)
                 
         if (PacketReadyFlag){
                 /*
-                in section 3.2.1 of the datasheet is specified that in high resolution mode mg/digit is 1 
-                if FSR=+-2g, nbit=12bit; Since the FSR is 4g the sensitivy to change from digit to MG is aroud 2.
+                in section 3.2.1 of the datasheet is specified that in high resolution mode mg/digit sensitivity is 1 
+                when FSR=+-2g, nbit=12bit; Since the FSR is 4g the sensitivy to change from digit to mg is aroud 2.
                 each value is rescaled in mg
+                FSR/2 in digit=2048; FSR/2 in mg=4000; value[mg]=value[digit]*4000/2048
                 */
                 PacketReadyFlag=0;
                 OutX = ((int16)((Acceleration[0]) | (Acceleration[1])<<8)>>4)*2;
@@ -303,18 +304,26 @@ int main(void)
                 so the overall calculation would be acc[m/s]=acc[mg]*9.81;
                 */
                 
-                OutX_f=OutX*9.81; 
-                OutY_f=OutY*9.81; 
-                OutZ_f=OutZ*9.81; 
+                OutX_f=OutX*9.807; 
+                OutY_f=OutY*9.807; 
+                OutZ_f=OutZ*9.807; 
                 
+                /*
+                Casting from float to int. The easiest way is to assign the variable to an  int variable.
+                it does not perform any sort of rounding or approximation. The non-fractional part of a 
+                float is representable as an int, then casting performs an implicit conversion that drops the fractional.
+                */
                 OutX_32= (int32)(OutX_f);
                 OutY_32= (int32)(OutY_f);
                 OutZ_32= (int32)(OutZ_f);
                 
-                OutArray[1] = (uint8_t)(OutX_32 & 0xFF);
+                /*
+                Packet preparation in 8-bit values (UART module with 8-bit data packet)
+                */
+                OutArray[1] = (uint8_t)(OutX_32 & 0xFF); //LSB
                 OutArray[2] = (uint8_t)((OutX_32 >> 8)&0xFF);
                 OutArray[3] = (uint8_t)((OutX_32 >> 16)&0xFF);
-                OutArray[4] = (uint8_t)(OutX_32 >> 24);
+                OutArray[4] = (uint8_t)(OutX_32 >> 24); //MSB
                 
                 OutArray[5] = (uint8_t)(OutY_32 & 0xFF);
                 OutArray[6] = (uint8_t)((OutY_32 >> 8)&0xFF);
