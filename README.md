@@ -21,4 +21,9 @@
 </div>
 
 
+#### EXPECTED OUTPUT PROJECT 2 in Bridge Control Panel (with breadboard parallel to the floor):
+![alt text](https://github.com/noemi-gozzi/PSoC_5_Assignment/blob/master/Images/expectedOutProj2.PNG)
+#### EXPECTED OUTPUT PROJECT 3 in Bridge Control Panel (with breadboard parallel to the floor):
+![alt text](https://github.com/noemi-gozzi/PSoC_5_Assignment/blob/master/Images/expectedOutProj3.png)
+
 ### Feel Free to Contribute!
