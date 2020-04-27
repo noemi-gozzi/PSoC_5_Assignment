@@ -23,6 +23,7 @@ and data reading);
 #define LIS3DH_OUT_X_L 0x28
 #define LIS3DH_STATUS_REG 0x27
 #define STATUS_REGISTER_NEW_DATA 0x08 //status register bit[3]=1 when new data is available
+#define packet_dimension 6
 uint8_t status_register_newdata;
 
 ErrorCode error;
@@ -36,7 +37,7 @@ CY_ISR(Custom_ISR_Timer_XYZ){
         
      if ((error==NO_ERROR)&&((status_register_newdata) & (STATUS_REGISTER_NEW_DATA))){
         
-            error=I2C_Peripheral_ReadRegisterMulti(LIS3DH_DEVICE_ADDRESS, LIS3DH_OUT_X_L, 6 , (&Acceleration[0]));
+            error=I2C_Peripheral_ReadRegisterMulti(LIS3DH_DEVICE_ADDRESS, LIS3DH_OUT_X_L, packet_dimension , (&Acceleration[0]));
     //                           
             if(error == NO_ERROR){
                 PacketReadyFlag=1;

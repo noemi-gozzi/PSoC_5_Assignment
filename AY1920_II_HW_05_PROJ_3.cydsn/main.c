@@ -86,8 +86,6 @@ int main(void)
     /* Place your initialization/startup code here (e.g. MyInst_Start()) */
     I2C_Peripheral_Start();
     UART_Debug_Start();
-    Timer_Start();
-    isr_timer_StartEx(Custom_ISR_Timer_XYZ);
     
     CyDelay(5); //"The boot procedure is complete about 5 milliseconds after device power-up."
     
@@ -266,6 +264,9 @@ int main(void)
         }
         
     }
+    //timer initialization to be sure that ISR is not interrupting register setting 
+    Timer_Start();
+    isr_timer_StartEx(Custom_ISR_Timer_XYZ);
     
     int16_t OutX; //data from 2 8-bits registers
     int16_t OutY;
